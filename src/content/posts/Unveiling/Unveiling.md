@@ -12,3 +12,5 @@ lang: ''
 # 欢迎来到 Chuwu 的博客。
 
 ## 这个博客是使用 [Astro](https://astro.build/) 框架和 [Fuwari 主题](https://github.com/saicaca/fuwari) 构建的。
+
+### 不知道我们能走多久呢……

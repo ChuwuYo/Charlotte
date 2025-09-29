@@ -12,11 +12,11 @@ export const siteConfig: SiteConfig = {
 	subtitle: "时间能冲淡痛苦",
 	lang: "zh_CN", // 语言代码，例如 'en', 'zh_CN', 'ja' 等
 	themeColor: {
-		hue: 205, // 主题颜色的默认色相，范围 0-360。例如 红色: 0, 蓝绿色: 200, 青色: 250, 粉色: 345
+		hue: 60, // 主题颜色的默认色相，范围 0-360。例如 红色: 0, 蓝绿色: 200, 青色: 250, 粉色: 345
 		fixed: false, // 隐藏访客的主题颜色选择器
 	},
 	banner: {
-		enable: false,
+		enable: true,
 		src: "assets/images/banner.png", // 相对于 /src 目录的路径。如果以 '/' 开头则相对于 /public 目录
 		position: "center", // 等同于 object-position，仅支持 'top', 'center', 'bottom'。默认为 'center'
 		credit: {
