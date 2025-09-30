@@ -4,11 +4,6 @@
     .card-base {
         @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition;
     }
-    .navbar-with-opacity {
-        background-color: color-mix(in srgb, var(--card-bg) calc(var(--navbar-opacity) * 100%), transparent);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-    }
     h1, h2, h3, h4, h5, h6, p, a, span, li, ul, ol, blockquote, code, pre, table, th, td, strong {
         @apply transition;
     }
@@ -111,6 +106,13 @@
         @apply flex items-center justify-center
         bg-[oklch(0.45_0.01_var(--hue))] hover:bg-[oklch(0.50_0.01_var(--hue))] active:bg-[oklch(0.55_0.01_var(--hue))]
         dark:bg-[oklch(0.30_0.02_var(--hue))] dark:hover:bg-[oklch(0.35_0.03_var(--hue))] dark:active:bg-[oklch(0.40_0.03_var(--hue))]
+    }
+    
+    /* Navbar透明度支持 - 必须在@layer外定义以避免与Tailwind冲突 */
+    .navbar-with-opacity {
+        background-color: color-mix(in srgb, var(--card-bg) calc(var(--navbar-opacity) * 100%), transparent);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
     .btn-regular-dark.success {
         @apply bg-[oklch(0.75_0.14_var(--hue))] dark:bg-[oklch(0.75_0.14_var(--hue))]
