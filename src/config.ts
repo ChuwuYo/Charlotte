@@ -50,6 +50,7 @@ export const navBarConfig: NavBarConfig = {
 			external: true, // 显示外部链接图标并将在新标签页中打开
 		},
 	],
+	opacity: 70, // 导航栏透明度百分比，范围 0-100。100 表示完全不透明，0 表示完全透明
 };
 
 export const profileConfig: ProfileConfig = {

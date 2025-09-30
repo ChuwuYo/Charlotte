@@ -58,6 +58,7 @@ export type NavBarLink = {
 
 export type NavBarConfig = {
 	links: (NavBarLink | LinkPreset)[];
+	opacity?: number; // 导航栏透明度百分比，范围 0-100，默认 100（完全不透明）
 };
 
 export type ProfileConfig = {
