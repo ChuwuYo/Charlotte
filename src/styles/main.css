@@ -119,6 +119,15 @@
     }
 }
 
+/* Post Card封面图片悬停放大效果 */
+.post-card-cover img {
+    @apply transition;
+}
+
+.post-card-cover:hover img {
+    transform: scale(1.05);
+}
+
 .custom-md img, #post-cover img {
     @apply cursor-zoom-in
 }
