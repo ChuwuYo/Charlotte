@@ -17,7 +17,7 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: true,
-		src: "assets/images/banner.png", // 相对于 /src 目录的路径。如果以 '/' 开头则相对于 /public 目录
+		src: "assets/images/banner.webp", // 相对于 /src 目录的路径。如果以 '/' 开头则相对于 /public 目录
 		position: "center", // 等同于 object-position，仅支持 'top', 'center', 'bottom'。默认为 'center'
 		credit: {
 			enable: false, // 显示横幅图片的版权信息
@@ -32,7 +32,7 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		// 留空此数组以使用默认网站图标
 		{
-			src: "/favicon/icon.png", // 网站图标的路径，相对于 /public 目录
+			src: "/favicon/icon.webp", // 网站图标的路径，相对于 /public 目录
 			//   theme: 'light',              // （可选）'light' 或 'dark'，仅在您为明暗模式设置了不同的网站图标时使用
 			//   sizes: '32x32',              // （可选）网站图标的尺寸，仅在您有不同尺寸的网站图标时设置
 		},
@@ -54,7 +54,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/avatar.png", // 相对于 /src 目录的路径。如果以 '/' 开头则相对于 /public 目录
+	avatar: "assets/images/avatar.webp", // 相对于 /src 目录的路径。如果以 '/' 开头则相对于 /public 目录
 	name: "ChuwuYo",
 	bio: "时光流转，愿你能与重要之人重逢",
 	links: [
