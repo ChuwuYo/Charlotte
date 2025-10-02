@@ -27,20 +27,6 @@ let links: NavBarLink[] = navBarConfig.links.map(
 		return item;
 	},
 );
-
-// 关于页面的下拉菜单项
-const aboutDropdownItems = [
-    {
-        name: i18n(I18nKey.introduction),
-        url: "/about/",
-        external: false
-    },
-    {
-        name: i18n(I18nKey.projects),
-        url: "/projects/",
-        external: false
-    }
-];
 ---
 <div id="navbar" class="z-50 onload-animation" style={`--navbar-opacity: ${opacityValue};`}>
     <div class="absolute h-8 left-0 right-0 -top-8 bg-[var(--card-bg)] transition" style={`opacity: ${opacityValue};`}></div> <!-- used for onload animation -->
@@ -55,9 +41,11 @@ const aboutDropdownItems = [
         </a>
         <div class="hidden md:flex">
             {links.map((l) => {
-                // 如果是关于页面，显示下拉菜单
-                if (l.name === "关于" || l.name === "About") {
-                    return <NavDropdown title={l.name} items={aboutDropdownItems} />;
+                // 检查是否有子菜单
+                const hasChildren = l.children && l.children.length > 0;
+                
+                if (hasChildren) {
+                    return <NavDropdown title={l.name} items={l.children} />;
                 }
                 // 其他链接保持原样
                 return <a aria-label={l.name} href={l.external ? l.url : url(l.url)} target={l.external ? "_blank" : null}

@@ -1,17 +1,12 @@
 ---
 import { Icon } from "astro-icon/components";
 import { url } from "../utils/url-utils";
-
-interface DropdownItem {
-    name: string;
-    url: string;
-    external?: boolean;
-}
+import { type NavBarLink } from "../types/config";
 
 interface Props {
-    title: string;
-    items: DropdownItem[];
-    class?: string;
+	title: string;
+	items: NavBarLink[];
+	class?: string;
 }
 
 const { title, items, class: className } = Astro.props;
@@ -37,7 +32,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
     </button>
 
     <div 
-        class="hidden lg:block absolute transition float-panel-closed top-11 -right-2 pt-5"
+        class="absolute transition float-panel-closed top-11 -right-2 pt-5"
         data-dropdown-panel
     >
         <div class="card-base float-panel p-2">
@@ -65,17 +60,69 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
         const dropdownContainers = document.querySelectorAll('[data-dropdown-container]');
         
         dropdownContainers.forEach(container => {
+            const trigger = container.querySelector('[data-dropdown-trigger]');
             const panel = container.querySelector('[data-dropdown-panel]');
-            if (!panel) return;
+            const icon = trigger?.querySelector('svg');
+            if (!panel || !trigger) return;
             
-            // 鼠标进入时显示面板
-            container.addEventListener('mouseenter', function() {
-                panel.classList.remove('float-panel-closed');
+            let isOpen = false;
+            
+            // 切换下拉框状态
+            function toggleDropdown() {
+                isOpen = !isOpen;
+                if (isOpen) {
+                    panel.classList.remove('float-panel-closed');
+                    icon?.style.setProperty('transform', 'rotate(180deg)');
+                } else {
+                    panel.classList.add('float-panel-closed');
+                    icon?.style.setProperty('transform', 'rotate(0deg)');
+                }
+            }
+            
+            // 关闭下拉框
+            function closeDropdown() {
+                if (isOpen) {
+                    isOpen = false;
+                    panel.classList.add('float-panel-closed');
+                    icon?.style.setProperty('transform', 'rotate(0deg)');
+                }
+            }
+            
+            // 点击按钮切换下拉框
+            trigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleDropdown();
             });
             
-            // 鼠标离开时隐藏面板
+            // 桌面端：鼠标悬停显示（仅当未通过点击打开时）
+            container.addEventListener('mouseenter', function() {
+                if (!isOpen) {
+                    panel.classList.remove('float-panel-closed');
+                    icon?.style.setProperty('transform', 'rotate(180deg)');
+                }
+            });
+            
+            // 桌面端：鼠标离开隐藏（仅当未通过点击打开时）
             container.addEventListener('mouseleave', function() {
-                panel.classList.add('float-panel-closed');
+                if (!isOpen) {
+                    panel.classList.add('float-panel-closed');
+                    icon?.style.setProperty('transform', 'rotate(0deg)');
+                }
+            });
+            
+            // 点击外部区域关闭下拉框
+            document.addEventListener('click', function(e) {
+                if (!container.contains(e.target as Node)) {
+                    closeDropdown();
+                }
+            });
+            
+            // ESC 键关闭下拉框
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeDropdown();
+                }
             });
         });
     }

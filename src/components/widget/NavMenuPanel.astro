@@ -10,23 +10,134 @@ interface Props {
 const links = Astro.props.links;
 ---
 <div id="nav-menu-panel" class:list={["float-panel float-panel-closed absolute transition-all fixed right-4 px-2 py-2"]}>
-    {links.map((link) => (
-        <a href={link.external ? link.url : url(link.url)} class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8
-            hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition
-        "
-           target={link.external ? "_blank" : null}
-        >
-            <div class="transition text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
-                {link.name}
-            </div>
-            {!link.external && <Icon name="material-symbols:chevron-right-rounded"
-                  class="transition text-[1.25rem] text-[var(--primary)]"
-            >
-            </Icon>}
-            {link.external && <Icon name="fa6-solid:arrow-up-right-from-square"
-                  class="transition text-[0.75rem] text-black/25 dark:text-white/25 -translate-x-1"
-            >
-            </Icon>}
-        </a>
-    ))}
+    {links.map((link) => {
+        // 检查是否有子菜单
+        const hasChildren = link.children && link.children.length > 0;
+        
+        if (hasChildren) {
+            return (
+                <div class="nav-dropdown-mobile" data-mobile-dropdown>
+                    <button 
+                        class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8 w-full
+                            hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition"
+                        data-mobile-dropdown-trigger
+                    >
+                        <div class="transition text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                            {link.name}
+                        </div>
+                        <Icon name="material-symbols:keyboard-arrow-down-rounded"
+                              class="transition text-[1.25rem] text-[var(--primary)] duration-200"
+                              data-mobile-dropdown-icon
+                        />
+                    </button>
+                    <div class="overflow-hidden transition-all duration-200 max-h-0" data-mobile-dropdown-content>
+                        <div class="pl-4 py-1">
+                            {link.children!.map((child) => (
+                                <a href={child.external ? child.url : url(child.url)} 
+                                   class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8
+                                       hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition
+                                   "
+                                   target={child.external ? "_blank" : null}
+                                >
+                                    <div class="transition text-black/60 dark:text-white/60 font-medium group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                                        {child.name}
+                                    </div>
+                                    {child.external && <Icon name="fa6-solid:arrow-up-right-from-square"
+                                          class="transition text-[0.75rem] text-black/25 dark:text-white/25 -translate-x-1"
+                                    />}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <a href={link.external ? link.url : url(link.url)} class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8
+                    hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition
+                "
+                   target={link.external ? "_blank" : null}
+                >
+                    <div class="transition text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                        {link.name}
+                    </div>
+                    {!link.external && <Icon name="material-symbols:chevron-right-rounded"
+                          class="transition text-[1.25rem] text-[var(--primary)]"
+                    />}
+                    {link.external && <Icon name="fa6-solid:arrow-up-right-from-square"
+                          class="transition text-[0.75rem] text-black/25 dark:text-white/25 -translate-x-1"
+                    />}
+                </a>
+            );
+        }
+    })}
 </div>
+
+<script>
+// 移动端下拉菜单功能
+(function() {
+    function initMobileDropdowns() {
+        const dropdowns = document.querySelectorAll('[data-mobile-dropdown]');
+        
+        dropdowns.forEach(dropdown => {
+            const trigger = dropdown.querySelector('[data-mobile-dropdown-trigger]');
+            const content = dropdown.querySelector('[data-mobile-dropdown-content]');
+            const icon = dropdown.querySelector('[data-mobile-dropdown-icon]');
+            
+            if (!trigger || !content || !icon) return;
+            
+            let isOpen = false;
+            
+            // 切换下拉菜单状态
+            function toggleDropdown() {
+                isOpen = !isOpen;
+                
+                if (isOpen) {
+                    // 展开：设置最大高度并旋转图标（向上）
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    // 收起：重置高度并恢复图标（向下）
+                    content.style.maxHeight = '0px';
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            }
+            
+            // 点击触发器切换状态
+            trigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleDropdown();
+            });
+        });
+    }
+    
+    // 使用统一的Swup处理器模式
+    function createSwupHandler(initFunction) {
+        // 页面加载时初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFunction);
+        } else {
+            initFunction();
+        }
+        
+        // 处理 Swup 页面转换
+        if (typeof window !== 'undefined') {
+            const setupSwup = () => {
+                if (window?.swup?.hooks) {
+                    window.swup.hooks.on('page:view', initFunction);
+                }
+            };
+            
+            if (window.swup) {
+                setupSwup();
+            } else {
+                document.addEventListener('swup:enable', setupSwup);
+            }
+        }
+    }
+    
+    // 初始化移动端下拉菜单
+    createSwupHandler(initMobileDropdowns);
+})();
+</script>

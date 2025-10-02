@@ -54,6 +54,7 @@ export type NavBarLink = {
 	name: string;
 	url: string;
 	external?: boolean;
+	children?: NavBarLink[]; // 支持下拉菜单子项
 };
 
 export type NavBarConfig = {
