@@ -80,26 +80,32 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
         });
     }
     
-    // 页面加载时初始化
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initDropdown);
-    } else {
-        initDropdown();
-    }
-    
-    // 处理 Swup 页面转换
-    if (typeof window !== 'undefined') {
-        const setupSwup = () => {
-            if (window?.swup?.hooks) {
-                window.swup.hooks.on('page:view', initDropdown);
-            }
-        };
-        
-        if (window.swup) {
-            setupSwup();
+    // 使用统一的Swup处理器模式 (来自 src/utils/swup-utils.ts)
+    function createSwupHandler(initFunction) {
+        // 页面加载时初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFunction);
         } else {
-            document.addEventListener('swup:enable', setupSwup);
+            initFunction();
+        }
+        
+        // 处理 Swup 页面转换
+        if (typeof window !== 'undefined') {
+            const setupSwup = () => {
+                if (window?.swup?.hooks) {
+                    window.swup.hooks.on('page:view', initFunction);
+                }
+            };
+            
+            if (window.swup) {
+                setupSwup();
+            } else {
+                document.addEventListener('swup:enable', setupSwup);
+            }
         }
     }
+    
+    // 使用统一的处理器
+    createSwupHandler(initDropdown);
 })();
 </script>
