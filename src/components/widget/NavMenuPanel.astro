@@ -86,6 +86,10 @@ const links = Astro.props.links;
             
             if (!trigger || !content || !icon) return;
             
+            // 避免重复绑定
+            if (dropdown.dataset.mobileDropdownInitialized) return;
+            dropdown.dataset.mobileDropdownInitialized = 'true';
+            
             let isOpen = false;
             
             // 切换下拉菜单状态
@@ -112,8 +116,17 @@ const links = Astro.props.links;
         });
     }
     
+    // 清理函数 - 在页面转换时调用
+    function cleanup() {
+        // 清理初始化标记，允许重新初始化
+        const dropdowns = document.querySelectorAll('[data-mobile-dropdown]');
+        dropdowns.forEach(dropdown => {
+            delete dropdown.dataset.mobileDropdownInitialized;
+        });
+    }
+    
     // 使用统一的Swup处理器模式
-    function createSwupHandler(initFunction) {
+    function createSwupHandler(initFunction: () => void) {
         // 页面加载时初始化
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initFunction);
@@ -125,6 +138,9 @@ const links = Astro.props.links;
         if (typeof window !== 'undefined') {
             const setupSwup = () => {
                 if (window?.swup?.hooks) {
+                    // 页面转换前清理
+                    window.swup.hooks.on('content:replace', cleanup);
+                    // 页面转换后重新初始化
                     window.swup.hooks.on('page:view', initFunction);
                 }
             };
