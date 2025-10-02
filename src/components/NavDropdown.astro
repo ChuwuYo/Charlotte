@@ -105,13 +105,14 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             
             // 切换下拉框状态
             function toggleDropdown() {
-                isOpen = !isOpen;
-                if (isOpen) {
+                const shouldOpen = !isOpen;
+                // 切换前先关闭所有已打开的下拉菜单，确保只有一个菜单是打开的
+                document.dispatchEvent(new CustomEvent(CLOSE_DROPDOWN_EVENT));
+
+                if (shouldOpen) {
+                    isOpen = true;
                     panel?.classList.remove('float-panel-closed');
                     icon?.style.setProperty('transform', 'rotate(180deg)');
-                } else {
-                    panel?.classList.add('float-panel-closed');
-                    icon?.style.setProperty('transform', 'rotate(0deg)');
                 }
             }
             
