@@ -35,4 +35,12 @@ export const en: Translation = {
 	[Key.author]: "Author",
 	[Key.publishedAt]: "Published at",
 	[Key.license]: "License",
+
+	// 新增的翻译
+	[Key.projects]: "Projects",
+	[Key.projectsDescription]: "Project showcase",
+	[Key.introduction]: "Introduction",
+	[Key.websiteRuntimeText]: "We have been traveling together for",
+	[Key.allRightsReserved]: "All Rights Reserved.",
+	[Key.poweredBy]: "Powered by",
 };
