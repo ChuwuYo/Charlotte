@@ -45,7 +45,7 @@ function startUptimeTimer() {
 }
 
 // 使用统一的Swup处理器模式 (来自 src/utils/swup-utils.ts)
-function createSwupHandler(initFunction) {
+function createSwupHandler(initFunction: () => void) {
     // 页面加载时初始化
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initFunction);

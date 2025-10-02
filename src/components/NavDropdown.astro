@@ -1,17 +1,12 @@
 ---
 import { Icon } from "astro-icon/components";
 import { url } from "../utils/url-utils";
-
-interface DropdownItem {
-    name: string;
-    url: string;
-    external?: boolean;
-}
+import { type NavBarLink } from "../types/config";
 
 interface Props {
-    title: string;
-    items: DropdownItem[];
-    class?: string;
+	title: string;
+	items: NavBarLink[];
+	class?: string;
 }
 
 const { title, items, class: className } = Astro.props;
@@ -37,7 +32,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
     </button>
 
     <div 
-        class="hidden lg:block absolute transition float-panel-closed top-11 -right-2 pt-5"
+        class="absolute transition float-panel-closed top-11 -right-2 pt-5"
         data-dropdown-panel
     >
         <div class="card-base float-panel p-2">
@@ -60,23 +55,108 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
 <script>
 // 事件委托和作用域封装，避免全局污染
 (function() {
+    // 全局事件监听器管理
+    let globalListenersAdded = false;
+    
+    // 自定义事件：关闭所有下拉菜单
+    const CLOSE_DROPDOWN_EVENT = 'dropdown:close';
+    
+    function addGlobalListeners() {
+        if (globalListenersAdded) return;
+        
+        // 全局点击监听器 - 只添加一次
+        document.addEventListener('click', function(e) {
+            const clickedDropdown = e.target.closest('[data-dropdown-container]');
+            if (!clickedDropdown) {
+                // 点击了外部区域，关闭所有下拉菜单
+                document.dispatchEvent(new CustomEvent(CLOSE_DROPDOWN_EVENT));
+            }
+        });
+        
+        // 全局键盘监听器 - 只添加一次
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.dispatchEvent(new CustomEvent(CLOSE_DROPDOWN_EVENT));
+            }
+        });
+        
+        globalListenersAdded = true;
+    }
+    
     function initDropdown() {
+        // 确保全局监听器只添加一次
+        addGlobalListeners();
+        
         // 为所有下拉菜单容器添加事件监听器
         const dropdownContainers = document.querySelectorAll('[data-dropdown-container]');
         
         dropdownContainers.forEach(container => {
+            const trigger = container.querySelector('[data-dropdown-trigger]');
             const panel = container.querySelector('[data-dropdown-panel]');
-            if (!panel) return;
+            const icon = trigger?.querySelector('svg');
+            if (!panel || !trigger) return;
             
-            // 鼠标进入时显示面板
+            // 避免重复绑定
+            if (container.dataset.dropdownInitialized) return;
+            container.dataset.dropdownInitialized = 'true';
+            
+            let isOpen = false;
+            
+            // 切换下拉框状态
+            function toggleDropdown() {
+                isOpen = !isOpen;
+                if (isOpen) {
+                    panel.classList.remove('float-panel-closed');
+                    icon?.style.setProperty('transform', 'rotate(180deg)');
+                } else {
+                    panel.classList.add('float-panel-closed');
+                    icon?.style.setProperty('transform', 'rotate(0deg)');
+                }
+            }
+            
+            // 关闭下拉框
+            function closeDropdown() {
+                if (isOpen) {
+                    isOpen = false;
+                    panel.classList.add('float-panel-closed');
+                    icon?.style.setProperty('transform', 'rotate(0deg)');
+                }
+            }
+            
+            // 点击按钮切换下拉框
+            trigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleDropdown();
+            });
+            
+            // 桌面端：鼠标悬停显示（仅当未通过点击打开时）
             container.addEventListener('mouseenter', function() {
-                panel.classList.remove('float-panel-closed');
+                if (!isOpen) {
+                    panel.classList.remove('float-panel-closed');
+                    icon?.style.setProperty('transform', 'rotate(180deg)');
+                }
             });
             
-            // 鼠标离开时隐藏面板
+            // 桌面端：鼠标离开隐藏（仅当未通过点击打开时）
             container.addEventListener('mouseleave', function() {
-                panel.classList.add('float-panel-closed');
+                if (!isOpen) {
+                    panel.classList.add('float-panel-closed');
+                    icon?.style.setProperty('transform', 'rotate(0deg)');
+                }
             });
+            
+            // 监听自定义关闭事件
+            document.addEventListener(CLOSE_DROPDOWN_EVENT, closeDropdown);
+        });
+    }
+    
+    // 清理函数 - 在页面转换时调用
+    function cleanup() {
+        // 清理初始化标记，允许重新初始化
+        const containers = document.querySelectorAll('[data-dropdown-container]');
+        containers.forEach(container => {
+            delete container.dataset.dropdownInitialized;
         });
     }
     
@@ -93,6 +173,9 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
         if (typeof window !== 'undefined') {
             const setupSwup = () => {
                 if (window?.swup?.hooks) {
+                    // 页面转换前清理
+                    window.swup.hooks.on('content:replace', cleanup);
+                    // 页面转换后重新初始化
                     window.swup.hooks.on('page:view', initFunction);
                 }
             };
