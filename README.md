@@ -129,7 +129,7 @@ draft: false
 
 ## 🙏 致谢
 
-感谢以下项目与项目开发者们  
-[saicaca-Fuwari](https://github.com/saicaca/fuwari)  
-[afoim(二叉树树)-Fuwari](https://github.com/afoim/fuwari)  
-[yuki(松坂有希)-Mizuki](https://github.com/matsuzaka-yuki/Mizuki)
+感谢以下项目与项目开发者们：
+* [saicaca-Fuwari](https://github.com/saicaca/fuwari)
+* [afoim(二叉树树)-Fuwari](https://github.com/afoim/fuwari)
+* [yuki(松坂有希)-Mizuki](https://github.com/matsuzaka-yuki/Mizuki)
