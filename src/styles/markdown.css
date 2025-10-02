@@ -1,6 +1,6 @@
-@import './main.css';
+@import './main.css'; /* 避免Tailwind导入顺序导致的构建错误 */
 
-@tailwind components;
+@tailwind components; 
 
 .custom-md {
     h1 {
