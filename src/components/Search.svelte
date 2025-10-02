@@ -139,7 +139,7 @@ $: if (initialized && keywordMobile) {
 </script>
 
 <!-- search bar for desktop view -->
-<div id="search-bar" class="hidden lg:flex transition-all items-center h-11 mr-2 rounded-lg
+<div id="search-bar" class="search-container hidden lg:flex transition-all items-center h-11 mr-2 rounded-lg border border-transparent
       bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
       dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
 ">
@@ -161,7 +161,7 @@ $: if (initialized && keywordMobile) {
 top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
 
     <!-- search bar inside panel for phone/tablet -->
-    <div id="search-bar-inside" class="flex relative lg:hidden transition-all items-center h-11 rounded-xl
+    <div id="search-bar-inside" class="search-container flex relative lg:hidden transition-all items-center h-11 rounded-xl border border-transparent
       bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
       dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
   ">
@@ -190,6 +190,18 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
 <style>
   input:focus {
     outline: 0;
+  }
+  input {
+    caret-color: var(--primary);
+  }
+  .search-container {
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .search-container:hover,
+  .search-container:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
   }
   .search-panel {
     max-height: calc(100vh - 100px);
