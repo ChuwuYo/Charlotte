@@ -42,7 +42,7 @@ export function createSwupHandler(initFunction: () => void): void {
  */
 export const SWUP_HANDLER_TEMPLATE = `
 // 通用的Swup兼容初始化模式
-function createSwupHandler(initFunction) {
+function createSwupHandler(initFunction: () => void) {
     // 页面加载时初始化
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initFunction);
