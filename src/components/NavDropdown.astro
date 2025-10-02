@@ -41,6 +41,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
                     href={item.external ? item.url : url(item.url)} 
                     target={item.external ? "_blank" : null}
                     class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5 last:mb-0"
+                    data-dropdown-item
                 >
                     <span class="mr-3">{item.name}</span>
                     {item.external && (
@@ -148,6 +149,15 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             
             // 监听自定义关闭事件
             document.addEventListener(CLOSE_DROPDOWN_EVENT, closeDropdown);
+            
+            // 为下拉菜单项添加点击关闭逻辑
+            const dropdownItems = container.querySelectorAll('[data-dropdown-item]');
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 点击菜单项时关闭下拉菜单
+                    closeDropdown();
+                });
+            });
         });
     }
     
