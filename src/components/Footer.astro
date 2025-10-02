@@ -8,8 +8,51 @@ const currentYear = new Date().getFullYear();
 
 <!--<div class="border-t border-[var(&#45;&#45;primary)] mx-16 border-dashed py-8 max-w-[var(&#45;&#45;page-width)] flex flex-col items-center justify-center px-6">-->
 <div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
+
+<!-- Runtime网站运行计时 -->
+<script>
+function updateUptime() {
+    const start = new Date("2025-09-29T12:30:00");
+    const now = new Date();
+    const diff = now - start;
+    const days = Math.floor(diff / 1000 / 60 / 60 / 24);
+    const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
+    const minutes = Math.floor((diff / 1000 / 60) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+    const uptimeStr = `${days}天${hours}小时${minutes}分${seconds}秒`;
+    const uptimeElement = document.getElementById("uptime");
+    if (uptimeElement) {
+        uptimeElement.textContent = uptimeStr;
+    }
+}
+
+// 立即执行一次
+updateUptime();
+
+// 每秒更新一次
+setInterval(updateUptime, 1000);
+
+// 处理页面转换时的重新初始化
+const setup = () => {
+    if (window?.swup?.hooks) {
+        window.swup.hooks.on('page:view', () => {
+            updateUptime();
+            setInterval(updateUptime, 1000);
+        });
+    }
+}
+
+if (window.swup) {
+    setup();
+} else {
+    document.addEventListener('swup:enable', setup);
+}
+</script>
 <!--<div class="transition bg-[oklch(92%_0.01_var(&#45;&#45;hue))] dark:bg-black rounded-2xl py-8 mt-4 mb-8 flex flex-col items-center justify-center px-6">-->
 <div class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
+    <div class="transition text-50 text-sm text-center mb-2">
+        我们已经一起旅行了 <span id="uptime" class="text-[var(--primary)] font-medium">加载中...</span>
+    </div>
     <div class="transition text-50 text-sm text-center">
         &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. All Rights Reserved. /
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('rss.xml')}>RSS</a> /
