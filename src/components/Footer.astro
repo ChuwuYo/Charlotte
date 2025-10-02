@@ -1,9 +1,11 @@
 ---
 
 import { profileConfig } from "../config";
-import { url } from "../utils/url-utils";
-import { i18n } from "../i18n/translation";
+
 import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+
+import { url } from "../utils/url-utils";
 
 const currentYear = new Date().getFullYear();
 ---
@@ -14,12 +16,12 @@ const currentYear = new Date().getFullYear();
 <!-- Runtime网站运行计时 -->
 <script>
 // 存储定时器ID
-let uptimeInterval = null;
+let uptimeInterval: ReturnType<typeof setInterval> | null = null;
 
 function updateUptime() {
     const start = new Date("2025-09-29T12:30:00");
     const now = new Date();
-    const diff = now - start;
+    const diff = now.getTime() - start.getTime();
     const days = Math.floor(diff / 1000 / 60 / 60 / 24);
     const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
     const minutes = Math.floor((diff / 1000 / 60) % 60);

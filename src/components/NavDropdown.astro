@@ -1,7 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
-import { url } from "../utils/url-utils";
 import { type NavBarLink } from "../types/config";
+import { url } from "../utils/url-utils";
 
 interface Props {
 	title: string;
@@ -66,7 +66,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
         
         // 全局点击监听器 - 只添加一次
         document.addEventListener('click', function(e) {
-            const clickedDropdown = e.target.closest('[data-dropdown-container]');
+            const clickedDropdown = (e.target as Element)?.closest('[data-dropdown-container]');
             if (!clickedDropdown) {
                 // 点击了外部区域，关闭所有下拉菜单
                 document.dispatchEvent(new CustomEvent(CLOSE_DROPDOWN_EVENT));
@@ -97,8 +97,8 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             if (!panel || !trigger) return;
             
             // 避免重复绑定
-            if (container.dataset.dropdownInitialized) return;
-            container.dataset.dropdownInitialized = 'true';
+            if ((container as HTMLElement).dataset.dropdownInitialized) return;
+            (container as HTMLElement).dataset.dropdownInitialized = 'true';
             
             let isOpen = false;
             
@@ -106,10 +106,10 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             function toggleDropdown() {
                 isOpen = !isOpen;
                 if (isOpen) {
-                    panel.classList.remove('float-panel-closed');
+                    panel?.classList.remove('float-panel-closed');
                     icon?.style.setProperty('transform', 'rotate(180deg)');
                 } else {
-                    panel.classList.add('float-panel-closed');
+                    panel?.classList.add('float-panel-closed');
                     icon?.style.setProperty('transform', 'rotate(0deg)');
                 }
             }
@@ -118,7 +118,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             function closeDropdown() {
                 if (isOpen) {
                     isOpen = false;
-                    panel.classList.add('float-panel-closed');
+                    panel?.classList.add('float-panel-closed');
                     icon?.style.setProperty('transform', 'rotate(0deg)');
                 }
             }
@@ -133,7 +133,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             // 桌面端：鼠标悬停显示（仅当未通过点击打开时）
             container.addEventListener('mouseenter', function() {
                 if (!isOpen) {
-                    panel.classList.remove('float-panel-closed');
+                    panel?.classList.remove('float-panel-closed');
                     icon?.style.setProperty('transform', 'rotate(180deg)');
                 }
             });
@@ -141,7 +141,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             // 桌面端：鼠标离开隐藏（仅当未通过点击打开时）
             container.addEventListener('mouseleave', function() {
                 if (!isOpen) {
-                    panel.classList.add('float-panel-closed');
+                    panel?.classList.add('float-panel-closed');
                     icon?.style.setProperty('transform', 'rotate(0deg)');
                 }
             });
@@ -156,7 +156,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
         // 清理初始化标记，允许重新初始化
         const containers = document.querySelectorAll('[data-dropdown-container]');
         containers.forEach(container => {
-            delete container.dataset.dropdownInitialized;
+            delete (container as HTMLElement).dataset.dropdownInitialized;
         });
     }
     
