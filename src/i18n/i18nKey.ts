@@ -32,6 +32,14 @@ enum I18nKey {
 	author = "author",
 	publishedAt = "publishedAt",
 	license = "license",
+
+	// 新增的翻译键
+	projects = "projects",
+	projectsDescription = "projectsDescription",
+	introduction = "introduction",
+	websiteRuntimeText = "websiteRuntimeText",
+	allRightsReserved = "allRightsReserved",
+	poweredBy = "poweredBy",
 }
 
 export default I18nKey;
