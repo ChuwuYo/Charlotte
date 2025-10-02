@@ -1,1 +1,119 @@
- 
+---
+import { Icon } from "astro-icon/components";
+import { type NavBarLink } from "../types/config";
+import { url } from "../utils/url-utils";
+
+interface Props {
+	title: string;
+	items: NavBarLink[];
+	class?: string;
+}
+
+const { title, items, class: className } = Astro.props;
+const dropdownId = `dropdown-${title.toLowerCase()}`;
+---
+
+<!-- 事件委托避免全局函数 -->
+<div 
+    class={`relative z-50 ${className || ''}`} 
+    role="menu" 
+    tabindex="-1" 
+    id={dropdownId}
+    data-dropdown-container
+>
+    <button 
+        aria-label={`${title} Menu`} 
+        role="menuitem" 
+        class="relative btn-plain scale-animation rounded-lg h-11 font-bold px-5 active:scale-95 flex items-center gap-1" 
+        data-dropdown-trigger
+    >
+        {title}
+        <Icon name="material-symbols:keyboard-arrow-down-rounded" class="text-[1rem] transition-transform" />
+    </button>
+
+    <div 
+        class="absolute transition float-panel-closed top-11 -right-2 pt-5"
+        data-dropdown-panel
+    >
+        <div class="card-base float-panel p-2">
+            {items.map((item) => (
+                <a 
+                    href={item.external ? item.url : url(item.url)} 
+                    target={item.external ? "_blank" : null}
+                    class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5 last:mb-0"
+                    data-dropdown-item
+                >
+                    <span class="mr-3">{item.name}</span>
+                    {item.external && (
+                        <Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.875rem] transition -translate-y-[1px] ml-auto text-black/[0.2] dark:text-white/[0.2]" />
+                    )}
+                </a>
+            ))}
+        </div>
+    </div>
+</div>
+
+<script>
+// 事件委托和作用域封装，避免全局污染
+(function() {
+
+    
+    function initDropdown() {
+        // 为所有下拉菜单容器添加事件监听器
+        const dropdownContainers = document.querySelectorAll('[data-dropdown-container]');
+        
+        dropdownContainers.forEach(container => {
+            const trigger = container.querySelector('[data-dropdown-trigger]');
+            const panel = container.querySelector('[data-dropdown-panel]');
+            const icon = trigger?.querySelector('svg');
+            if (!panel || !trigger) return;
+            
+            // 避免重复绑定
+            if ((container as HTMLElement).dataset.dropdownInitialized) return;
+            (container as HTMLElement).dataset.dropdownInitialized = 'true';
+            
+            // 鼠标悬停显示
+            container.addEventListener('mouseenter', function() {
+                panel?.classList.remove('float-panel-closed');
+                icon?.style.setProperty('transform', 'rotate(180deg)');
+            });
+            
+            // 鼠标离开隐藏
+            container.addEventListener('mouseleave', function() {
+                panel?.classList.add('float-panel-closed');
+                icon?.style.setProperty('transform', 'rotate(0deg)');
+            });
+        });
+    }
+    
+
+    
+    // 使用统一的Swup处理器模式 (来自 src/utils/swup-utils.ts)
+    function createSwupHandler(initFunction: () => void) {
+        // 页面加载时初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFunction);
+        } else {
+            initFunction();
+        }
+        
+        // 处理 Swup 页面转换
+        if (typeof window !== 'undefined') {
+            const setupSwup = () => {
+                if (window?.swup?.hooks) {
+                    window.swup.hooks.on('page:view', initFunction);
+                }
+            };
+            
+            if (window.swup) {
+                setupSwup();
+            } else {
+                document.addEventListener('swup:enable', setupSwup);
+            }
+        }
+    }
+    
+    // 使用统一的处理器
+    createSwupHandler(initDropdown);
+})();
+</script>
