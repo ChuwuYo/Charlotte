@@ -11,6 +11,9 @@ const currentYear = new Date().getFullYear();
 
 <!-- Runtime网站运行计时 -->
 <script>
+// 存储定时器ID
+let uptimeInterval = null;
+
 function updateUptime() {
     const start = new Date("2025-09-29T12:30:00");
     const now = new Date();
@@ -26,18 +29,27 @@ function updateUptime() {
     }
 }
 
-// 立即执行一次
-updateUptime();
+function startUptimeTimer() {
+    // 清理之前的定时器
+    if (uptimeInterval) {
+        clearInterval(uptimeInterval);
+    }
+    
+    // 立即执行一次
+    updateUptime();
+    
+    // 每秒更新一次，并存储定时器ID
+    uptimeInterval = setInterval(updateUptime, 1000);
+}
 
-// 每秒更新一次
-setInterval(updateUptime, 1000);
+// 页面加载时启动定时器
+startUptimeTimer();
 
 // 处理页面转换时的重新初始化
 const setup = () => {
     if (window?.swup?.hooks) {
         window.swup.hooks.on('page:view', () => {
-            updateUptime();
-            setInterval(updateUptime, 1000);
+            startUptimeTimer();
         });
     }
 }
@@ -47,6 +59,14 @@ if (window.swup) {
 } else {
     document.addEventListener('swup:enable', setup);
 }
+
+// 页面卸载时清理定时器
+window.addEventListener('beforeunload', () => {
+    if (uptimeInterval) {
+        clearInterval(uptimeInterval);
+        uptimeInterval = null;
+    }
+});
 </script>
 <!--<div class="transition bg-[oklch(92%_0.01_var(&#45;&#45;hue))] dark:bg-black rounded-2xl py-8 mt-4 mb-8 flex flex-col items-center justify-center px-6">-->
 <div class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">

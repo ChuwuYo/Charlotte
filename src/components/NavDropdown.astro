@@ -18,13 +18,13 @@ const { title, items, class: className } = Astro.props;
 ---
 
 <!-- 完全模仿 LightDarkSwitch 的结构和样式 -->
-<div class={`relative z-50 ${className || ''}`} role="menu" tabindex="-1" onmouseleave="hideAboutPanel()">
+<div class={`relative z-50 ${className || ''}`} role="menu" tabindex="-1" onmouseleave={`hide${title}Panel()`}>
     <button 
         aria-label={`${title} Menu`} 
         role="menuitem" 
         class="relative btn-plain scale-animation rounded-lg h-11 font-bold px-5 active:scale-95 flex items-center gap-1" 
         id={`${title}-menu-switch`}
-        onmouseenter="showAboutPanel()"
+        onmouseenter={`show${title}Panel()`}
     >
         {title}
         <Icon name="material-symbols:keyboard-arrow-down-rounded" class="text-[1rem] transition-transform" />
@@ -51,24 +51,38 @@ const { title, items, class: className } = Astro.props;
     </div>
 </div>
 
-<script>
-function showAboutPanel() {
-    const panel = document.querySelector("#关于-menu-panel") || document.querySelector("#about-menu-panel");
+<script define:vars={{ title }}>
+function showDropdownPanel(menuTitle) {
+    const panel = document.querySelector(`#${menuTitle}-menu-panel`);
     if (panel) {
         panel.classList.remove('float-panel-closed');
     }
 }
 
-function hideAboutPanel() {
-    const panel = document.querySelector("#关于-menu-panel") || document.querySelector("#about-menu-panel");
+function hideDropdownPanel(menuTitle) {
+    const panel = document.querySelector(`#${menuTitle}-menu-panel`);
     if (panel) {
         panel.classList.add('float-panel-closed');
     }
 }
 
+// 为当前组件创建特定的函数
+const currentTitle = title;
+function showCurrentPanel() {
+    showDropdownPanel(currentTitle);
+}
+
+function hideCurrentPanel() {
+    hideDropdownPanel(currentTitle);
+}
+
 // 确保函数在全局可用
 if (typeof window !== 'undefined') {
-    window.showAboutPanel = showAboutPanel;
-    window.hideAboutPanel = hideAboutPanel;
+    window[`show${currentTitle}Panel`] = showCurrentPanel;
+    window[`hide${currentTitle}Panel`] = hideCurrentPanel;
+    
+    // 通用函数也暴露到全局，供其他组件使用
+    window.showDropdownPanel = showDropdownPanel;
+    window.hideDropdownPanel = hideDropdownPanel;
 }
 </script>
