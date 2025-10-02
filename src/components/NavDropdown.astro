@@ -1,0 +1,74 @@
+---
+import { Icon } from "astro-icon/components";
+import { url } from "../utils/url-utils";
+
+interface DropdownItem {
+    name: string;
+    url: string;
+    external?: boolean;
+}
+
+interface Props {
+    title: string;
+    items: DropdownItem[];
+    class?: string;
+}
+
+const { title, items, class: className } = Astro.props;
+---
+
+<!-- 完全模仿 LightDarkSwitch 的结构和样式 -->
+<div class={`relative z-50 ${className || ''}`} role="menu" tabindex="-1" onmouseleave="hideAboutPanel()">
+    <button 
+        aria-label={`${title} Menu`} 
+        role="menuitem" 
+        class="relative btn-plain scale-animation rounded-lg h-11 font-bold px-5 active:scale-95 flex items-center gap-1" 
+        id={`${title}-menu-switch`}
+        onmouseenter="showAboutPanel()"
+    >
+        {title}
+        <Icon name="material-symbols:keyboard-arrow-down-rounded" class="text-[1rem] transition-transform" />
+    </button>
+
+    <div 
+        id={`${title}-menu-panel`} 
+        class="hidden lg:block absolute transition float-panel-closed top-11 -right-2 pt-5"
+    >
+        <div class="card-base float-panel p-2">
+            {items.map((item) => (
+                <a 
+                    href={item.external ? item.url : url(item.url)} 
+                    target={item.external ? "_blank" : null}
+                    class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5 last:mb-0"
+                >
+                    <span class="mr-3">{item.name}</span>
+                    {item.external && (
+                        <Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.875rem] transition -translate-y-[1px] ml-auto text-black/[0.2] dark:text-white/[0.2]" />
+                    )}
+                </a>
+            ))}
+        </div>
+    </div>
+</div>
+
+<script>
+function showAboutPanel() {
+    const panel = document.querySelector("#关于-menu-panel") || document.querySelector("#about-menu-panel");
+    if (panel) {
+        panel.classList.remove('float-panel-closed');
+    }
+}
+
+function hideAboutPanel() {
+    const panel = document.querySelector("#关于-menu-panel") || document.querySelector("#about-menu-panel");
+    if (panel) {
+        panel.classList.add('float-panel-closed');
+    }
+}
+
+// 确保函数在全局可用
+if (typeof window !== 'undefined') {
+    window.showAboutPanel = showAboutPanel;
+    window.hideAboutPanel = hideAboutPanel;
+}
+</script>
