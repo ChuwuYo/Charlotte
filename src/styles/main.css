@@ -119,6 +119,16 @@
     }
 }
 
+/* Banner稳定性优化 - 防止加载时的位置跳跃 */
+.enable-banner #banner {
+    will-change: transform, opacity;
+}
+
+/* 确保CSS变量有默认值 */
+:root {
+    --banner-height-extend: 0px;
+}
+
 /* Post Card封面图片悬停放大效果 */
 .post-card-cover img {
     @apply transition;
