@@ -76,6 +76,8 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
     
     // 存储每个下拉菜单的状态
     const dropdownStates = new WeakMap<HTMLElement, DropdownState>();
+    // 跟踪处于pinned状态的菜单
+    const pinnedContainers = new Set<HTMLElement>();
     
     /**
      * 获取下拉菜单的当前状态
@@ -100,6 +102,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             container.classList.remove('is-open', 'is-pinned');
             panel.classList.add('float-panel-closed');
             (trigger as HTMLElement).setAttribute('aria-expanded', 'false');
+            pinnedContainers.delete(container);
         } else {
             container.classList.add('is-open');
             panel.classList.remove('float-panel-closed');
@@ -108,8 +111,10 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             // 固定状态添加特殊类名以保持悬停样式
             if (state === 'pinned') {
                 container.classList.add('is-pinned');
+                pinnedContainers.add(container);
             } else {
                 container.classList.remove('is-pinned');
+                pinnedContainers.delete(container);
             }
         }
     }
@@ -191,7 +196,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
                 });
             });
             
-            // 键盘导航支持
+            // 基本键盘支持
             trigger.addEventListener('keydown', (e) => {
                 const keyEvent = e as KeyboardEvent;
                 const currentState = getState(container as HTMLElement);
@@ -200,14 +205,11 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
                     keyEvent.preventDefault();
                     keyEvent.stopPropagation();
                     
-                    // 只有非固定状态才响应 Enter/Space
                     if (currentState !== 'pinned') {
-                        // 关闭或悬停状态 → 固定
                         closeOthers(container as HTMLElement);
                         setState(container as HTMLElement, 'pinned');
                     }
                 } else if (keyEvent.key === 'Escape') {
-                    // Escape 总是关闭
                     setState(container as HTMLElement, 'closed');
                 }
             });
@@ -218,12 +220,9 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
      * 点击外部区域：关闭固定状态的菜单
      */
     function handleOutsideClick(e: MouseEvent) {
-        document.querySelectorAll('[data-dropdown-container]').forEach(container => {
-            const state = getState(container as HTMLElement);
-            
-            if (state === 'pinned' && !container.contains(e.target as Node)) {
-                // 点击外部关闭固定的菜单
-                setState(container as HTMLElement, 'closed');
+        pinnedContainers.forEach(container => {
+            if (!container.contains(e.target as Node)) {
+                setState(container, 'closed');
             }
         });
     }
@@ -241,6 +240,9 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             setState(container as HTMLElement, 'closed');
             delete (container as HTMLElement).dataset.dropdownInitialized;
         });
+        
+        // 清空pinned容器集合
+        pinnedContainers.clear();
     }
 
     /**
