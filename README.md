@@ -45,6 +45,12 @@ pnpm preview
 pnpm astro check
 ```
 
+### Biome 格式检查
+
+```bash
+pnpm run format
+```
+
 ## 📝 使用指南
 
 ### 创建新文章

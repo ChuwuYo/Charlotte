@@ -13,7 +13,10 @@ const { title, items, class: className } = Astro.props;
 const dropdownId = `dropdown-${title.toLowerCase()}`;
 ---
 
-<div class={`relative z-50 ${className || ''}`} data-dropdown-container>
+<div 
+    class={`relative z-50 ${className || ''}`} 
+    data-dropdown-container
+>
     <button 
         aria-label={`${title} Menu`} 
         aria-haspopup="true"
@@ -52,69 +55,98 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
     </div>
 </div>
 
-<script>
-// 事件委托和作用域封装，避免全局污染
-(function() {
-
+<style>
+    [data-dropdown-container].is-pinned [data-dropdown-trigger] {
+        background-color: var(--btn-plain-bg-hover);
+    }
     
-    function initDropdown() {
-        // 为所有下拉菜单容器添加事件监听器
-        const dropdownContainers = document.querySelectorAll('[data-dropdown-container]');
-        
-        dropdownContainers.forEach(container => {
-            const trigger = container.querySelector('[data-dropdown-trigger]');
-            const panel = container.querySelector('[data-dropdown-panel]');
-            const icon = trigger?.querySelector('svg');
-            if (!panel || !trigger) return;
-            
-            // 避免重复绑定
-            if ((container as HTMLElement).dataset.dropdownInitialized) return;
-            (container as HTMLElement).dataset.dropdownInitialized = 'true';
-            
-            // 鼠标悬停显示
-            container.addEventListener('mouseenter', function() {
-                panel?.classList.remove('float-panel-closed');
-                (icon as SVGElement)?.style.setProperty('transform', 'rotate(180deg)');
-                (trigger as HTMLElement)?.setAttribute('aria-expanded', 'true');
-            });
-            
-            // 鼠标离开隐藏
-            container.addEventListener('mouseleave', function() {
-                panel?.classList.add('float-panel-closed');
-                (icon as SVGElement)?.style.setProperty('transform', 'rotate(0deg)');
-                (trigger as HTMLElement)?.setAttribute('aria-expanded', 'false');
+    [data-dropdown-container].is-open [data-dropdown-trigger] svg {
+        transform: rotate(180deg);
+    }
+</style>
+
+<script>
+// 下拉菜单初始化
+function initDropdown() {
+    document.querySelectorAll('[data-dropdown-container]').forEach(container => {
+        // 防重复初始化
+        if ((container as HTMLElement).dataset.init) return;
+        (container as HTMLElement).dataset.init = 'true';
+
+        const trigger = container.querySelector('[data-dropdown-trigger]');
+        const panel = container.querySelector('[data-dropdown-panel]');
+
+        if (!panel || !trigger) return;
+
+        // 点击切换菜单
+        trigger.addEventListener('click', (e) => {
+            e?.stopPropagation();
+
+            const isPinned = container.classList.contains('is-pinned');
+            const newState = !isPinned;
+
+            // 更新DOM状态
+            if (newState) {
+                panel.classList.remove('float-panel-closed');
+                (trigger as HTMLElement).setAttribute('aria-expanded', 'true');
+                container.classList.add('is-pinned', 'is-open');
+            } else {
+                panel.classList.add('float-panel-closed');
+                (trigger as HTMLElement).setAttribute('aria-expanded', 'false');
+                container.classList.remove('is-pinned', 'is-open');
+            }
+        });
+
+        // 悬停显示（仅当未固定时）
+        container.addEventListener('mouseenter', () => {
+            if (!container.classList.contains('is-pinned')) {
+                panel.classList.remove('float-panel-closed');
+                container.classList.add('is-open');
+            }
+        });
+
+        // 鼠标离开隐藏（仅当未固定时）
+        container.addEventListener('mouseleave', () => {
+            if (!container.classList.contains('is-pinned')) {
+                panel.classList.add('float-panel-closed');
+                container.classList.remove('is-open');
+            }
+        });
+
+        // 点击菜单项关闭菜单
+        panel.querySelectorAll('[data-dropdown-item]').forEach(item => {
+            item.addEventListener('click', () => {
+                panel.classList.add('float-panel-closed');
+                (trigger as HTMLElement).setAttribute('aria-expanded', 'false');
+                container.classList.remove('is-pinned', 'is-open');
             });
         });
-    }
-    
+    });
+}
 
-    
-    // 使用统一的Swup处理器模式 (来自 src/utils/swup-utils.ts)
-    function createSwupHandler(initFunction: () => void) {
-        // 页面加载时初始化
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initFunction);
-        } else {
-            initFunction();
-        }
-        
-        // 处理 Swup 页面转换
-        if (typeof window !== 'undefined') {
-            const setupSwup = () => {
-                if (window?.swup?.hooks) {
-                    window.swup.hooks.on('page:view', initFunction);
-                }
-            };
-            
-            if (window.swup) {
-                setupSwup();
-            } else {
-                document.addEventListener('swup:enable', setupSwup);
-            }
-        }
+// 点击外部关闭菜单（使用现代DOM API）
+document.addEventListener('click', (e) => {
+    if (!(e.target as Element)?.closest('[data-dropdown-container]')) {
+        document.querySelectorAll('[data-dropdown-container]').forEach(container => {
+            const panel = container.querySelector('[data-dropdown-panel]');
+            const trigger = container.querySelector('[data-dropdown-trigger]');
+
+            panel?.classList.add('float-panel-closed');
+            (trigger as HTMLElement)?.setAttribute('aria-expanded', 'false');
+            container.classList.remove('is-pinned', 'is-open');
+        });
     }
-    
-    // 使用统一的处理器
-    createSwupHandler(initDropdown);
-})();
+});
+
+// 页面加载完成后初始化
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDropdown);
+} else {
+    initDropdown();
+}
+
+// Swup页面切换时重新初始化
+if (window.swup?.hooks) {
+    window.swup.hooks.on('page:view', initDropdown);
+}
 </script>
