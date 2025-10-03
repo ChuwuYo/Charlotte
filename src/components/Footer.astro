@@ -15,17 +15,19 @@ const currentYear = new Date().getFullYear();
 
 <!-- Runtime网站运行计时 -->
 <script>
-// 存储定时器ID
+// 网站运行时间计数器
 let uptimeInterval: ReturnType<typeof setInterval> | null = null;
 
 function updateUptime() {
     const start = new Date("2025-09-29T12:30:00");
     const now = new Date();
     const diff = now.getTime() - start.getTime();
+
     const days = Math.floor(diff / 1000 / 60 / 60 / 24);
     const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
     const minutes = Math.floor((diff / 1000 / 60) % 60);
     const seconds = Math.floor((diff / 1000) % 60);
+
     const uptimeStr = `${days}天${hours}小时${minutes}分${seconds}秒`;
     const uptimeElement = document.getElementById("uptime");
     if (uptimeElement) {
@@ -33,48 +35,29 @@ function updateUptime() {
     }
 }
 
+// 启动定时器
 function startUptimeTimer() {
-    // 清理之前的定时器
-    if (uptimeInterval) {
-        clearInterval(uptimeInterval);
-    }
-    
-    // 立即执行一次
+    if (uptimeInterval) clearInterval(uptimeInterval);
     updateUptime();
-    
-    // 每秒更新一次，并存储定时器ID
     uptimeInterval = setInterval(updateUptime, 1000);
 }
 
-// 使用统一的Swup处理器模式 (来自 src/utils/swup-utils.ts)
-function createSwupHandler(initFunction: () => void) {
-    // 页面加载时初始化
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initFunction);
-    } else {
-        initFunction();
-    }
-    
-    // 处理 Swup 页面转换
-    if (typeof window !== 'undefined') {
-        const setupSwup = () => {
-            if (window?.swup?.hooks) {
-                window.swup.hooks.on('page:view', initFunction);
-            }
-        };
-        
-        if (window.swup) {
-            setupSwup();
-        } else {
-            document.addEventListener('swup:enable', setupSwup);
-        }
-    }
+// 页面加载完成后启动
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startUptimeTimer);
+} else {
+    startUptimeTimer();
 }
 
-// 使用统一的处理器
-createSwupHandler(startUptimeTimer);
+// Swup页面切换时重启定时器
+if (window.swup?.hooks) {
+    window.swup.hooks.on('page:view', () => {
+        if (uptimeInterval) clearInterval(uptimeInterval);
+        startUptimeTimer();
+    });
+}
 
-// 页面卸载时清理定时器
+// 页面卸载时清理
 window.addEventListener('beforeunload', () => {
     if (uptimeInterval) {
         clearInterval(uptimeInterval);

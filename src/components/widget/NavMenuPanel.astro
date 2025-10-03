@@ -74,86 +74,69 @@ const links = Astro.props.links;
 </div>
 
 <script>
-// 移动端下拉菜单功能
-(function() {
-    function initMobileDropdowns() {
-        const dropdowns = document.querySelectorAll('[data-mobile-dropdown]');
-        
-        dropdowns.forEach(dropdown => {
-            const trigger = dropdown.querySelector('[data-mobile-dropdown-trigger]');
-            const content = dropdown.querySelector('[data-mobile-dropdown-content]');
-            const icon = dropdown.querySelector('[data-mobile-dropdown-icon]');
-            
-            if (!trigger || !content || !icon) return;
-            
-            // 避免重复绑定
-            if ((dropdown as HTMLElement).dataset.mobileDropdownInitialized) return;
-            (dropdown as HTMLElement).dataset.mobileDropdownInitialized = 'true';
-            
-            let isOpen = false;
-            
-            // 切换下拉菜单状态
-            function toggleDropdown() {
-                isOpen = !isOpen;
-                
-                if (isOpen) {
-                    // 展开：设置最大高度并旋转图标（向上）
-                    (content as HTMLElement).style.maxHeight = (content as HTMLElement).scrollHeight + 'px';
-                    (icon as SVGElement).style.transform = 'rotate(180deg)';
-                } else {
-                    // 收起：重置高度并恢复图标（向下）
-                    (content as HTMLElement).style.maxHeight = '0px';
-                    (icon as SVGElement).style.transform = 'rotate(0deg)';
-                }
-            }
-            
-            // 点击触发器切换状态
-            trigger.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleDropdown();
-            });
-        });
-    }
-    
-    // 清理函数 - 在页面转换时调用
-    function cleanup() {
-        // 清理初始化标记，允许重新初始化
-        const dropdowns = document.querySelectorAll('[data-mobile-dropdown]');
-        dropdowns.forEach(dropdown => {
-            delete (dropdown as HTMLElement).dataset.mobileDropdownInitialized;
-        });
-    }
-    
-    // 使用统一的Swup处理器模式
-    function createSwupHandler(initFunction: () => void) {
-        // 页面加载时初始化
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initFunction);
-        } else {
-            initFunction();
-        }
-        
-        // 处理 Swup 页面转换
-        if (typeof window !== 'undefined') {
-            const setupSwup = () => {
-                if (window?.swup?.hooks) {
-                    // 页面转换前清理
-                    window.swup.hooks.on('content:replace', cleanup);
-                    // 页面转换后重新初始化
-                    window.swup.hooks.on('page:view', initFunction);
-                }
-            };
-            
-            if (window.swup) {
-                setupSwup();
-            } else {
-                document.addEventListener('swup:enable', setupSwup);
-            }
-        }
-    }
-    
-    // 初始化移动端下拉菜单
-    createSwupHandler(initMobileDropdowns);
-})();
+ // 移动端下拉菜单功能
+ function initMobileDropdowns() {
+     document.querySelectorAll('[data-mobile-dropdown]').forEach(dropdown => {
+         // 防重复初始化
+         if ((dropdown as HTMLElement).dataset.init) return;
+         (dropdown as HTMLElement).dataset.init = 'true';
+
+         const trigger = dropdown.querySelector('[data-mobile-dropdown-trigger]');
+         const content = dropdown.querySelector('[data-mobile-dropdown-content]');
+         const icon = dropdown.querySelector('[data-mobile-dropdown-icon]');
+
+         if (!trigger || !content || !icon) return;
+
+         // 点击切换菜单
+         trigger.addEventListener('click', (e) => {
+             e?.preventDefault();
+             e?.stopPropagation();
+
+             const isOpen = (content as HTMLElement).style.maxHeight !== '0px';
+
+             if (isOpen) {
+                 // 收起菜单
+                 (content as HTMLElement).style.maxHeight = '0px';
+                 (icon as SVGElement).style.transform = 'rotate(0deg)';
+             } else {
+                 // 展开菜单
+                 (content as HTMLElement).style.maxHeight = (content as HTMLElement).scrollHeight + 'px';
+                 (icon as SVGElement).style.transform = 'rotate(180deg)';
+             }
+         });
+     });
+ }
+
+ // 点击外部关闭所有菜单
+ document.addEventListener('click', (e) => {
+     if (!(e.target as Element)?.closest('[data-mobile-dropdown]')) {
+         document.querySelectorAll('[data-mobile-dropdown-content]').forEach(content => {
+             (content as HTMLElement).style.maxHeight = '0px';
+         });
+         document.querySelectorAll('[data-mobile-dropdown-icon]').forEach(icon => {
+             (icon as SVGElement).style.transform = 'rotate(0deg)';
+         });
+     }
+ });
+
+ // 页面加载完成后初始化
+ if (document.readyState === 'loading') {
+     document.addEventListener('DOMContentLoaded', initMobileDropdowns);
+ } else {
+     initMobileDropdowns();
+ }
+
+ // Swup页面切换时重新初始化
+ if (window.swup?.hooks) {
+     window.swup.hooks.on('page:view', () => {
+         // 重置所有菜单状态后重新初始化
+         document.querySelectorAll('[data-mobile-dropdown-content]').forEach(content => {
+             (content as HTMLElement).style.maxHeight = '0px';
+         });
+         document.querySelectorAll('[data-mobile-dropdown-icon]').forEach(icon => {
+             (icon as SVGElement).style.transform = 'rotate(0deg)';
+         });
+         initMobileDropdowns();
+     });
+ }
 </script>
