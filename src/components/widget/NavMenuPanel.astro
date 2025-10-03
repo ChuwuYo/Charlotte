@@ -99,11 +99,11 @@ const links = Astro.props.links;
                 if (isOpen) {
                     // 展开：设置最大高度并旋转图标（向上）
                     (content as HTMLElement).style.maxHeight = (content as HTMLElement).scrollHeight + 'px';
-                    (icon as unknown as HTMLElement).style.transform = 'rotate(180deg)';
+                    (icon as SVGElement).style.transform = 'rotate(180deg)';
                 } else {
                     // 收起：重置高度并恢复图标（向下）
                     (content as HTMLElement).style.maxHeight = '0px';
-                    (icon as unknown as HTMLElement).style.transform = 'rotate(0deg)';
+                    (icon as SVGElement).style.transform = 'rotate(0deg)';
                 }
             }
             

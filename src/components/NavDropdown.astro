@@ -74,14 +74,14 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             // 鼠标悬停显示
             container.addEventListener('mouseenter', function() {
                 panel?.classList.remove('float-panel-closed');
-                (icon as unknown as HTMLElement)?.style.setProperty('transform', 'rotate(180deg)');
+                (icon as SVGElement)?.style.setProperty('transform', 'rotate(180deg)');
                 (trigger as HTMLElement)?.setAttribute('aria-expanded', 'true');
             });
             
             // 鼠标离开隐藏
             container.addEventListener('mouseleave', function() {
                 panel?.classList.add('float-panel-closed');
-                (icon as unknown as HTMLElement)?.style.setProperty('transform', 'rotate(0deg)');
+                (icon as SVGElement)?.style.setProperty('transform', 'rotate(0deg)');
                 (trigger as HTMLElement)?.setAttribute('aria-expanded', 'false');
             });
         });
