@@ -87,8 +87,8 @@ const links = Astro.props.links;
             if (!trigger || !content || !icon) return;
             
             // 避免重复绑定
-            if (dropdown.dataset.mobileDropdownInitialized) return;
-            dropdown.dataset.mobileDropdownInitialized = 'true';
+            if ((dropdown as HTMLElement).dataset.mobileDropdownInitialized) return;
+            (dropdown as HTMLElement).dataset.mobileDropdownInitialized = 'true';
             
             let isOpen = false;
             
@@ -98,12 +98,12 @@ const links = Astro.props.links;
                 
                 if (isOpen) {
                     // 展开：设置最大高度并旋转图标（向上）
-                    content.style.maxHeight = content.scrollHeight + 'px';
-                    icon.style.transform = 'rotate(180deg)';
+                    (content as HTMLElement).style.maxHeight = (content as HTMLElement).scrollHeight + 'px';
+                    (icon as unknown as HTMLElement).style.transform = 'rotate(180deg)';
                 } else {
                     // 收起：重置高度并恢复图标（向下）
-                    content.style.maxHeight = '0px';
-                    icon.style.transform = 'rotate(0deg)';
+                    (content as HTMLElement).style.maxHeight = '0px';
+                    (icon as unknown as HTMLElement).style.transform = 'rotate(0deg)';
                 }
             }
             
@@ -121,7 +121,7 @@ const links = Astro.props.links;
         // 清理初始化标记，允许重新初始化
         const dropdowns = document.querySelectorAll('[data-mobile-dropdown]');
         dropdowns.forEach(dropdown => {
-            delete dropdown.dataset.mobileDropdownInitialized;
+            delete (dropdown as HTMLElement).dataset.mobileDropdownInitialized;
         });
     }
     
