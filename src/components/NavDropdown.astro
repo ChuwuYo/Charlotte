@@ -16,14 +16,13 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
 <!-- 事件委托避免全局函数 -->
 <div 
     class={`relative z-50 ${className || ''}`} 
-    role="menu" 
-    tabindex="-1" 
-    id={dropdownId}
     data-dropdown-container
 >
     <button 
         aria-label={`${title} Menu`} 
-        role="menuitem" 
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls={dropdownId}
         class="relative btn-plain scale-animation rounded-lg h-11 font-bold px-5 active:scale-95 flex items-center gap-1" 
         data-dropdown-trigger
     >
@@ -32,6 +31,8 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
     </button>
 
     <div 
+        id={dropdownId}
+        role="menu"
         class="absolute transition float-panel-closed top-11 -right-2 pt-5"
         data-dropdown-panel
     >
@@ -40,6 +41,8 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
                 <a 
                     href={item.external ? item.url : url(item.url)} 
                     target={item.external ? "_blank" : null}
+                    role="menuitem"
+                    tabindex="-1"
                     class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5 last:mb-0"
                     data-dropdown-item
                 >
@@ -189,7 +192,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
             });
             
             // 键盘导航支持
-            trigger.addEventListener('keydown', (e: Event) => {
+            trigger.addEventListener('keydown', (e) => {
                 const keyEvent = e as KeyboardEvent;
                 const currentState = getState(container as HTMLElement);
                 
@@ -244,9 +247,6 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
      * 初始化函数：设置下拉菜单和全局监听器
      */
     function init() {
-        // 先清理旧的监听器（防止重复绑定）
-        cleanup();
-        
         // 初始化下拉菜单
         initDropdown();
         
