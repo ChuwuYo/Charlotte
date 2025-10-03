@@ -39,6 +39,12 @@ pnpm build
 pnpm preview
 ```
 
+### Typescript 错误检查
+
+```bash
+pnpm astro check
+```
+
 ## 📝 使用指南
 
 ### 创建新文章
