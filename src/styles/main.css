@@ -37,8 +37,8 @@
     .btn-card.disabled {
         @apply pointer-events-none text-black/10 dark:text-white/10
     }
-    .btn-card.opacity-50 {
-        @apply text-black/30 dark:text-white/30
+    .btn-card-disabled {
+        @apply text-black/30 dark:text-white/30 cursor-not-allowed opacity-50;
     }
     .btn-plain {
         @apply transition relative flex items-center justify-center bg-none
