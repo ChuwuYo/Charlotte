@@ -26,8 +26,8 @@ export const zh_CN: Translation = {
 
 	[Key.themeColor]: "主题色",
 	[Key.cardBackgroundColor]: "卡片背景色",
-	[Key.cardBackgroundSolid]: "纯白色",
-	[Key.cardBackgroundGradient]: "主题色",
+	[Key.cardBackgroundWhite]: "纯白色",
+	[Key.cardBackgroundThemed]: "主题色",
 
 	[Key.lightMode]: "亮色",
 	[Key.darkMode]: "暗色",

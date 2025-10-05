@@ -26,8 +26,8 @@ export const en: Translation = {
 
 	[Key.themeColor]: "Theme Color",
 	[Key.cardBackgroundColor]: "Card Background Color",
-	[Key.cardBackgroundSolid]: "White",
-	[Key.cardBackgroundGradient]: "Theme Color",
+	[Key.cardBackgroundWhite]: "White",
+	[Key.cardBackgroundThemed]: "Theme Color",
 
 	[Key.lightMode]: "Light",
 	[Key.darkMode]: "Dark",

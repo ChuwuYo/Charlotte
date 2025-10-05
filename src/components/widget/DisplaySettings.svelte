@@ -1,19 +1,20 @@
 <script lang="ts">
+import Icon from "@iconify/svelte";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import Icon from "@iconify/svelte";
 import {
+	CARD_BG_TYPE,
+	getCardBgType,
 	getDefaultHue,
 	getHue,
-	setHue,
-	getCardBgType,
 	setCardBgType,
+	setHue,
 } from "@utils/setting-utils";
 
 let hue = getHue();
 const defaultHue = getDefaultHue();
 
-// 卡片背景色类型：0 表示纯白色，1 表示主题色影响
+// 卡片背景色类型：纯白色或主题色影响
 let cardBgType = getCardBgType();
 
 function resetHue() {
@@ -28,10 +29,7 @@ $: if (hue || hue === 0) {
 	setHue(hue);
 }
 
-$: if (
-	typeof cardBgType === "number" &&
-	(cardBgType === 0 || cardBgType === 1)
-) {
+$: if (cardBgType === CARD_BG_TYPE.WHITE || cardBgType === CARD_BG_TYPE.THEMED) {
 	setCardBgType(cardBgType);
 }
 </script>
@@ -72,12 +70,12 @@ $: if (
     <!-- 卡片背景色选择器 -->
     <div class="radio-inputs mt-3">
         <label class="radio">
-            <input type="radio" name="card-bg-type" value="0" checked={cardBgType === 0} on:change={() => switchCardBgType(0)}>
-            <span class="name">{i18n(I18nKey.cardBackgroundSolid)}</span>
+            <input type="radio" name="card-bg-type" value="0" checked={cardBgType === CARD_BG_TYPE.WHITE} on:change={() => switchCardBgType(CARD_BG_TYPE.WHITE)}>
+            <span class="name">{i18n(I18nKey.cardBackgroundWhite)}</span>
         </label>
         <label class="radio">
-            <input type="radio" name="card-bg-type" value="1" checked={cardBgType === 1} on:change={() => switchCardBgType(1)}>
-            <span class="name">{i18n(I18nKey.cardBackgroundGradient)}</span>
+            <input type="radio" name="card-bg-type" value="1" checked={cardBgType === CARD_BG_TYPE.THEMED} on:change={() => switchCardBgType(CARD_BG_TYPE.THEMED)}>
+            <span class="name">{i18n(I18nKey.cardBackgroundThemed)}</span>
         </label>
     </div>
 </div>

@@ -23,8 +23,8 @@ enum I18nKey {
 
 	themeColor = "themeColor",
 	cardBackgroundColor = "cardBackgroundColor",
-	cardBackgroundSolid = "cardBackgroundSolid",
-	cardBackgroundGradient = "cardBackgroundGradient",
+	cardBackgroundWhite = "cardBackgroundWhite",
+	cardBackgroundThemed = "cardBackgroundThemed",
 
 	lightMode = "lightMode",
 	darkMode = "darkMode",

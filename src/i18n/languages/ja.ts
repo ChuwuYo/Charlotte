@@ -26,8 +26,8 @@ export const ja: Translation = {
 
 	[Key.themeColor]: "テーマカラー",
 	[Key.cardBackgroundColor]: "カード背景色",
-	[Key.cardBackgroundSolid]: "真っ白",
-	[Key.cardBackgroundGradient]: "テーマカラー",
+	[Key.cardBackgroundWhite]: "真っ白",
+	[Key.cardBackgroundThemed]: "テーマカラー",
 
 	[Key.lightMode]: "ライト",
 	[Key.darkMode]: "ダーク",
