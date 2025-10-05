@@ -44,6 +44,7 @@ export const zh_TW: Translation = {
 	[Key.projectsDescription]: "專案展示",
 	[Key.introduction]: "簡介",
 	[Key.websiteRuntimeText]: "我們已經一起旅行了",
+	[Key.loading]: "載入中...",
 	[Key.allRightsReserved]: "All Rights Reserved.",
 	[Key.poweredBy]: "Powered by",
 };

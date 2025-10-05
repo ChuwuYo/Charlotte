@@ -43,6 +43,7 @@ export const ja: Translation = {
 	[Key.projectsDescription]: "プロジェクト紹介",
 	[Key.introduction]: "紹介",
 	[Key.websiteRuntimeText]: "一緒に旅をしてきました",
+	[Key.loading]: "読み込み中...",
 	[Key.allRightsReserved]: "All Rights Reserved.",
 	[Key.poweredBy]: "Powered by",
 };

@@ -41,6 +41,7 @@ enum I18nKey {
 	projectsDescription = "projectsDescription",
 	introduction = "introduction",
 	websiteRuntimeText = "websiteRuntimeText",
+	loading = "loading",
 	allRightsReserved = "allRightsReserved",
 	poweredBy = "poweredBy",
 }

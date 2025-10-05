@@ -44,6 +44,7 @@ export const en: Translation = {
 	[Key.projectsDescription]: "Project showcase",
 	[Key.introduction]: "Introduction",
 	[Key.websiteRuntimeText]: "We have been traveling together for",
+	[Key.loading]: "Loading...",
 	[Key.allRightsReserved]: "All Rights Reserved.",
 	[Key.poweredBy]: "Powered by",
 };
