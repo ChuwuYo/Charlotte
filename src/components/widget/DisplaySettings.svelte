@@ -2,17 +2,37 @@
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import Icon from "@iconify/svelte";
-import { getDefaultHue, getHue, setHue } from "@utils/setting-utils";
+import {
+	getDefaultHue,
+	getHue,
+	setHue,
+	getCardBgType,
+	setCardBgType,
+} from "@utils/setting-utils";
 
 let hue = getHue();
 const defaultHue = getDefaultHue();
+
+// 卡片背景色类型：0 表示纯白色，1 表示主题色影响
+let cardBgType = getCardBgType();
 
 function resetHue() {
 	hue = getDefaultHue();
 }
 
+function switchCardBgType(type: number) {
+	cardBgType = type;
+}
+
 $: if (hue || hue === 0) {
 	setHue(hue);
+}
+
+$: if (
+	typeof cardBgType === "number" &&
+	(cardBgType === 0 || cardBgType === 1)
+) {
+	setCardBgType(cardBgType);
 }
 </script>
 
@@ -40,6 +60,25 @@ $: if (hue || hue === 0) {
     <div class="w-full h-6 px-1 bg-[oklch(0.80_0.10_0)] dark:bg-[oklch(0.70_0.10_0)] rounded select-none">
         <input aria-label={i18n(I18nKey.themeColor)} type="range" min="0" max="360" bind:value={hue}
                class="slider" id="colorSlider" step="5" style="width: 100%">
+    </div>
+
+    <!-- 卡片背景色标题区块 -->
+    <div class="flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 transition relative ml-3 mt-4
+        before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
+        before:absolute before:-left-3 before:top-[0.33rem]">
+        {i18n(I18nKey.cardBackgroundColor)}
+    </div>
+
+    <!-- 卡片背景色选择器 -->
+    <div class="radio-inputs mt-3">
+        <label class="radio">
+            <input type="radio" name="card-bg-type" value="0" checked={cardBgType === 0} on:change={() => switchCardBgType(0)}>
+            <span class="name">{i18n(I18nKey.cardBackgroundSolid)}</span>
+        </label>
+        <label class="radio">
+            <input type="radio" name="card-bg-type" value="1" checked={cardBgType === 1} on:change={() => switchCardBgType(1)}>
+            <span class="name">{i18n(I18nKey.cardBackgroundGradient)}</span>
+        </label>
     </div>
 </div>
 
@@ -89,5 +128,48 @@ $: if (hue || hue === 0) {
             background rgba(255, 255, 255, 0.8)
           &:active
             background rgba(255, 255, 255, 0.6)
+
+    /* 卡片背景色选择器样式 */
+    .radio-inputs
+      position relative
+      display flex
+      flex-wrap wrap
+      border-radius var(--radius-large)
+      background-color var(--btn-regular-bg)
+      box-sizing border-box
+      padding 0.25rem
+      width 100%
+      font-size 14px
+      margin-top 0.75rem
+
+    .radio-inputs .radio
+      flex 1 1 auto
+      text-align center
+
+    .radio-inputs .radio input
+      display none
+
+    .radio-inputs .radio .name
+      display flex
+      cursor pointer
+      align-items center
+      justify-content center
+      border-radius calc(var(--radius-large) - 0.25rem)
+      border none
+      padding 0.5rem 0
+      color var(--btn-content)
+      transition all 0.15s ease-in-out
+      font-weight 400
+
+    .radio-inputs .radio input:checked + .name
+      background-color var(--primary)
+      color white
+      font-weight 500
+
+    .radio-inputs .radio:hover .name
+      background-color var(--btn-plain-bg-hover)
+
+    .radio-inputs .radio input:checked + .name
+      position relative
 
 </style>

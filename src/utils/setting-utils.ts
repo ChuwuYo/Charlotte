@@ -59,3 +59,26 @@ export function setTheme(theme: LIGHT_DARK_MODE): void {
 export function getStoredTheme(): LIGHT_DARK_MODE {
 	return (localStorage.getItem("theme") as LIGHT_DARK_MODE) || DEFAULT_THEME;
 }
+
+// 卡片背景色
+export function getDefaultCardBgType(): number {
+	return 0; // 默认纯白色
+}
+
+export function getCardBgType(): number {
+	const stored = localStorage.getItem("cardBgType");
+	return stored !== null ? Number.parseInt(stored, 10) : getDefaultCardBgType();
+}
+
+export function setCardBgType(type: number): void {
+	localStorage.setItem("cardBgType", String(type));
+	const r = document.querySelector(":root") as HTMLElement;
+	if (!r) {
+		return;
+	}
+	if (type === 0) {
+		r.style.setProperty("--card-bg", "var(--card-bg-original)");
+	} else if (type === 1) {
+		r.style.setProperty("--card-bg", "var(--card-bg-themed)");
+	}
+}

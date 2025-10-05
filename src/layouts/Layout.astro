@@ -132,6 +132,15 @@ const bannerOffset =
 			const hue = localStorage.getItem('hue') || configHue;
 			document.documentElement.style.setProperty('--hue', hue);
 
+			// Load the card background type from local storage
+			const cardBgType = localStorage.getItem('cardBgType') || '0';
+			const bgType = parseInt(cardBgType, 10);
+			if (bgType === 0) {
+				document.documentElement.style.setProperty('--card-bg', 'var(--card-bg-original)');
+			} else if (bgType === 1) {
+				document.documentElement.style.setProperty('--card-bg', 'var(--card-bg-themed)');
+			}
+
 			// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
 			let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 			offset = offset - offset % 4;
