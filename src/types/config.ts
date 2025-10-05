@@ -34,6 +34,7 @@ export type SiteConfig = {
 		enable: boolean;
 		depth: 1 | 2 | 3;
 	};
+	startDate: string;
 
 	favicon: Favicon[];
 };

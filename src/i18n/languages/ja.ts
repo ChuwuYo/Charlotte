@@ -50,4 +50,8 @@ export const ja: Translation = {
 	[Key.hourUnit]: "時間",
 	[Key.minuteUnit]: "分",
 	[Key.secondUnit]: "秒",
+	[Key.dayUnitSingular]: "日",
+	[Key.hourUnitSingular]: "時間",
+	[Key.minuteUnitSingular]: "分",
+	[Key.secondUnitSingular]: "秒",
 };

@@ -48,6 +48,10 @@ enum I18nKey {
 	hourUnit = "hourUnit",
 	minuteUnit = "minuteUnit",
 	secondUnit = "secondUnit",
+	dayUnitSingular = "dayUnitSingular",
+	hourUnitSingular = "hourUnitSingular",
+	minuteUnitSingular = "minuteUnitSingular",
+	secondUnitSingular = "secondUnitSingular",
 }
 
 export default I18nKey;

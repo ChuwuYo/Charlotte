@@ -1,6 +1,6 @@
 ---
 
-import { profileConfig } from "../config";
+import { profileConfig, siteConfig } from "../config";
 
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
@@ -14,28 +14,44 @@ const currentYear = new Date().getFullYear();
 <div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
 
 <!-- Runtime网站运行计时 -->
-<script is:inline define:vars={{ dayUnit: i18n(I18nKey.dayUnit), hourUnit: i18n(I18nKey.hourUnit), minuteUnit: i18n(I18nKey.minuteUnit), secondUnit: i18n(I18nKey.secondUnit) }}>
+<script is:inline define:vars={{ 
+	startDate: siteConfig.startDate,
+	dayUnit: i18n(I18nKey.dayUnit), 
+	hourUnit: i18n(I18nKey.hourUnit), 
+	minuteUnit: i18n(I18nKey.minuteUnit), 
+	secondUnit: i18n(I18nKey.secondUnit),
+	dayUnitSingular: i18n(I18nKey.dayUnitSingular),
+	hourUnitSingular: i18n(I18nKey.hourUnitSingular),
+	minuteUnitSingular: i18n(I18nKey.minuteUnitSingular),
+	secondUnitSingular: i18n(I18nKey.secondUnitSingular)
+}}>
 let uptimeInterval = null;
+let uptimeElements = [];
 
 function updateUptime() {
-	const start = new Date("2025-09-29T12:30:00");
+	const start = new Date(startDate);
 	const now = new Date();
-	const diff = now.getTime() - start.getTime();
+	const diff = Math.max(0, now.getTime() - start.getTime());
 
 	const days = Math.floor(diff / 1000 / 60 / 60 / 24);
 	const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
 	const minutes = Math.floor((diff / 1000 / 60) % 60);
 	const seconds = Math.floor((diff / 1000) % 60);
 
-	const uptimeStr = `${days}${dayUnit}${hours}${hourUnit}${minutes}${minuteUnit}${seconds}${secondUnit}`;
-	const allUptimeElements = document.querySelectorAll('.uptime-display');
-	allUptimeElements.forEach(el => {
+	const dayText = days === 1 ? dayUnitSingular : dayUnit;
+	const hourText = hours === 1 ? hourUnitSingular : hourUnit;
+	const minuteText = minutes === 1 ? minuteUnitSingular : minuteUnit;
+	const secondText = seconds === 1 ? secondUnitSingular : secondUnit;
+
+	const uptimeStr = `${days}${dayText}${hours}${hourText}${minutes}${minuteText}${seconds}${secondText}`;
+	uptimeElements.forEach(el => {
 		el.textContent = uptimeStr;
 	});
 }
 
 function startUptimeTimer() {
 	if (uptimeInterval) clearInterval(uptimeInterval);
+	uptimeElements = document.querySelectorAll('.uptime-display');
 	updateUptime();
 	uptimeInterval = setInterval(updateUptime, 1000);
 }
@@ -63,7 +79,7 @@ window.addEventListener('beforeunload', () => {
 <!--<div class="transition bg-[oklch(92%_0.01_var(&#45;&#45;hue))] dark:bg-black rounded-2xl py-8 mt-4 mb-8 flex flex-col items-center justify-center px-6">-->
 <div class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
     <div class="transition text-50 text-sm text-center mb-2">
-        {i18n(I18nKey.websiteRuntimeText)} <span class="uptime-display transition text-[var(--primary)] font-medium">{i18n(I18nKey.loading)}</span>
+        {i18n(I18nKey.websiteRuntimeText)} <span class="uptime-display transition link text-[var(--primary)] font-medium">{i18n(I18nKey.loading)}</span>
     </div>
     <div class="transition text-50 text-sm text-center">
         &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. {i18n(I18nKey.allRightsReserved)} /

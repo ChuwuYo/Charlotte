@@ -51,4 +51,8 @@ export const zh_CN: Translation = {
 	[Key.hourUnit]: "小时",
 	[Key.minuteUnit]: "分",
 	[Key.secondUnit]: "秒",
+	[Key.dayUnitSingular]: "天",
+	[Key.hourUnitSingular]: "小时",
+	[Key.minuteUnitSingular]: "分",
+	[Key.secondUnitSingular]: "秒",
 };

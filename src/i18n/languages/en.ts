@@ -51,4 +51,8 @@ export const en: Translation = {
 	[Key.hourUnit]: "hours",
 	[Key.minuteUnit]: "minutes",
 	[Key.secondUnit]: "seconds",
+	[Key.dayUnitSingular]: "day",
+	[Key.hourUnitSingular]: "hour",
+	[Key.minuteUnitSingular]: "minute",
+	[Key.secondUnitSingular]: "second",
 };
