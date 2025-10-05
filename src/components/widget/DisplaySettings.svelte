@@ -29,7 +29,10 @@ $: if (hue || hue === 0) {
 	setHue(hue);
 }
 
-$: if (cardBgType === CARD_BG_TYPE.WHITE || cardBgType === CARD_BG_TYPE.THEMED) {
+$: if (
+	cardBgType === CARD_BG_TYPE.WHITE ||
+	cardBgType === CARD_BG_TYPE.THEMED
+) {
 	setCardBgType(cardBgType);
 }
 </script>
@@ -163,11 +166,9 @@ $: if (cardBgType === CARD_BG_TYPE.WHITE || cardBgType === CARD_BG_TYPE.THEMED) 
       background-color var(--primary)
       color white
       font-weight 500
+      position relative
 
     .radio-inputs .radio:hover .name
       background-color var(--btn-plain-bg-hover)
-
-    .radio-inputs .radio input:checked + .name
-      position relative
 
 </style>

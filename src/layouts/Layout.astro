@@ -133,11 +133,13 @@ const bannerOffset =
 			document.documentElement.style.setProperty('--hue', hue);
 
 			// Load the card background type from local storage
+			// 0 = 白色的 (CARD_BG_TYPE.WHITE), 1 = 主题色 (CARD_BG_TYPE.THEMED)
+			// 具体定义见: src/utils/setting-utils.ts
 			const cardBgType = localStorage.getItem('cardBgType') || '0';
 			const bgType = parseInt(cardBgType, 10);
-			if (bgType === 0) {
+			if (bgType === 0) { // 白色的
 				document.documentElement.style.setProperty('--card-bg', 'var(--card-bg-original)');
-			} else if (bgType === 1) {
+			} else if (bgType === 1) { // 主题色
 				document.documentElement.style.setProperty('--card-bg', 'var(--card-bg-themed)');
 			}
 
