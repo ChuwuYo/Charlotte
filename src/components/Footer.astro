@@ -14,67 +14,62 @@ const currentYear = new Date().getFullYear();
 <div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
 
 <!-- Runtime网站运行计时 -->
-<script>
-// 网站运行时间计数器
-let uptimeInterval: ReturnType<typeof setInterval> | null = null;
+<script is:inline define:vars={{ dayUnit: i18n(I18nKey.dayUnit), hourUnit: i18n(I18nKey.hourUnit), minuteUnit: i18n(I18nKey.minuteUnit), secondUnit: i18n(I18nKey.secondUnit) }}>
+let uptimeInterval = null;
 
 function updateUptime() {
-    const start = new Date("2025-09-29T12:30:00");
-    const now = new Date();
-    const diff = now.getTime() - start.getTime();
+	const start = new Date("2025-09-29T12:30:00");
+	const now = new Date();
+	const diff = now.getTime() - start.getTime();
 
-    const days = Math.floor(diff / 1000 / 60 / 60 / 24);
-    const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
-    const minutes = Math.floor((diff / 1000 / 60) % 60);
-    const seconds = Math.floor((diff / 1000) % 60);
+	const days = Math.floor(diff / 1000 / 60 / 60 / 24);
+	const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
+	const minutes = Math.floor((diff / 1000 / 60) % 60);
+	const seconds = Math.floor((diff / 1000) % 60);
 
-    const uptimeStr = `${days}天${hours}小时${minutes}分${seconds}秒`;
-    const uptimeElement = document.getElementById("uptime");
-    if (uptimeElement) {
-        uptimeElement.textContent = uptimeStr;
-    }
+	const uptimeStr = `${days}${dayUnit}${hours}${hourUnit}${minutes}${minuteUnit}${seconds}${secondUnit}`;
+	const allUptimeElements = document.querySelectorAll('.uptime-display');
+	allUptimeElements.forEach(el => {
+		el.textContent = uptimeStr;
+	});
 }
 
-// 启动定时器
 function startUptimeTimer() {
-    if (uptimeInterval) clearInterval(uptimeInterval);
-    updateUptime();
-    uptimeInterval = setInterval(updateUptime, 1000);
+	if (uptimeInterval) clearInterval(uptimeInterval);
+	updateUptime();
+	uptimeInterval = setInterval(updateUptime, 1000);
 }
 
-// 页面加载完成后启动
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startUptimeTimer);
+	document.addEventListener('DOMContentLoaded', startUptimeTimer);
 } else {
-    startUptimeTimer();
+	startUptimeTimer();
 }
 
-// Swup页面切换时重启定时器
 if (window.swup?.hooks) {
-    window.swup.hooks.on('page:view', () => {
-        if (uptimeInterval) clearInterval(uptimeInterval);
-        startUptimeTimer();
-    });
+	window.swup.hooks.on('page:view', () => {
+		if (uptimeInterval) clearInterval(uptimeInterval);
+		startUptimeTimer();
+	});
 }
 
-// 页面卸载时清理
 window.addEventListener('beforeunload', () => {
-    if (uptimeInterval) {
-        clearInterval(uptimeInterval);
-        uptimeInterval = null;
-    }
+	if (uptimeInterval) {
+		clearInterval(uptimeInterval);
+		uptimeInterval = null;
+	}
 });
 </script>
 <!--<div class="transition bg-[oklch(92%_0.01_var(&#45;&#45;hue))] dark:bg-black rounded-2xl py-8 mt-4 mb-8 flex flex-col items-center justify-center px-6">-->
 <div class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
     <div class="transition text-50 text-sm text-center mb-2">
-        {i18n(I18nKey.websiteRuntimeText)} <span id="uptime" class="transition link text-[var(--primary)] font-medium">{i18n(I18nKey.loading)}</span>
+        {i18n(I18nKey.websiteRuntimeText)} <span class="uptime-display transition text-[var(--primary)] font-medium">{i18n(I18nKey.loading)}</span>
     </div>
     <div class="transition text-50 text-sm text-center">
-        &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. All Rights Reserved. /
+        &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. {i18n(I18nKey.allRightsReserved)} /
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('rss.xml')}>RSS</a> /
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('sitemap-index.xml')}>Sitemap</a><br>
-        Powered by
+        {i18n(I18nKey.poweredBy)}
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/saicaca/fuwari">Fuwari</a>
     </div>

@@ -44,6 +44,10 @@ enum I18nKey {
 	loading = "loading",
 	allRightsReserved = "allRightsReserved",
 	poweredBy = "poweredBy",
+	dayUnit = "dayUnit",
+	hourUnit = "hourUnit",
+	minuteUnit = "minuteUnit",
+	secondUnit = "secondUnit",
 }
 
 export default I18nKey;

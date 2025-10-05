@@ -47,4 +47,8 @@ export const en: Translation = {
 	[Key.loading]: "Loading...",
 	[Key.allRightsReserved]: "All Rights Reserved.",
 	[Key.poweredBy]: "Powered by",
+	[Key.dayUnit]: "days",
+	[Key.hourUnit]: "hours",
+	[Key.minuteUnit]: "minutes",
+	[Key.secondUnit]: "seconds",
 };

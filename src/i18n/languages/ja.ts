@@ -46,4 +46,8 @@ export const ja: Translation = {
 	[Key.loading]: "読み込み中...",
 	[Key.allRightsReserved]: "All Rights Reserved.",
 	[Key.poweredBy]: "Powered by",
+	[Key.dayUnit]: "日",
+	[Key.hourUnit]: "時間",
+	[Key.minuteUnit]: "分",
+	[Key.secondUnit]: "秒",
 };

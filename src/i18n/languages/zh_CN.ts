@@ -47,4 +47,8 @@ export const zh_CN: Translation = {
 	[Key.loading]: "加载中...",
 	[Key.allRightsReserved]: "All Rights Reserved.",
 	[Key.poweredBy]: "Powered by",
+	[Key.dayUnit]: "天",
+	[Key.hourUnit]: "小时",
+	[Key.minuteUnit]: "分",
+	[Key.secondUnit]: "秒",
 };
