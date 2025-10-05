@@ -41,8 +41,17 @@ enum I18nKey {
 	projectsDescription = "projectsDescription",
 	introduction = "introduction",
 	websiteRuntimeText = "websiteRuntimeText",
+	loading = "loading",
 	allRightsReserved = "allRightsReserved",
 	poweredBy = "poweredBy",
+	dayUnit = "dayUnit",
+	hourUnit = "hourUnit",
+	minuteUnit = "minuteUnit",
+	secondUnit = "secondUnit",
+	dayUnitSingular = "dayUnitSingular",
+	hourUnitSingular = "hourUnitSingular",
+	minuteUnitSingular = "minuteUnitSingular",
+	secondUnitSingular = "secondUnitSingular",
 }
 
 export default I18nKey;
