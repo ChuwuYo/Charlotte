@@ -22,6 +22,9 @@ enum I18nKey {
 	postsCount = "postsCount",
 
 	themeColor = "themeColor",
+	cardBackgroundColor = "cardBackgroundColor",
+	cardBackgroundWhite = "cardBackgroundWhite",
+	cardBackgroundThemed = "cardBackgroundThemed",
 
 	lightMode = "lightMode",
 	darkMode = "darkMode",

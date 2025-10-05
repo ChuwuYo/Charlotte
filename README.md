@@ -24,7 +24,9 @@
 | `pnpm preview` | 预览构建结果 |
 | `pnpm check` | TypeScript 错误检查 |
 | `pnpm format` | Biome 格式检查 |
-| `pnpm lint` | ESLint 代码检查 |
+| `pnpm format <file>` | 格式化单个文件 |
+| `pnpm lint` | Biome 代码检查和修复 |
+| `pnpm lint <file>` | 检查并修复单个文件 |
 | `pnpm astro <command>` | 运行 Astro CLI 命令 |
 
 ## 📝 使用指南
