@@ -25,7 +25,7 @@ export const en: Translation = {
 	[Key.postsCount]: "posts",
 
 	[Key.themeColor]: "Theme Color",
-	[Key.cardBackgroundColor]: "Card Background Color",
+	[Key.cardBackgroundColor]: "Light Card Background Color",
 	[Key.cardBackgroundWhite]: "White",
 	[Key.cardBackgroundThemed]: "Themed",
 
