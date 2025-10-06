@@ -36,9 +36,9 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		// 留空此数组以使用默认网站图标
 		{
-			src: "/favicon/icon.webp", // 网站图标的路径，相对于 /public 目录
+			src: "/favicon/icon_1024.webp", // 网站图标的路径，相对于 /public 目录
 			//   theme: 'light',              // （可选）'light' 或 'dark'，仅在您为明暗模式设置了不同的网站图标时使用
-			//   sizes: '32x32',              // （可选）网站图标的尺寸，仅在您有不同尺寸的网站图标时设置
+			sizes: "128x128,256x256,512x512,1024x1024", // （可选）网站图标的尺寸，仅在有不同尺寸的网站图标时设置, 逗号分隔
 		},
 	],
 };
