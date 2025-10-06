@@ -84,7 +84,7 @@ const bannerOffset =
 		<title>{pageTitle}</title>
 
 		<meta charset="UTF-8" />
-		<meta name="keywords" content={siteConfig.keywords}> 
+		<meta name="keywords" content={siteConfig.keywords}>
 		<meta name="description" content={finalDescription}>
 		<meta name="author" content={profileConfig.name}>
 
@@ -417,8 +417,6 @@ const setup = () => {
 		}
 		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
 			navbar.classList.add('navbar-hidden')
-		} else {
-			navbar.classList.remove('navbar-hidden')
 		}
 	})
 	window.swup.hooks.on('content:replace', initCustomScrollbar)
