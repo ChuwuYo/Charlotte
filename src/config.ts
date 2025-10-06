@@ -11,6 +11,9 @@ export const siteConfig: SiteConfig = {
 	title: "Chuwu Blog",
 	subtitle: "时间能冲淡痛苦",
 	lang: "zh_CN", // 语言代码，例如 'en', 'zh_CN', 'ja' 等
+	keywords: "Chuwu, 博客, 前端, 全栈, 开发, 网络, 技术分享, 生活日记", // SEO 关键词
+	description:
+		"ChuwuYo的小窝, 这里有我的日常、思考以及一些开发分享, 欢迎你的到来", // 站点描述
 	themeColor: {
 		hue: 60, // 主题颜色的默认色相，范围 0-360。例如 红色: 0, 蓝绿色: 200, 青色: 250, 粉色: 345
 		fixed: false, // 隐藏访客的主题颜色选择器

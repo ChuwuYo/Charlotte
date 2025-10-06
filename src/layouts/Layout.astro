@@ -54,6 +54,9 @@ if (title) {
 	pageTitle = `${siteConfig.title} - ${siteConfig.subtitle}`;
 }
 
+// 定义 finalDescription 变量，优先使用页面传入的 description，否则使用全局配置，就避免回退到 pageTitle
+const finalDescription = description || siteConfig.description;
+
 const favicons: Favicon[] =
 	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
 
@@ -81,23 +84,24 @@ const bannerOffset =
 		<title>{pageTitle}</title>
 
 		<meta charset="UTF-8" />
-		<meta name="description" content={description || pageTitle}>
+		<meta name="keywords" content={siteConfig.keywords}> 
+		<meta name="description" content={finalDescription}>
 		<meta name="author" content={profileConfig.name}>
 
 		<meta property="og:site_name" content={siteConfig.title}>
 		<meta property="og:url" content={Astro.url}>
 		<meta property="og:title" content={pageTitle}>
-		<meta property="og:description" content={description || pageTitle}>
+		<meta property="og:description" content={finalDescription}>
 		{setOGTypeArticle ? (
-        <meta property="og:type" content="article" />
-        ) : (
-        <meta property="og:type" content="website" />
-        )}
+		<meta property="og:type" content="article" />
+		) : (
+		<meta property="og:type" content="website" />
+		)}
 
 		<meta name="twitter:card" content="summary_large_image">
 		<meta property="twitter:url" content={Astro.url}>
 		<meta name="twitter:title" content={pageTitle}>
-		<meta name="twitter:description" content={description || pageTitle}>
+		<meta name="twitter:description" content={finalDescription}>
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
@@ -413,6 +417,8 @@ const setup = () => {
 		}
 		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
 			navbar.classList.add('navbar-hidden')
+		} else {
+			navbar.classList.remove('navbar-hidden')
 		}
 	})
 	window.swup.hooks.on('content:replace', initCustomScrollbar)
