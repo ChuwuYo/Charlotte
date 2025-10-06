@@ -3,7 +3,7 @@ title: Unveiling
 published: 2025-09-29
 description: 'ChuwuYo 博客的第一个版本，使用 Astro 和 Fuwari 主题构建。'
 image: './Hi.webp'
-tags: [Fuwari, 公告]
+tags: [Charlotte, 公告]
 category: '公告'
 draft: false 
 lang: ''
