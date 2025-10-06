@@ -25,7 +25,7 @@ export const en: Translation = {
 	[Key.postsCount]: "posts",
 
 	[Key.themeColor]: "Theme Color",
-	[Key.cardBackgroundColor]: "Light Mode Card Bg-Color",
+	[Key.cardBackgroundColor]: "Light Mode Card Bg-Color", //Light Mode Card Background Color 由于溢出换行选择缩写,再做考虑
 	[Key.cardBackgroundWhite]: "White",
 	[Key.cardBackgroundThemed]: "Themed",
 

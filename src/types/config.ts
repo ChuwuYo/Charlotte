@@ -4,17 +4,9 @@ export type SiteConfig = {
 	title: string;
 	subtitle: string;
 
-	lang:
-		| "en"
-		| "zh_CN"
-		| "zh_TW"
-		| "ja"
-		| "ko"
-		| "es"
-		| "th"
-		| "vi"
-		| "tr"
-		| "id";
+	lang: "en" | "zh_CN" | "zh_TW" | "ja";
+	keywords: string; // SEO 关键词
+	description: string; // 站点描述
 
 	themeColor: {
 		hue: number;
