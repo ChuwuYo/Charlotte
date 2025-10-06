@@ -1,5 +1,6 @@
 # 🦌 Charlotte - ChuwuBlog
-[![ChuwuBlog](https://img.shields.io/badge/Blog-Fuwari?style=flat&logo=4chan&logoSize=auto&label=Chuwu&labelColor=%2369cfe3&color=%23e6cdb5)](https://chuwu.dpdns.org/)⬅️ 点这里访问博客  
+[![ChuwuBlog](https://img.shields.io/badge/Blog-Fuwari?style=flat&logo=4chan&logoSize=auto&label=Chuwu&labelColor=%2369cfe3&color=%23e6cdb5)](https://chuwu.dpdns.org/)[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FChuwuYo%2FCharlotte.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FChuwuYo%2FCharlotte?ref=badge_shield)
+⬅️ 点这里访问博客  
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/79425f97-c216-429b-9b74-7efe0f3b1a5c/deploy-status)](https://chuwublog.netlify.app/)
 [![Vercel Deploy](https://deploy-badge.vercel.app/vercel/chuwuyo)](https://chuwuyo.vercel.app/)
@@ -123,3 +124,7 @@ draft: false
 * [saicaca-Fuwari](https://github.com/saicaca/fuwari)
 * [afoim(二叉树树)-Fuwari](https://github.com/afoim/fuwari)
 * [yuki(松坂有希)-Mizuki](https://github.com/matsuzaka-yuki/Mizuki)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FChuwuYo%2FCharlotte.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FChuwuYo%2FCharlotte?ref=badge_large)
