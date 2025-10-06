@@ -1,5 +1,8 @@
 # 🦌 Charlotte - ChuwuBlog
-[![ChuwuBlog](https://img.shields.io/badge/Blog-Fuwari?style=flat&logo=4chan&logoSize=auto&label=Chuwu&labelColor=%2369cfe3&color=%23e6cdb5)](https://chuwu.dpdns.org/)⬅️ 点这里访问博客  
+
+<img src="public/favicon/icon.webp" alt="Nao Tomori" width="128" height="128">
+
+[![ChuwuBlog](https://img.shields.io/badge/Blog-Fuwari?style=flat&logo=4chan&logoSize=auto&label=Chuwu&labelColor=%2369cfe3&color=%23e6cdb5)](https://chuwu.dpdns.org/)⬅️ 点这里访问博客
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/79425f97-c216-429b-9b74-7efe0f3b1a5c/deploy-status)](https://chuwublog.netlify.app/)
 [![Vercel Deploy](https://deploy-badge.vercel.app/vercel/chuwuyo)](https://chuwuyo.vercel.app/)
