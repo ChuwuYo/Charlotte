@@ -21,8 +21,11 @@ export async function GET(context: APIContext) {
 
 	return rss({
 		title: siteConfig.title,
-		description: siteConfig.subtitle || "No description",
-		site: context.site ?? "https://fuwari.vercel.app",
+		description:
+			siteConfig.description ||
+			siteConfig.subtitle ||
+			"No description provided for the site.",
+		site: context.site ?? "https://chuwu.dpdns.org",
 		items: blog.map((post) => {
 			const content =
 				typeof post.body === "string" ? post.body : String(post.body || "");
