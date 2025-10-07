@@ -10,6 +10,7 @@ import { LinkPreset } from "./types/config";
 export const siteConfig: SiteConfig = {
 	title: "Chuwu Blog",
 	subtitle: "时间能冲淡痛苦",
+	url: "https://www.chuwu.top/",
 	lang: "zh_CN", // 语言代码，例如 'en', 'zh_CN', 'ja' 等
 	keywords: "Chuwu, 博客, 前端, 全栈, 开发, 网络, 技术分享, 生活日记", // SEO 关键词
 	description:
