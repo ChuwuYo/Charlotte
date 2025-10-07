@@ -25,7 +25,7 @@ export async function GET(context: APIContext) {
 			siteConfig.description ||
 			siteConfig.subtitle ||
 			"No description provided for the site.",
-		site: context.site ?? "https://chuwu.dpdns.org",
+		site: context.site ?? "https://www.chuwu.top/",
 		items: blog.map((post) => {
 			const content =
 				typeof post.body === "string" ? post.body : String(post.body || "");
