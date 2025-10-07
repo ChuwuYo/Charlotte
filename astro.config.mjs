@@ -35,17 +35,16 @@ export default defineConfig({
 		}),
 		swup({
 			theme: false,
-			animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
-			// the default value `transition-` cause transition delay
-			// when the Tailwind class `transition-all` is used
+			animationClass: "transition-swup-",
 			containers: ["main", "#toc"],
 			smoothScrolling: true,
 			cache: true,
-			preload: true,
+			preload: "hover",
 			accessibility: true,
 			updateHead: true,
 			updateBodyClass: false,
 			globalInstance: true,
+			skipPopStateHandling: (event) => event.state?.source === "swup",
 		}),
 		icon({
 			include: {
@@ -54,6 +53,7 @@ export default defineConfig({
 				"fa6-regular": ["*"],
 				"fa6-solid": ["*"],
 			},
+			optimize: true,
 		}),
 		expressiveCode({
 			themes: [expressiveCodeConfig.theme, expressiveCodeConfig.theme],
@@ -167,7 +167,18 @@ export default defineConfig({
 					}
 					warn(warning);
 				},
+				output: {
+					manualChunks: {
+						swup: ["@swup/astro"],
+						photoswipe: ["photoswipe"],
+						search: ["/pagefind/pagefind.js"],
+					},
+				},
 			},
+			chunkSizeWarningLimit: 1000,
+		},
+		optimizeDeps: {
+			include: ["@iconify/svelte"],
 		},
 	},
 });
