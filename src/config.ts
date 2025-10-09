@@ -10,7 +10,7 @@ import { LinkPreset } from "./types/config";
 export const siteConfig: SiteConfig = {
 	title: "Chuwu Blog",
 	subtitle: "时间能冲淡痛苦",
-	url: "https://www.chuwu.top/",
+	url: "https://blog.chuwu.top/",
 	lang: "zh_CN", // 语言代码，例如 'en', 'zh_CN', 'ja' 等
 	keywords: "Chuwu, 博客, 前端, 全栈, 开发, 网络, 技术分享, 生活日记", // SEO 关键词
 	description:
@@ -39,7 +39,7 @@ export const siteConfig: SiteConfig = {
 		{
 			src: "/favicon/icon_1024.webp", // 网站图标的路径，相对于 /public 目录
 			//   theme: 'light',              // （可选）'light' 或 'dark'，仅在您为明暗模式设置了不同的网站图标时使用
-			sizes: "128x128,256x256,512x512,1024x1024", // （可选）网站图标的尺寸，仅在有不同尺寸的网站图标时设置, 逗号分隔
+			sizes: "32x32,64x64,128x128,256x256,512x512,1024x1024", // （可选）网站图标的尺寸，仅在有不同尺寸的网站图标时设置, 逗号分隔
 		},
 	],
 };
