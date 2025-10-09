@@ -59,7 +59,7 @@ export const siteConfig: SiteConfig = {
 	subtitle: "example",
 	url: "https://blog.chuwu.top/", // 博客 URL
 	lang: "zh_CN", // 语言代码，例如 'en', 'zh_CN', 'ja' 等
-	keywords: "", // SEO 关键词
+	keywords: "Astro, Blog, Theme", // SEO 关键词
 	description:
 		"一个基于 Astro 的博客主题", // 站点描述
 	themeColor: {
