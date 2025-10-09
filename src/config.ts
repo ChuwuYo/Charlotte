@@ -51,7 +51,7 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.About,
 		{
 			name: "初五的书签",
-			url: "https://chuwubookmarks.netlify.app", // 内部链接不应包含基础路径，因为它会自动添加
+			url: "https://tabs.chuwu.top/", // 内部链接不应包含基础路径，因为它会自动添加
 			external: true, // 显示外部链接图标并将在新标签页中打开
 		},
 	],

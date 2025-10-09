@@ -15,7 +15,7 @@ lang: ''
 ~~其实是为了防止未来的自己忘了该怎么写Post~~
 
 
-封面： [Collector](https://www.pixiv.net/artworks/133535742) by [ Ashima](https://www.pixiv.net/users/2642047)
+封面： [Collector](https://www.pixiv.net/artworks/133535742) by [Ashima](https://www.pixiv.net/users/2642047)
 
 # 创建文章
 
