@@ -22,7 +22,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
         aria-haspopup="true"
         aria-expanded="false"
         aria-controls={dropdownId}
-        class="relative btn-plain scale-animation rounded-lg h-11 font-bold px-5 active:scale-95 flex items-center gap-1" 
+        class="relative btn-plain scale-animation rounded-lg h-12 font-bold px-5 active:scale-95 flex items-center gap-1"
         data-dropdown-trigger
     >
         {title}
@@ -42,7 +42,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
                     target={item.external ? "_blank" : null}
                     role="menuitem"
                     tabindex="-1"
-                    class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-9 px-3 font-medium active:scale-95 mb-0.5 last:mb-0"
+                    class="flex transition whitespace-nowrap items-center !justify-start w-full btn-plain scale-animation rounded-lg h-12 px-3 font-medium active:scale-95 mb-0.5 last:mb-0"
                     data-dropdown-item
                 >
                     <span class="mr-3">{item.name}</span>
