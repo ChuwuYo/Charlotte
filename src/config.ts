@@ -31,7 +31,7 @@ export const siteConfig: SiteConfig = {
 	},
 	toc: {
 		enable: true, // 在文章右侧显示目录
-		depth: 2, // 目录中显示的最大标题深度，范围 1-3
+		depth: 1, // 目录中显示的最大标题深度，范围 1-3
 	},
 	startDate: "2025-09-29T12:30:00", // 网站运行时间起始日期
 	favicon: [
@@ -64,7 +64,7 @@ export const profileConfig: ProfileConfig = {
 	bio: "时光流转，愿你能与重要之人重逢",
 	links: [
 		{
-			name: "Twitter",
+			name: "Bilibili",
 			icon: "fa6-brands:bilibili", // 访问 https://icones.js.org/ 获取图标代码
 			// 如果尚未包含相应的图标集，您需要安装它
 			// `pnpm add @iconify-json/<图标集名称>`
