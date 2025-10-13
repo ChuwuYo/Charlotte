@@ -51,3 +51,8 @@ html.is-animating .transition-swup-fade {
 #post-container :nth-child(5) { animation-delay: calc(var(--content-delay) + 250ms) }
 #post-container :nth-child(6) { animation-delay: calc(var(--content-delay) + 325ms) }
 
+/* Hide content during transition to prevent animation conflicts with scrolling */
+body.is-transitioning #content-wrapper {
+    opacity: 0;
+}
+
