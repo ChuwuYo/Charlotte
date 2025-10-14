@@ -19,7 +19,8 @@ const navbarOpacity = navBarConfig.opacity ?? 100;
 const opacityValue = Math.max(0, Math.min(100, navbarOpacity)) / 100;
 
 // 服务端检测文章页面
-const isPostPage = Astro.url.pathname.startsWith("/posts/");
+const POSTS_PATH_PREFIX = "/posts/";
+const isPostPage = Astro.url.pathname.startsWith(POSTS_PATH_PREFIX);
 
 let links: NavBarLink[] = navBarConfig.links.map(
 	(item: NavBarLink | LinkPreset): NavBarLink => {
@@ -81,12 +82,12 @@ let links: NavBarLink[] = navBarConfig.links.map(
     </div>
 </div>
 
-<script>
+<script define:vars={{ POSTS_PATH_PREFIX }}>
 // 客户端路由切换时动态更新
 function updateNavbarForPostPage() {
     const navbar = document.querySelector('.navbar-controls');
     if (navbar) {
-        const isPostPage = window.location.pathname.startsWith('/posts/');
+        const isPostPage = window.location.pathname.startsWith(POSTS_PATH_PREFIX);
         navbar.classList.toggle('post-page-mode', isPostPage);
     }
 }
@@ -111,8 +112,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// 动态计算并设置 --buttons-offset 变量
+function updateButtonsOffset() {
+    const buttonsContainer = document.querySelector('.buttons-container');
+    const navbarControls = document.querySelector('.navbar-controls');
+    if (buttonsContainer && navbarControls) {
+        const actualWidth = buttonsContainer.offsetWidth;
+        navbarControls.style.setProperty('--buttons-offset', `${actualWidth}px`);
+    }
+}
+
 // 监听页面切换
-document.addEventListener('astro:page-load', updateNavbarForPostPage);
+document.addEventListener('astro:page-load', () => {
+    updateNavbarForPostPage();
+    updateButtonsOffset();
+});
+
+// 页面加载时计算按钮宽度
+document.addEventListener('DOMContentLoaded', updateButtonsOffset);
+window.addEventListener('resize', updateButtonsOffset);
 </script>
 
 {import.meta.env.PROD && <script is:inline define:vars={{scriptUrl: url('/pagefind/pagefind.js')}}>
@@ -157,13 +175,9 @@ if (document.readyState === 'loading') {
     transform: translateX(100%);
 }
 
-.navbar-controls.post-page-mode .search-container {
-    transform: translateX(5.75rem);
+.navbar-controls.post-page-mode > .search-container {
+    transform: translateX(var(--buttons-offset, 6rem));
 }
 
-/* 确保移动端菜单按钮不受影响 */
-.navbar-controls.post-page-mode #nav-menu-switch {
-    opacity: 1;
-    pointer-events: auto;
-}
+
 </style>
