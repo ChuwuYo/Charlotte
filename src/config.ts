@@ -16,7 +16,7 @@ export const siteConfig: SiteConfig = {
 	description:
 		"ChuwuYo的小窝, 这里有我的日常、思考以及一些开发分享, 欢迎你的到来", // 站点描述
 	themeColor: {
-		hue: 60, // 主题颜色的默认色相，范围 0-360。例如 红色: 0, 蓝绿色: 200, 青色: 250, 粉色: 345
+		hue: 65, // 主题颜色的默认色相，范围 0-360。例如 红色: 0, 蓝绿色: 200, 青色: 250, 粉色: 345
 		fixed: false, // 隐藏访客的主题颜色选择器
 	},
 	banner: {
@@ -31,7 +31,7 @@ export const siteConfig: SiteConfig = {
 	},
 	toc: {
 		enable: true, // 在文章右侧显示目录
-		depth: 1, // 目录中显示的最大标题深度，范围 1-3
+		depth: 2, // 目录中显示的最大标题深度，范围 1-3
 	},
 	startDate: "2025-09-29T12:30:00", // 网站运行时间起始日期
 	favicon: [
