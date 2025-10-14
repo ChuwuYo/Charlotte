@@ -411,6 +411,9 @@ const setup = () => {
 	})
 	window.swup.hooks.on('content:replace', initCustomScrollbar)
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
+		// Add a class to the body to hide new content via CSS until the scroll animation is finished
+		document.body.classList.add('is-transitioning');
+
 		// change banner height immediately when a link is clicked
 		const bodyElement = document.querySelector('body')
 		if (pathsEqual(visit.to.url, url('/'))) {
@@ -431,26 +434,25 @@ const setup = () => {
 			toc.classList.add('toc-not-ready')
 		}
 	});
-	window.swup.hooks.on('page:view', () => {
-		// hide the temp high element when the transition is done
-		const heightExtend = document.getElementById('page-height-extend')
-		if (heightExtend) {
-			heightExtend.classList.remove('hidden')
-		}
-	});
+
 	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
+		// Use a small timeout to ensure the browser has finished painting after the scroll
 		setTimeout(() => {
+			// Remove the helper class to allow the content animations to play
+			document.body.classList.remove('is-transitioning');
+
+			// Hide the temporary height element
 			const heightExtend = document.getElementById('page-height-extend')
 			if (heightExtend) {
 				heightExtend.classList.add('hidden')
 			}
 
-            // Just make the transition looks better
+            // Show the TOC again
             const toc = document.getElementById('toc-wrapper');
             if (toc) {
                 toc.classList.remove('toc-not-ready')
             }
-        }, 200)
+        }, 50); // A small buffer is enough
 	});
 }
 if (window?.swup?.hooks) {
