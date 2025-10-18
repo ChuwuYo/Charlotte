@@ -18,7 +18,7 @@ const navbarOpacity = navBarConfig.opacity ?? 100;
 // 将百分比转换为 0-1 的小数值
 const opacityValue = Math.max(0, Math.min(100, navbarOpacity)) / 100;
 
-// 服务端检测文章页面
+// 服务端检测文章页面路径前缀
 const POSTS_PATH_PREFIX = "/posts/";
 const isPostPage = Astro.url.pathname.startsWith(POSTS_PATH_PREFIX);
 
@@ -94,7 +94,6 @@ function updateNavbarForPostPage() {
 
 // 页面加载时检测
 document.addEventListener('DOMContentLoaded', () => {
-    
     // 显示设置按钮
     const settingBtn = document.getElementById("display-settings-switch");
     if (settingBtn) {
@@ -112,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 动态计算并设置 --buttons-offset 变量
+// 动态计算按钮容器宽度，用于搜索框动画偏移
 function updateButtonsOffset() {
     const buttonsContainer = document.querySelector('.buttons-container');
     const navbarControls = document.querySelector('.navbar-controls');
@@ -173,7 +172,6 @@ if (document.readyState === 'loading') {
     opacity: 0;
     pointer-events: none;
     transform: translateX(100%);
-    overflow: hidden;
 }
 
 .navbar-controls.post-page-mode > .search-container {
