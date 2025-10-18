@@ -162,7 +162,7 @@ if (document.readyState === 'loading') {
 }
 
 .buttons-container {
-    transition: opacity 0.1s ease-out, transform 0.3s ease-out;
+    transition: opacity 0.1s ease-out 0.1s, transform 0.3s ease-out;
 }
 
 .search-container {
@@ -173,7 +173,8 @@ if (document.readyState === 'loading') {
 .navbar-controls.post-page-mode .buttons-container {
     opacity: 0;
     pointer-events: none;
-    transform: translateX(100%);
+    transform: translateX(0);
+    transition: opacity 0.1s ease-out, transform 0.3s ease-out;
 }
 
 .navbar-controls.post-page-mode > .search-container {
