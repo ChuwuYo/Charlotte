@@ -308,8 +308,8 @@ enum I18nKey {
 
 2. **Add Translations** in each language file (`src/i18n/languages/*.ts`):
 ```typescript
-[Key.newFeature]: "新功能", // zh_CN
-[Key.newFeature]: "New Feature", // en
+[I18nKey.newFeature]: "新功能", // zh_CN
+[I18nKey.newFeature]: "New Feature", // en
 ```
 
 ### Creating Interactive Components
