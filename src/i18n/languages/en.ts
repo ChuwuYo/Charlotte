@@ -55,4 +55,7 @@ export const en: Translation = {
 	[Key.hourUnitSingular]: "hour",
 	[Key.minuteUnitSingular]: "minute",
 	[Key.secondUnitSingular]: "second",
+
+	// 置顶相关翻译
+	[Key.pinned]: "Pinned",
 };

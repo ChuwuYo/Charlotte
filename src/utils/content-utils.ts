@@ -2,19 +2,56 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
+import { siteConfig } from "@/config";
 
-// // Retrieve posts and sort them by publication date
+// Pinned Posts
+type PostEntry = CollectionEntry<"posts">;
+
+function applyPinnedOrdering(sorted: PostEntry[]): PostEntry[] {
+	if (!sorted.length) {
+		return sorted;
+	}
+
+	const rawSlug = siteConfig.pinnedPost?.trim();
+	const pinnedSlug = rawSlug ? rawSlug.toLowerCase() : undefined;
+
+	const pinnedPostIndex = pinnedSlug
+		? sorted.findIndex((post) => post.slug.toLowerCase() === pinnedSlug)
+		: -1;
+
+	// Set isPinned for all posts based on whether they are the pinned one.
+	sorted.forEach((post, index) => {
+		post.data.isPinned = index === pinnedPostIndex;
+	});
+
+	if (pinnedPostIndex === -1) {
+		return sorted;
+	}
+
+	// Reorder with pinned post first
+	const pinnedPost = sorted[pinnedPostIndex];
+	const ordered = [
+		pinnedPost,
+		...sorted.slice(0, pinnedPostIndex),
+		...sorted.slice(pinnedPostIndex + 1),
+	];
+
+	return ordered;
+}
+
+// Retrieve posts and sort them by publication date
 async function getRawSortedPosts() {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
 
-	const sorted = allBlogPosts.sort((a, b) => {
+	const sortedByPublished = allBlogPosts.sort((a, b) => {
 		const dateA = new Date(a.data.published);
 		const dateB = new Date(b.data.published);
 		return dateA > dateB ? -1 : 1;
 	});
-	return sorted;
+
+	return applyPinnedOrdering(sortedByPublished);
 }
 
 export async function getSortedPosts() {

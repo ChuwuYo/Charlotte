@@ -13,6 +13,7 @@ interface Props {
 	category: string | null;
 	hideTagsForMobile?: boolean;
 	hideUpdateDate?: boolean;
+	isPinned?: boolean;
 }
 const {
 	published,
@@ -21,11 +22,20 @@ const {
 	category,
 	hideTagsForMobile = false,
 	hideUpdateDate = false,
+	isPinned = false,
 } = Astro.props;
 const className = Astro.props.class;
 ---
 
 <div class:list={["flex flex-wrap text-neutral-500 dark:text-neutral-400 items-center gap-4 gap-x-4 gap-y-2", className]}>
+	{isPinned && (
+		<div class="flex items-center">
+			<div class="meta-icon mr-0">
+				<Icon name="fa6-solid:thumbtack" class="text-base" aria-hidden="true"></Icon>
+			</div>
+			<span class="sr-only">{i18n(I18nKey.pinned)}</span>
+		</div>
+	)}
     <!-- publish date -->
     <div class="flex items-center">
         <div class="meta-icon"

@@ -55,4 +55,7 @@ export const zh_TW: Translation = {
 	[Key.hourUnitSingular]: "小時",
 	[Key.minuteUnitSingular]: "分鐘",
 	[Key.secondUnitSingular]: "秒",
+
+	// 置顶相关翻译
+	[Key.pinned]: "置頂",
 };

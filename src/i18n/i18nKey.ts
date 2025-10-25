@@ -52,6 +52,8 @@ enum I18nKey {
 	hourUnitSingular = "hourUnitSingular",
 	minuteUnitSingular = "minuteUnitSingular",
 	secondUnitSingular = "secondUnitSingular",
+
+	pinned = "pinned",
 }
 
 export default I18nKey;
