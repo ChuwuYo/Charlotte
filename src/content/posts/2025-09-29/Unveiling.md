@@ -11,7 +11,7 @@ lang: ''
 
 # 欢迎来到 Chuwu 的博客。
 
-## 这个博客是使用 [Astro](https://astro.build/) 框架和 [Fuwari 主题](https://github.com/saicaca/fuwari) 构建的。
+## 这个博客是使用 [Astro](https://astro.build/) 框架和基于 [Fuwari](https://github.com/saicaca/fuwari) 的 [Charlotte主题](https://github.com/ChuwuYo/Charlotte) 构建的。
 
 ### 不知道我们能走多久呢……
 
@@ -21,3 +21,4 @@ lang: ''
 * [saicaca-Fuwari](https://github.com/saicaca/fuwari)
 * [afoim(二叉树树)-Fuwari](https://github.com/afoim/fuwari)
 * [yuki(松坂有希)-Mizuki](https://github.com/matsuzaka-yuki/Mizuki)
+* [enhanced-FaaS-in-China](https://github.com/xingpingcn/enhanced-FaaS-in-China)
