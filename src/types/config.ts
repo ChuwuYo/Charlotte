@@ -30,6 +30,7 @@ export type SiteConfig = {
 	startDate: string;
 
 	favicon: Favicon[];
+	pinnedPost?: string;
 };
 
 export type Favicon = {

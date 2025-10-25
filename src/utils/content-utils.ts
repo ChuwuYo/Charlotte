@@ -2,6 +2,49 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
+import { siteConfig } from "@/config";
+
+// Pinned Posts
+type PostEntry = CollectionEntry<"posts">;
+type PostDataWithPinned = PostEntry["data"] & { isPinned?: boolean };
+
+function applyPinnedOrdering(sorted: PostEntry[]): PostEntry[] {
+	if (!sorted.length) {
+		return sorted;
+	}
+
+	const rawSlug = siteConfig.pinnedPost?.trim();
+
+	if (!rawSlug) {
+		for (const post of sorted) {
+			(post.data as PostDataWithPinned).isPinned = false;
+		}
+		return sorted;
+	}
+
+	const normalizedSlug = rawSlug.toLowerCase();
+	const matched = sorted.find(
+		(post) => post.slug.toLowerCase() === normalizedSlug,
+	);
+
+	if (!matched) {
+		for (const post of sorted) {
+			(post.data as PostDataWithPinned).isPinned = false;
+		}
+		return sorted;
+	}
+
+	const ordered = [
+		matched,
+		...sorted.filter((post) => post.slug !== matched.slug),
+	];
+
+	for (const post of ordered) {
+		(post.data as PostDataWithPinned).isPinned = post.slug === matched.slug;
+	}
+
+	return ordered;
+}
 
 // // Retrieve posts and sort them by publication date
 async function getRawSortedPosts() {
@@ -9,12 +52,13 @@ async function getRawSortedPosts() {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
 
-	const sorted = allBlogPosts.sort((a, b) => {
+	const sortedByPublished = allBlogPosts.sort((a, b) => {
 		const dateA = new Date(a.data.published);
 		const dateB = new Date(b.data.published);
 		return dateA > dateB ? -1 : 1;
 	});
-	return sorted;
+
+	return applyPinnedOrdering(sortedByPublished);
 }
 
 export async function getSortedPosts() {

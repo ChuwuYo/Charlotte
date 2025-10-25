@@ -54,4 +54,7 @@ export const ja: Translation = {
 	[Key.hourUnitSingular]: "時間",
 	[Key.minuteUnitSingular]: "分",
 	[Key.secondUnitSingular]: "秒",
+
+	// 置顶相关翻译
+	[Key.pinned]: "ピン留め",
 };
