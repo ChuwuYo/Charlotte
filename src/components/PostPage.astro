@@ -7,18 +7,13 @@ const { page } = Astro.props;
 
 let delay = 0;
 const interval = 50;
-
-function resolvePinned(entry: CollectionEntry<"posts">) {
-	const data = entry.data as { isPinned?: boolean } | undefined;
-	return data?.isPinned === true;
-}
 ---
 <div class="transition flex flex-col rounded-[var(--radius-large)] bg-[var(--card-bg)] py-1 md:py-0 md:bg-transparent md:gap-4 mb-4">
     {page.data.map((entry: CollectionEntry<"posts">) => (
         <PostCard
                 entry={entry}
                 title={entry.data.title}
-                isPinned={resolvePinned(entry)}
+                isPinned={entry.data.isPinned}
                 tags={entry.data.tags}
                 category={entry.data.category}
                 published={entry.data.published}

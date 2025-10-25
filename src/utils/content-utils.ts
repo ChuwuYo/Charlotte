@@ -6,7 +6,6 @@ import { siteConfig } from "@/config";
 
 // Pinned Posts
 type PostEntry = CollectionEntry<"posts">;
-type PostDataWithPinned = PostEntry["data"] & { isPinned?: boolean };
 
 function applyPinnedOrdering(sorted: PostEntry[]): PostEntry[] {
 	if (!sorted.length) {
@@ -14,34 +13,27 @@ function applyPinnedOrdering(sorted: PostEntry[]): PostEntry[] {
 	}
 
 	const rawSlug = siteConfig.pinnedPost?.trim();
+	const matched = rawSlug
+		? sorted.find((post) => post.slug.toLowerCase() === rawSlug.toLowerCase())
+		: undefined;
 
-	if (!rawSlug) {
-		for (const post of sorted) {
-			(post.data as PostDataWithPinned).isPinned = false;
-		}
-		return sorted;
+	// Set all posts to not pinned initially
+	for (const post of sorted) {
+		post.data.isPinned = false;
 	}
-
-	const normalizedSlug = rawSlug.toLowerCase();
-	const matched = sorted.find(
-		(post) => post.slug.toLowerCase() === normalizedSlug,
-	);
 
 	if (!matched) {
-		for (const post of sorted) {
-			(post.data as PostDataWithPinned).isPinned = false;
-		}
 		return sorted;
 	}
 
+	// Reorder with pinned post first
 	const ordered = [
 		matched,
 		...sorted.filter((post) => post.slug !== matched.slug),
 	];
 
-	for (const post of ordered) {
-		(post.data as PostDataWithPinned).isPinned = post.slug === matched.slug;
-	}
+	// Set the pinned post to true
+	ordered[0].data.isPinned = true;
 
 	return ordered;
 }
