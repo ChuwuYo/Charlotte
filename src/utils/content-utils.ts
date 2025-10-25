@@ -13,32 +13,33 @@ function applyPinnedOrdering(sorted: PostEntry[]): PostEntry[] {
 	}
 
 	const rawSlug = siteConfig.pinnedPost?.trim();
-	const matched = rawSlug
-		? sorted.find((post) => post.slug.toLowerCase() === rawSlug.toLowerCase())
-		: undefined;
+	const pinnedSlug = rawSlug ? rawSlug.toLowerCase() : undefined;
 
-	// Set all posts to not pinned initially
-	for (const post of sorted) {
-		post.data.isPinned = false;
-	}
+	const pinnedPostIndex = pinnedSlug
+		? sorted.findIndex((post) => post.slug.toLowerCase() === pinnedSlug)
+		: -1;
 
-	if (!matched) {
+	// Set isPinned for all posts based on whether they are the pinned one.
+	sorted.forEach((post, index) => {
+		post.data.isPinned = index === pinnedPostIndex;
+	});
+
+	if (pinnedPostIndex === -1) {
 		return sorted;
 	}
 
 	// Reorder with pinned post first
+	const pinnedPost = sorted[pinnedPostIndex];
 	const ordered = [
-		matched,
-		...sorted.filter((post) => post.slug !== matched.slug),
+		pinnedPost,
+		...sorted.slice(0, pinnedPostIndex),
+		...sorted.slice(pinnedPostIndex + 1),
 	];
-
-	// Set the pinned post to true
-	ordered[0].data.isPinned = true;
 
 	return ordered;
 }
 
-// // Retrieve posts and sort them by publication date
+// Retrieve posts and sort them by publication date
 async function getRawSortedPosts() {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
