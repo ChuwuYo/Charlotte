@@ -38,7 +38,11 @@ let links: NavBarLink[] = navBarConfig.links.map(
         "card-base navbar-with-opacity !overflow-visible max-w-[var(--page-width)] h-[4.5rem] !rounded-t-none mx-auto flex items-center justify-between px-4"]}>
         <a href={url('/')} class="btn-plain scale-animation rounded-lg h-[3.25rem] px-5 font-bold active:scale-95">
             <div class="flex flex-row text-[var(--primary)] items-center text-md">
-                <img src={siteConfig.favicon[0]?.src || "/favicon/icon_32.webp"} alt={`${siteConfig.title} 首页`} class="w-8 h-8 mr-2 mb-1 rounded-sm" />
+                {siteConfig.favicon[0]?.src ? (
+                    <img src={siteConfig.favicon[0].src} alt={`${siteConfig.title} 首页`} class="w-8 h-8 mr-2 mb-1 rounded-sm" />
+                ) : (
+                    <Icon name="material-symbols:home-outline-rounded" class="text-[1.75rem] mb-1 mr-2" />
+                )}
                 {siteConfig.title}
             </div>
         </a>
