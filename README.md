@@ -57,7 +57,7 @@ pnpm clean
 export const siteConfig: SiteConfig = {
 	title: "Example",
 	subtitle: "example",
-	url: "https://blog.chuwu.top/", // 博客 URL
+	url: "https://blog.xxx.xxx/", // 博客 URL
 	lang: "zh_CN", // 语言代码，例如 'en', 'zh_CN', 'ja' 等
 	keywords: "Astro, Blog, Theme", // SEO 关键词
 	description:
@@ -88,6 +88,7 @@ export const siteConfig: SiteConfig = {
 			//   sizes: '32x32',              // （可选）网站图标的尺寸，仅在您有不同尺寸的网站图标时设置
 		},
 	],
+	pinnedPost: "xxx", // 置顶文章的 slug 路径，如果为空则不置顶
 };
 ```
 
