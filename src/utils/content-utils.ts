@@ -77,7 +77,9 @@ export type PostForList = {
 	slug: string;
 	data: CollectionEntry<"posts">["data"];
 };
-export async function getSortedPostsList(options?: { includePinned?: boolean }): Promise<PostForList[]> {
+export async function getSortedPostsList(options?: {
+	includePinned?: boolean;
+}): Promise<PostForList[]> {
 	let sortedFullPosts = await getRawSortedPosts();
 
 	// 如果 options.includePinned 未指定或为 true，则应用置顶逻辑
@@ -85,10 +87,12 @@ export async function getSortedPostsList(options?: { includePinned?: boolean }):
 		sortedFullPosts = applyPinnedOrdering(sortedFullPosts);
 	} else {
 		// 即使不重新排序，也要设置 isPinned 属性用于显示图标
+		const rawSlug = siteConfig.pinnedPost?.trim();
+		const pinnedSlug = rawSlug ? rawSlug.toLowerCase() : undefined;
 		sortedFullPosts.forEach((post) => {
-			const rawSlug = siteConfig.pinnedPost?.trim();
-			const pinnedSlug = rawSlug ? rawSlug.toLowerCase() : undefined;
-			post.data.isPinned = pinnedSlug ? post.slug.toLowerCase() === pinnedSlug : false;
+			post.data.isPinned = pinnedSlug
+				? post.slug.toLowerCase() === pinnedSlug
+				: false;
 		});
 	}
 
