@@ -7,7 +7,7 @@
 [![ChuwuBlog](https://img.shields.io/badge/Blog-Fuwari?style=flat&logo=4chan&logoSize=auto&label=Chuwu&labelColor=%2369cfe3&color=%23e6cdb5)](https://www.chuwu.top/)⬅️ 点这里访问博客
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/79425f97-c216-429b-9b74-7efe0f3b1a5c/deploy-status)](https://chuwublog.netlify.app/)
-[![Vercel Deploy](https://deploy-badge.vercel.app/vercel/chuwuyo)](https://chuwuyo.vercel.app/)
+[![Vercel Deploy](https://deploy-badge.vercel.app/vercel/chuwuyo)](https://chuwu.vercel.app/)
 
 ## 🚀 快速开始
 
@@ -92,6 +92,15 @@ export const siteConfig: SiteConfig = {
 };
 ```
 
+### 配置Banner高度
+
+编辑 `src/constants.ts` 文件：
+
+```typescript
+export const BANNER_HEIGHT = 35; // Banner 基础高度，单位 vh
+export const BANNER_HEIGHT_EXTEND = 35; // Banner 主页高度扩展，单位 vh
+```
+
 ### 文章格式
 
 文章使用 Markdown 格式，支持 frontmatter：
@@ -106,8 +115,6 @@ tags: [标签1, 标签2]
 category: 分类
 draft: false
 ---
-
-# 文章内容
 
 这里是文章正文...
 ```
