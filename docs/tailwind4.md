@@ -85,7 +85,7 @@ export default defineConfig({
 });
 ```
 
-### 5. 启动构建过程
+### 6. 启动构建过程
 
 运行开发服务器以测试更改：
 
@@ -93,7 +93,7 @@ export default defineConfig({
 npm run dev
 ```
 
-### 6. 在项目中使用 Tailwind
+### 7. 在项目中使用 Tailwind
 
 确保在需要使用 Tailwind 的页面中导入新创建的 CSS 文件。通常在布局组件中完成此操作，以便 Tailwind 样式在所有页面上都可用。
 
