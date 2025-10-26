@@ -77,9 +77,9 @@ export const profileConfig: ProfileConfig = {
 			url: "https://github.com/ChuwuYo",
 		},
 		{
-			name: "X",
-			icon: "fa6-brands:x-twitter",
-			url: "https://x.com/chuwuchilizi",
+			name: "Email",
+			icon: "fa6-solid:envelope",
+			url: "mailto:1805948721@qq.com",
 		},
 	],
 };
