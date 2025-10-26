@@ -42,7 +42,7 @@ export const siteConfig: SiteConfig = {
 			sizes: "32x32,64x64,128x128,256x256,512x512,1024x1024", // （可选）网站图标的尺寸，仅在有不同尺寸的网站图标时设置, 逗号分隔
 		},
 	],
-	pinnedPost: "2018-10-30/charlotte-markdown", // 置顶文章的 slug 路径，如果为空则不置顶
+	pinnedPost: "2025-09-29/Unveiling", // 置顶文章的 slug 路径，如果为空则不置顶
 };
 
 export const navBarConfig: NavBarConfig = {
