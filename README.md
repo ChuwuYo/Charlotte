@@ -94,7 +94,7 @@ export const siteConfig: SiteConfig = {
 
 ### 配置Banner高度
 
-编辑 `src/constants.ts` 文件：
+编辑 `src/constants/constants.ts` 文件：
 
 ```typescript
 export const BANNER_HEIGHT = 35; // Banner 基础高度，单位 vh
