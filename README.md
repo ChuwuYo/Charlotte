@@ -123,9 +123,6 @@ draft: false
 
 构建后的静态文件默认位于 `dist/` 目录，可部署到任何静态托管平台。
 
-> 注意：由于 Cloudflare Pages 构建环境的限制，项目有可能无法在该平台正常部署。
-> 推荐使用 Vercel 或 Netlify 进行部署。
-
 ## 🤝 贡献
 
 欢迎提交 Issue 和 Pull Request！
