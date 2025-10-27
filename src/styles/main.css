@@ -142,7 +142,11 @@
 }
 
 .custom-md img, #post-cover img {
-    @apply cursor-zoom-in
+    @apply cursor-zoom-in transition-transform duration-300 ease-out;
+}
+
+#post-cover:hover img {
+    transform: scale(1.05);
 }
 
 ::selection {
