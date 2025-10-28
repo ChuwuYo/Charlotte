@@ -34,6 +34,7 @@ export const zh_CN: Translation = {
 	[Key.systemMode]: "跟随系统",
 
 	[Key.more]: "更多",
+	[Key.less]: "收起",
 
 	[Key.author]: "作者",
 	[Key.publishedAt]: "发布于",

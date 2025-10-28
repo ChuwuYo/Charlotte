@@ -28,6 +28,13 @@ const className = Astro.props.class;
             </div>
         </button>
     </div>}
+    <div class="collapse-btn px-4 -mb-2 hidden">
+        <button class="btn-plain rounded-lg w-full md:h-9 h-12">
+            <div class="text-[var(--primary)] flex items-center justify-center gap-2 -translate-x-2">
+                <Icon name="material-symbols:keyboard-arrow-up-rounded" class="text-[1.75rem]"></Icon> {i18n(I18nKey.less)}
+            </div>
+        </button>
+    </div>
 </widget-layout>
 
 <style define:vars={{ collapsedHeight }}>
@@ -45,11 +52,20 @@ const className = Astro.props.class;
                 return;
 
             const id = this.dataset.id;
-            const btn = this.querySelector('.expand-btn');
+            const expandBtn = this.querySelector('.expand-btn');
+            const collapseBtn = this.querySelector('.collapse-btn');
             const wrapper = this.querySelector(`#${id}`)
-            btn!.addEventListener('click', () => {
+            
+            expandBtn!.addEventListener('click', () => {
                 wrapper!.classList.remove('collapsed');
-                btn!.classList.add('hidden');
+                expandBtn!.classList.add('hidden');
+                collapseBtn!.classList.remove('hidden');
+            })
+            
+            collapseBtn!.addEventListener('click', () => {
+                wrapper!.classList.add('collapsed');
+                expandBtn!.classList.remove('hidden');
+                collapseBtn!.classList.add('hidden');
             })
         }
     }
