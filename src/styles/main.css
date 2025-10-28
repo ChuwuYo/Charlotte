@@ -137,12 +137,14 @@
     @apply transition-transform duration-300 ease-out;
 }
 
-.post-card-cover:hover img {
-    transform: scale(1.05);
+#post-cover img,
+.custom-md img {
+    @apply cursor-zoom-in transition-transform duration-300 ease-out;
 }
 
-.custom-md img, #post-cover img {
-    @apply cursor-zoom-in
+.post-card-cover:hover img,
+#post-cover:hover img {
+    transform: scale(1.05);
 }
 
 ::selection {
