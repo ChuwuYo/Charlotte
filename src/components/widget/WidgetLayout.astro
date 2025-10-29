@@ -54,19 +54,23 @@ const className = Astro.props.class;
             const id = this.dataset.id;
             const expandBtn = this.querySelector('.expand-btn');
             const collapseBtn = this.querySelector('.collapse-btn');
-            const wrapper = this.querySelector(`#${id}`)
+            const wrapper = this.querySelector(`#${id}`);
+            if (!expandBtn || !collapseBtn || !wrapper) return;
+
+            const toggle = () => {
+                expandBtn.classList.toggle('hidden');
+                collapseBtn.classList.toggle('hidden');
+            };
+
+            expandBtn.addEventListener('click', () => {
+                wrapper.classList.remove('collapsed');
+                toggle();
+            });
             
-            expandBtn!.addEventListener('click', () => {
-                wrapper!.classList.remove('collapsed');
-                expandBtn!.classList.add('hidden');
-                collapseBtn!.classList.remove('hidden');
-            })
-            
-            collapseBtn!.addEventListener('click', () => {
-                wrapper!.classList.add('collapsed');
-                expandBtn!.classList.remove('hidden');
-                collapseBtn!.classList.add('hidden');
-            })
+            collapseBtn.addEventListener('click', () => {
+                wrapper.classList.add('collapsed');
+                toggle();
+            });
         }
     }
 
