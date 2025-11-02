@@ -4,7 +4,7 @@
 
 <img src="public/favicon/icon_1024.webp" alt="Nao Tomori" width="128" height="128">
 
-[![ChuwuBlog](https://img.shields.io/badge/Blog-Fuwari?style=flat&logo=4chan&logoSize=auto&label=Chuwu&labelColor=%2369cfe3&color=%23e6cdb5)](https://www.chuwu.top/)⬅️ 点这里访问博客
+[![ChuwuBlog](https://img.shields.io/badge/Blog-Fuwari?style=flat&logo=4chan&logoSize=auto&label=Chuwu&labelColor=%2369cfe3&color=%23e6cdb5)](https://blog.chuwu.top/)⬅️ 点这里访问博客
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/79425f97-c216-429b-9b74-7efe0f3b1a5c/deploy-status)](https://chuwublog.netlify.app/)
 [![Vercel Deploy](https://deploy-badge.vercel.app/vercel/chuwuyo)](https://chuwu.vercel.app/)
@@ -126,6 +126,12 @@ draft: false
 ## 🤝 贡献
 
 欢迎提交 Issue 和 Pull Request！
+
+## ❔ FAQ
+
+> [!NOTE]
+> 为什么更新这么谨慎？  
+> 因为我不想增添冗余、无效的花架子功能。
 
 ## 📄 许可证
 
