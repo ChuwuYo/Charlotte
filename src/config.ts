@@ -8,7 +8,7 @@ import type {
 import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
-	title: "🦌初五的小窝",
+	title: "初五的小窝",
 	subtitle: "时间能冲淡痛苦",
 	url: "https://blog.chuwu.top/",
 	lang: "zh_CN", // 语言代码，例如 'en', 'zh_CN', 'ja' 等
