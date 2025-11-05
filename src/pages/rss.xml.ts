@@ -27,8 +27,7 @@ export async function GET(context: APIContext) {
 			"No description provided for the site.",
 		site: context.site ?? siteConfig.url,
 		items: blog.map((post) => {
-			const content =
-				typeof post.body === "string" ? post.body : String(post.body || "");
+			const content = typeof post.body === "string" ? post.body : "";
 			const cleanedContent = stripInvalidXmlChars(content);
 			return {
 				title: post.data.title,
@@ -40,6 +39,6 @@ export async function GET(context: APIContext) {
 				}),
 			};
 		}),
-		customData: `<language>${siteConfig.lang}</language>`,
+		customData: `<language>${siteConfig.lang.replace("_", "-")}</language>`,
 	});
 }

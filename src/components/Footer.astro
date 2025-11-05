@@ -1,5 +1,5 @@
 ---
-
+import { Icon } from "astro-icon/components";
 import pkg from "../../package.json" with { type: "json" };
 import { profileConfig, siteConfig } from "../config";
 import I18nKey from "../i18n/i18nKey";
@@ -81,12 +81,26 @@ window.addEventListener('beforeunload', () => {
     <div class="transition text-50 text-sm text-center mb-2">
         {i18n(I18nKey.websiteRuntimeText)} <span class="uptime-display transition link text-[var(--primary)] font-medium">{i18n(I18nKey.loading)}</span>
     </div>
-    <div class="transition text-50 text-sm text-center">
-        &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. {i18n(I18nKey.allRightsReserved)} /
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('rss.xml')}>RSS</a> /
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('sitemap-index.xml')}>Sitemap</a><br>
+    <div class="transition text-50 text-sm text-center mb-2">
+        &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. {i18n(I18nKey.allRightsReserved)}<br>
         {i18n(I18nKey.poweredBy)}
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/ChuwuYo/Charlotte">Charlotte ver {version}</a>
     </div>
+    <nav class="flex flex-wrap gap-2 justify-center items-center text-50 text-sm" aria-label="Subscriptions">
+        <a class="btn-regular-sm" target="_blank" href={url('rss.xml')} aria-label="RSS">
+            <Icon name="material-symbols:rss-feed-rounded" class="inline-block align-middle" aria-hidden="true"/>
+            <span class="inline-block align-middle">RSS</span>
+        </a>
+        <span class="inline-block align-middle" aria-hidden="true">|</span>
+        <a class="btn-regular-sm" target="_blank" href={url('atom.xml')} aria-label="Atom">
+            <Icon name="fa6-solid:atom" class="inline-block align-middle" aria-hidden="true"/>
+            <span class="inline-block align-middle">Atom</span>
+        </a>
+        <span class="inline-block align-middle" aria-hidden="true">|</span>
+        <a class="btn-regular-sm" target="_blank" href={url('sitemap-index.xml')} aria-label="Sitemap">
+            <Icon name="material-symbols:map-rounded" class="inline-block align-middle" aria-hidden="true"/>
+            <span class="inline-block align-middle">Sitemap</span>
+        </a>
+    </nav>
 </div>

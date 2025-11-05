@@ -53,9 +53,16 @@
             }
         }
     }
+    .btn-regular,
+    .btn-regular-sm {
+        @apply transition flex items-center justify-center bg-[var(--btn-regular-bg)]
+        hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)] text-[var(--btn-content)]
+    }
     .btn-regular {
-        @apply transition flex items-center justify-center bg-[var(--btn-regular-bg)] hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)]
-        text-[var(--btn-content)] dark:text-white/75
+        @apply dark:text-white/75
+    }
+    .btn-regular-sm {
+        @apply px-1.5 py-0.5 rounded-[var(--radius-medium)] text-sm font-medium
     }
 
     .link-underline {
@@ -106,9 +113,8 @@
     }
 
     .btn-regular-dark {
-        @apply flex items-center justify-center
-        bg-[oklch(0.45_0.01_var(--hue))] hover:bg-[oklch(0.50_0.01_var(--hue))] active:bg-[oklch(0.55_0.01_var(--hue))]
-        dark:bg-[oklch(0.30_0.02_var(--hue))] dark:hover:bg-[oklch(0.35_0.03_var(--hue))] dark:active:bg-[oklch(0.40_0.03_var(--hue))]
+        @apply flex items-center justify-center transition
+        bg-[var(--btn-regular-dark-bg)] hover:bg-[var(--btn-regular-dark-bg-hover)] active:bg-[var(--btn-regular-dark-bg-active)]
     }
     
     /* Navbar透明度支持 - 必须在@layer外定义以避免与Tailwind冲突 */
@@ -118,7 +124,7 @@
         -webkit-backdrop-filter: blur(10px);
     }
     .btn-regular-dark.success {
-        @apply bg-[oklch(0.75_0.14_var(--hue))] dark:bg-[oklch(0.75_0.14_var(--hue))]
+        @apply bg-[var(--btn-regular-dark-success)]
     }
 }
 
