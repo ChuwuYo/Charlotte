@@ -27,9 +27,14 @@ export async function GET() {
 		updated: new Date().toISOString(),
 		link: [
 			{
-				href: absoluteUrl("/atom.xml"),
+				href: absoluteUrl("/atom.xml/"),
 				rel: "self",
 				type: "application/atom+xml",
+			},
+			{
+				href: siteConfig.url,
+				rel: "alternate",
+				type: "text/html",
 			},
 		],
 		entry: blog.map((post) => {
