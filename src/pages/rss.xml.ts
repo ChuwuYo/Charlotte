@@ -36,10 +36,11 @@ export async function GET(context: APIContext) {
 			const renderedContent = parser.render(cleanedContent);
 
 			// 3. Fix relative image/link URLs before sanitizing
-			// This regex finds src="./..." and replaces it with the absolute URL
+			// This regex finds src="./..." or href="./..." and replaces it with the absolute URL
 			const absoluteContent = renderedContent.replace(
-				/src="(\.\/.*?)"/g, // Find src="./..."
-				(_, relativePath) => `src="${new URL(relativePath, baseUrl).href}"`,
+				/(src|href)="(\.\/.*?)"/g, // Find src="./..." or href="./..."
+				(_, attr, relativePath) =>
+					`${attr}="${new URL(relativePath, baseUrl).href}"`,
 			);
 
 			return {
