@@ -53,13 +53,15 @@
             }
         }
     }
-    .btn-regular {
+    .btn-regular, .btn-regular-sm {
         @apply transition flex items-center justify-center bg-[var(--btn-regular-bg)]
-        hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)] text-[var(--btn-content)] dark:text-white/75
+        hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)] text-[var(--btn-content)]
+    }
+    .btn-regular {
+        @apply dark:text-white/75
     }
     .btn-regular-sm {
-        @apply transition flex items-center justify-center px-1.5 py-0.5 rounded-[var(--radius-medium)] text-sm font-medium
-        hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)] text-[var(--btn-content)]
+        @apply px-1.5 py-0.5 rounded-[var(--radius-medium)] text-sm font-medium
     }
 
     .link-underline {
