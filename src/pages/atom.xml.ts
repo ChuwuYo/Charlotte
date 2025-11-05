@@ -26,8 +26,7 @@ export async function GET() {
 		id: siteConfig.url,
 		updated: new Date().toISOString(),
 		entry: blog.map((post) => {
-			const content =
-				typeof post.body === "string" ? post.body : String(post.body || "");
+			const content = typeof post.body === "string" ? post.body : "";
 			const cleanedContent = stripInvalidXmlChars(content);
 
 			return {
