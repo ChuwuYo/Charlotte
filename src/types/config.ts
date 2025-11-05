@@ -55,6 +55,7 @@ export type NavBarLink = {
 export type NavBarConfig = {
 	links: (NavBarLink | LinkPreset)[];
 	opacity?: number; // 导航栏透明度百分比，范围 0-100，默认 100（完全不透明）
+	hideButtonsOnPostPage?: boolean; // 在文章页面是否隐藏主题切换等按钮，默认 false
 };
 
 export type ProfileConfig = {

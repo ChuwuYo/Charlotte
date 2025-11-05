@@ -24,6 +24,9 @@ const opacityValue = Math.max(0, Math.min(100, navbarOpacity)) / 100;
 const POSTS_PATH_PREFIX = "/posts/";
 const isPostPage = Astro.url.pathname.startsWith(POSTS_PATH_PREFIX);
 
+// 检查是否在文章页面隐藏按钮
+const hideButtonsOnPostPage = navBarConfig.hideButtonsOnPostPage ?? false;
+
 let links: NavBarLink[] = navBarConfig.links.map(
 	(item: NavBarLink | LinkPreset): NavBarLink => {
 		if (typeof item === "number") {
@@ -67,7 +70,7 @@ let links: NavBarLink[] = navBarConfig.links.map(
                 </a>;
             })}
         </div>
-        <div class:list={["navbar-controls flex items-center", { "post-page-mode": isPostPage }]}>
+        <div class:list={["navbar-controls flex items-center", { "post-page-mode": isPostPage && hideButtonsOnPostPage }]}>
             <div class="search-container">
                 <Search client:only="svelte"></Search>
             </div>
@@ -88,14 +91,14 @@ let links: NavBarLink[] = navBarConfig.links.map(
     </div>
 </div>
 
-<script define:vars={{ POSTS_PATH_PREFIX }}>
+<script define:vars={{ POSTS_PATH_PREFIX, hideButtonsOnPostPage }}>
 // 客户端路由切换时动态更新导航栏样式
 function updateNavbarForPostPage() {
     const navbar = document.querySelector('.navbar-controls');
     if (!navbar) return;
 
     const isPostPage = window.location?.pathname?.startsWith(POSTS_PATH_PREFIX) || false;
-    navbar.classList.toggle('post-page-mode', isPostPage);
+    navbar.classList.toggle('post-page-mode', isPostPage && hideButtonsOnPostPage);
 }
 
 // 动态计算按钮容器宽度，用于搜索框动画偏移
