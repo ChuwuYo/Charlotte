@@ -20,15 +20,16 @@ function absoluteUrl(path: string): string {
 
 export async function GET() {
 	const blog = await getSortedPosts();
-	
+
 	return getAtomResponse({
 		title: siteConfig.title,
 		id: siteConfig.url,
 		updated: new Date().toISOString(),
 		entry: blog.map((post) => {
-			const content = typeof post.body === "string" ? post.body : String(post.body || "");
+			const content =
+				typeof post.body === "string" ? post.body : String(post.body || "");
 			const cleanedContent = stripInvalidXmlChars(content);
-			
+
 			return {
 				title: post.data.title,
 				id: absoluteUrl(`/posts/${post.slug}/`),
@@ -49,7 +50,10 @@ export async function GET() {
 				],
 			};
 		}),
-		subtitle: siteConfig.description || siteConfig.subtitle || "No description provided for the site.",
+		subtitle:
+			siteConfig.description ||
+			siteConfig.subtitle ||
+			"No description provided for the site.",
 		lang: siteConfig.lang,
 	});
 }
