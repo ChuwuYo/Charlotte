@@ -18,6 +18,8 @@ function stripInvalidXmlChars(str: string): string {
 
 export async function GET(context: APIContext) {
 	const blog = await getSortedPosts();
+	// 1. Get the base URL for resolving relative paths
+	const baseUrl = context.site ?? siteConfig.url;
 
 	return rss({
 		title: siteConfig.title,
@@ -25,20 +27,42 @@ export async function GET(context: APIContext) {
 			siteConfig.description ||
 			siteConfig.subtitle ||
 			"No description provided for the site.",
-		site: context.site ?? siteConfig.url,
+		site: baseUrl,
 		items: blog.map((post) => {
 			const content = typeof post.body === "string" ? post.body : "";
 			const cleanedContent = stripInvalidXmlChars(content);
+
+			// 2. Render Markdown to HTML first
+			const renderedContent = parser.render(cleanedContent);
+
+			// 3. Fix relative image/link URLs before sanitizing
+			// This regex finds src="./..." and replaces it with the absolute URL
+			const absoluteContent = renderedContent.replace(
+				/src="(\.\/.*?)"/g, // Find src="./..."
+				(_, relativePath) => `src="${new URL(relativePath, baseUrl).href}"`,
+			);
+
 			return {
 				title: post.data.title,
 				pubDate: post.data.published,
 				description: post.data.description || "",
 				link: url(`/posts/${post.slug}/`),
-				content: sanitizeHtml(parser.render(cleanedContent), {
+				// 4. Sanitize the content *after* fixing URLs
+				content: sanitizeHtml(absoluteContent, {
 					allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
 				}),
 			};
 		}),
-		customData: `<language>${siteConfig.lang.replace("_", "-")}</language>`,
+
+		// 5. Add the atom namespace
+		xmlns: {
+			atom: "http://www.w3.org/2005/Atom",
+		},
+
+		// 6. Add the atom:link to your existing customData
+		customData: `
+			<language>${siteConfig.lang.replace("_", "-")}</language>
+			<atom:link href="${new URL(context.url.pathname, baseUrl)}" rel="self" type="application/rss+xml" />
+		`.trim(), // .trim() cleans up whitespace
 	});
 }
