@@ -39,6 +39,6 @@ export async function GET(context: APIContext) {
 				}),
 			};
 		}),
-		customData: `<language>${siteConfig.lang}</language>`,
+		customData: `<language>${siteConfig.lang.replace("_", "-")}</language>`,
 	});
 }

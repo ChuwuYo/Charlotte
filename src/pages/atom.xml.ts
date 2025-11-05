@@ -2,7 +2,7 @@ import { getSortedPosts } from "@utils/content-utils";
 import getAtomResponse from "astrojs-atom";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
-import { siteConfig } from "@/config";
+import { profileConfig, siteConfig } from "@/config";
 
 const parser = new MarkdownIt();
 
@@ -25,6 +25,13 @@ export async function GET() {
 		title: siteConfig.title,
 		id: siteConfig.url,
 		updated: new Date().toISOString(),
+		link: [
+			{
+				href: siteConfig.url,
+				rel: "self",
+				type: "application/atom+xml",
+			},
+		],
 		entry: blog.map((post) => {
 			const content = typeof post.body === "string" ? post.body : "";
 			const cleanedContent = stripInvalidXmlChars(content);
@@ -34,6 +41,11 @@ export async function GET() {
 				id: absoluteUrl(`/posts/${post.slug}/`),
 				updated: (post.data.updated || post.data.published).toISOString(),
 				published: post.data.published.toISOString(),
+				author: [
+					{
+						name: profileConfig.name,
+					},
+				],
 				content: {
 					type: "html",
 					value: sanitizeHtml(parser.render(cleanedContent), {
@@ -53,6 +65,6 @@ export async function GET() {
 			siteConfig.description ||
 			siteConfig.subtitle ||
 			"No description provided for the site.",
-		lang: siteConfig.lang,
+		lang: siteConfig.lang.replace("_", "-"), // Convert zh_CN to zh-CN
 	});
 }
