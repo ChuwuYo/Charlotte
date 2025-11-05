@@ -16,6 +16,10 @@ function stripInvalidXmlChars(str: string): string {
 	);
 }
 
+function absoluteUrl(path: string): string {
+	return new URL(path, siteConfig.url).href;
+}
+
 export async function GET(context: APIContext) {
 	const blog = await getSortedPosts();
 	// 1. Get the base URL for resolving relative paths
@@ -38,9 +42,8 @@ export async function GET(context: APIContext) {
 			// 3. Fix relative image/link URLs before sanitizing
 			// This regex finds src="./..." or href="./..." and replaces it with the absolute URL
 			const absoluteContent = renderedContent.replace(
-				/(src|href)="(\.\/.*?)"/g, // Find src="./..." or href="./..."
-				(_, attr, relativePath) =>
-					`${attr}="${new URL(relativePath, baseUrl).href}"`,
+				/(src|href)="(\/[^"]+)"/g, // Find src="/..." or href="/..." (absolute paths from root)
+				(_, attr, relativePath) => `${attr}="${absoluteUrl(relativePath)}"`,
 			);
 
 			return {
@@ -63,7 +66,7 @@ export async function GET(context: APIContext) {
 		// 6. Add the atom:link to your existing customData
 		customData: `
 			<language>${siteConfig.lang.replace("_", "-")}</language>
-			<atom:link href="${new URL(context.url.pathname, baseUrl)}" rel="self" type="application/rss+xml" />
+			<atom:link href="${absoluteUrl("/rss.xml")}" rel="self" type="application/rss+xml" />
 		`.trim(), // .trim() cleans up whitespace
 	});
 }
