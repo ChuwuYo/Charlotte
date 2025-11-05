@@ -27,7 +27,7 @@ export async function GET() {
 		updated: new Date().toISOString(),
 		link: [
 			{
-				href: siteConfig.url,
+				href: absoluteUrl("/atom.xml"),
 				rel: "self",
 				type: "application/atom+xml",
 			},
