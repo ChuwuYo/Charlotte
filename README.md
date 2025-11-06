@@ -151,3 +151,4 @@ draft: false
 * [afoim(二叉树树)-Fuwari](https://github.com/afoim/fuwari)
 * [yuki(松坂有希)-Mizuki](https://github.com/matsuzaka-yuki/Mizuki)
 * [enhanced-FaaS-in-China](https://github.com/xingpingcn/enhanced-FaaS-in-China)
+* [Vercel CDN](https://vercel.cdn.yt-blog.top/)
