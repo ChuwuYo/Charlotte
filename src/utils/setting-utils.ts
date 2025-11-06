@@ -57,7 +57,18 @@ export function setTheme(theme: LIGHT_DARK_MODE): void {
 }
 
 export function getStoredTheme(): LIGHT_DARK_MODE {
-	return (localStorage.getItem("theme") as LIGHT_DARK_MODE) || DEFAULT_THEME;
+	// 优先使用本地存储的主题，如果没有则使用配置中的默认主题
+	const stored = localStorage.getItem("theme");
+	if (stored) {
+		return stored as LIGHT_DARK_MODE;
+	}
+
+	// 从配置中获取默认主题
+	const configCarrier = document.getElementById("config-carrier");
+	const defaultTheme = configCarrier?.dataset.defaultTheme as LIGHT_DARK_MODE;
+
+	// 如果配置中也没有设置，则使用常量中的默认值
+	return defaultTheme || DEFAULT_THEME;
 }
 
 // 卡片背景色类型常量

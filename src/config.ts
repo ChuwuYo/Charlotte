@@ -19,6 +19,7 @@ export const siteConfig: SiteConfig = {
 		hue: 65, // 主题颜色的默认色相，范围 0-360。例如 红色: 0, 蓝绿色: 200, 青色: 250, 粉色: 345
 		fixed: false, // 隐藏访客的主题颜色选择器
 	},
+	defaultTheme: "dark", // 默认主题模式：'light' | 'dark' | 'auto'
 	banner: {
 		enable: true,
 		src: "assets/images/banner.webp", // 相对于 /src 目录的路径。如果以 '/' 开头则相对于 /public 目录
