@@ -65,10 +65,18 @@ export function getStoredTheme(): LIGHT_DARK_MODE {
 
 	// 从配置中获取默认主题
 	const configCarrier = document.getElementById("config-carrier");
-	const defaultTheme = configCarrier?.dataset.defaultTheme as LIGHT_DARK_MODE;
+	const defaultTheme = configCarrier?.dataset.defaultTheme;
+
+	if (
+		defaultTheme === LIGHT_MODE ||
+		defaultTheme === DARK_MODE ||
+		defaultTheme === AUTO_MODE
+	) {
+		return defaultTheme;
+	}
 
 	// 如果配置中也没有设置，则使用常量中的默认值
-	return defaultTheme || DEFAULT_THEME;
+	return DEFAULT_THEME;
 }
 
 // 卡片背景色类型常量
