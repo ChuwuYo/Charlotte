@@ -153,6 +153,18 @@
     transform: scale(1.05);
 }
 
+/* 图片加载动画 */
+@keyframes loading-progress {
+    0% { transform: translateX(-100%); }
+    50% { transform: translateX(300%); }
+    100% { transform: translateX(-100%); }
+}
+
+.animate-loading-progress {
+    animation: loading-progress 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    will-change: transform;
+}
+
 ::selection {
     background-color: var(--selection-bg)
 }

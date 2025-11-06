@@ -54,11 +54,17 @@ if (isLocal) {
 	img = await file();
 }
 
-const imageClass = "w-full h-full object-cover";
+const imageClass =
+	"w-full h-full object-cover image-content opacity-0 transition-opacity duration-500";
 const imageStyle = `object-position: ${position}`;
+const onloadScript =
+	"this.style.opacity='1'; this.parentElement.querySelector('.loading-bar').style.opacity='0';";
 ---
 <div id={id} class:list={[className, 'overflow-hidden relative']}>
-    <!-- 移除暗色模式冗余的遮罩层，由各组件自行处理视觉效果 -->
-    {isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority}/>}
-    {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority}/>}
+    <div class="loading-bar absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-1 bg-gray-200/80 dark:bg-gray-700/80 z-10 rounded-full overflow-hidden transition-opacity duration-500">
+        <div class="h-full w-8 bg-[var(--primary)] animate-loading-progress rounded-full"></div>
+    </div>
+	<!-- 移除暗色模式冗余的遮罩层，由各组件自行处理视觉效果 -->
+    {isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority} onload={onloadScript}/>}
+    {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority} onload={onloadScript}/>}
 </div>
