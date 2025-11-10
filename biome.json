@@ -13,7 +13,8 @@
 			"!**/src/public/**/*",
 			"!**/dist/**/*",
 			"!**/node_modules/**/*",
-			"!**/.astro/**/*"
+			"!**/.astro/**/*",
+			"!src/content/posts/.obsidian/**/*"
 		]
 	},
 	"formatter": {
