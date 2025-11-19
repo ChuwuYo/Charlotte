@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main ] # Adjust branches as needed
 
+permissions:
+  contents: read
+
 jobs:
   quality:
     runs-on: ubuntu-latest
