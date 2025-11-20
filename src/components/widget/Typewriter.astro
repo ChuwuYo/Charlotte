@@ -1,18 +1,11 @@
 ---
 interface Props {
-	/** 要轮播的文字数组 */
 	words: string[];
-	/** 打字速度 (ms) - 每个字符的输入间隔 */
 	typeSpeed?: number;
-	/** 删除速度 (ms) - 每个字符的删除间隔 */
 	deleteSpeed?: number;
-	/** 打完字后的停留时间 (ms) */
 	delay?: number;
-	/** 自定义 CSS 类名 */
 	class?: string;
-	/** 光标字符，默认为 | */
 	cursor?: string;
-	/** 是否显示光标 */
 	showCursor?: boolean;
 }
 
@@ -99,49 +92,33 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 			}
 		}
 
-		/**
-		 * 检测字符是否为中文、日文或韩文
-		 */
+		// 检测字符是否为中文、日文或韩文
 		private isCJKCharacter(char: string): boolean {
 			const code = char.charCodeAt(0);
 			return (
-				(code >= 0x4E00 && code <= 0x9FFF) ||   // CJK 统一表意文字
-				(code >= 0x3400 && code <= 0x4DBF) ||   // CJK 扩展 A
-				(code >= 0x20000 && code <= 0x2A6DF) || // CJK 扩展 B
-				(code >= 0x2A700 && code <= 0x2B73F) || // CJK 扩展 C
-				(code >= 0x2B740 && code <= 0x2B81F) || // CJK 扩展 D
-				(code >= 0x2B820 && code <= 0x2CEAF) || // CJK 扩展 E
-				(code >= 0x3040 && code <= 0x309F) ||   // 日文平假名
-				(code >= 0x30A0 && code <= 0x30FF) ||   // 日文片假名
-				(code >= 0xAC00 && code <= 0xD7AF)      // 韩文音节
+				(code >= 0x4E00 && code <= 0x9FFF) ||
+				(code >= 0x3400 && code <= 0x4DBF) ||
+				(code >= 0x20000 && code <= 0x2A6DF) ||
+				(code >= 0x2A700 && code <= 0x2B73F) ||
+				(code >= 0x2B740 && code <= 0x2B81F) ||
+				(code >= 0x2B820 && code <= 0x2CEAF) ||
+				(code >= 0x3040 && code <= 0x309F) ||
+				(code >= 0x30A0 && code <= 0x30FF) ||
+				(code >= 0xAC00 && code <= 0xD7AF)
 			);
 		}
 
-		/**
-		 * 获取当前字符的打字速度（中文字符使用更长的间隔）
-		 */
+		// 获取当前字符的打字速度（中文字符使用更长的间隔）
 		private getTypeSpeed(char: string): number {
-			if (this.isCJKCharacter(char)) {
-				// 中文字符使用 2 倍的基础打字速度
-				return this.typeSpeed * 2;
-			}
-			return this.typeSpeed;
+			return this.isCJKCharacter(char) ? this.typeSpeed * 2 : this.typeSpeed;
 		}
 
-		/**
-		 * 获取当前字符的删除速度
-		 */
+		// 获取当前字符的删除速度
 		private getDeleteSpeed(char: string): number {
-			if (this.isCJKCharacter(char)) {
-				// 中文字符使用 2 倍的基础删除速度
-				return this.deleteSpeed * 2;
-			}
-			return this.deleteSpeed;
+			return this.isCJKCharacter(char) ? this.deleteSpeed * 2 : this.deleteSpeed;
 		}
 
-		/**
-		 * 触发自定义事件
-		 */
+		// 触发自定义事件
 		private dispatchEvent(eventName: string, detail: any = {}) {
 			const event = new CustomEvent(eventName, { 
 				detail,
@@ -197,14 +174,11 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 					nextIndex: this.wordIndex % this.words.length 
 				});
 				
-				// 删除完成后，光标原地闪烁 2s (约 2000ms) 后再开始下一句
+				// 删除完成后，光标原地闪烁 2s 后再开始下一句
 				this.timeoutId = window.setTimeout(() => this.tick(), 2000);
 			}
 		}
 
-		/**
-		 * 清理定时器（组件卸载时调用）
-		 */
 		public destroy() {
 			if (this.timeoutId) {
 				clearTimeout(this.timeoutId);
@@ -213,21 +187,15 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 		}
 	}
 
-	/**
-	 * 初始化所有打字机实例
-	 * 使用类选择器支持页面中多个打字机
-	 */
 	function initTypewriters() {
 		const elements = document.querySelectorAll<HTMLElement>('.typewriter-text');
 		elements.forEach(el => {
-			// 避免重复初始化
 			if (!(el as any).__typewriter) {
 				(el as any).__typewriter = new TypewriterEffect(el);
 			}
 		});
 	}
 
-	// 页面加载时初始化
 	if (document.readyState === 'loading') {
 		document.addEventListener('DOMContentLoaded', initTypewriters);
 	} else {
