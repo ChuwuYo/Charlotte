@@ -16,14 +16,14 @@ interface Props {
 	showCursor?: boolean;
 }
 
-const { 
-	words = ["Hello World", "Welcome to Astro"], 
-	typeSpeed = 100, 
-	deleteSpeed = 50, 
+const {
+	words = ["Hello World", "Welcome to Astro"],
+	typeSpeed = 100,
+	deleteSpeed = 50,
 	delay = 2000,
 	class: className = "",
 	cursor = "|",
-	showCursor = true
+	showCursor = true,
 } = Astro.props;
 
 // 生成唯一 ID 以支持页面中多个打字机实例
@@ -38,22 +38,22 @@ const uniqueId = `typewriter-${Math.random().toString(36).substr(2, 9)}`;
 		data-type-speed={typeSpeed}
 		data-delete-speed={deleteSpeed}
 		data-delay={delay}
-	></span>
-	{showCursor && <span class="typewriter-cursor">{cursor}</span>}
+	></span>{showCursor && <span class="typewriter-cursor">{cursor}</span>}
 </span>
 
 <style>
 	.typewriter-wrapper {
-		display: inline-flex;
-		align-items: center;
+		display: inline;
+		word-wrap: break-word;
+		word-break: break-word;
 	}
 
 	.typewriter-text {
-		display: inline-block;
+		display: inline;
 	}
 
 	.typewriter-cursor {
-		display: inline-block;
+		display: inline;
 		margin-left: 2px;
 		animation: blink 1s step-end infinite;
 		opacity: 1;

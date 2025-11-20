@@ -30,15 +30,16 @@ export const siteConfig: SiteConfig = {
 			url: "", // （可选）原始作品或艺术家页面的 URL 链接
 		},
 		text: {
-			title: "Chuwu's Blog",  // 可选：主标题（大标题）
-			subtitle: [                // 必需：副标题数组（打字机文本）
-				{ 
+			title: "Chuwu's Blog", // 可选：主标题（大标题）
+			subtitle: [
+				// 必需：副标题数组（打字机文本）
+				{
 					text: "命中注定一般的邂逅，这场邂逅，我绝对不会忘记",
-					author: "可塑性记忆 - To You"
+					author: "可塑性记忆 - To You", //此行可不写
 				},
 				{
 					text: "如果有一天，你来到了我们的终点，能为我们献上一束花吗",
-					author: "86 —不存在的战区—"
+					author: "86 —不存在的战区—",
 				},
 			],
 		},

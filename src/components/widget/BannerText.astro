@@ -1,39 +1,38 @@
 ---
-import { siteConfig } from '@/config';
-import Typewriter from './Typewriter.astro';
+import { siteConfig } from "@/config";
+import Typewriter from "./Typewriter.astro";
 
 const { title, subtitle } = siteConfig.banner.text || {};
-const subtitleTexts = subtitle?.map(s => s.text) || [];
+const subtitleTexts = subtitle?.map((s) => s.text) || [];
 const subtitleData = subtitle || [];
 ---
 
 {(title || (subtitle && subtitle.length > 0)) && (
-    <div class="banner-text-container text-center text-white pointer-events-none select-none w-full max-w-[90%] mb-8 md:mb-0">
+    <div class="banner-text-container text-center text-white pointer-events-none select-none w-full px-4 sm:px-8 max-w-[min(90%,1200px)] mb-8 md:mb-0">
         {title && (
-            <h1 class="text-4xl md:text-5xl font-bold mb-8 tracking-wider drop-shadow-lg">{title}</h1>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 tracking-wider drop-shadow-lg break-words">{title}</h1>
         )}
         
         {subtitle && subtitle.length > 0 && (
             <div class="relative inline-block max-w-full">
                 <!-- 装饰引号 -->
-                <span class="quote-left absolute -top-4 -left-8 md:-left-10 text-2xl md:text-3xl opacity-0 transition-opacity duration-300">『</span>
-                <span class="quote-right absolute -bottom-4 -right-8 md:-right-10 text-2xl md:text-3xl opacity-0 transition-opacity duration-300">』</span>
+                <span class="quote-left absolute -top-4 -left-6 sm:-left-8 md:-left-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300">『</span>
+                <span class="quote-right absolute -bottom-4 -right-6 sm:-right-8 md:-right-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300">』</span>
                 
                 <!-- 打字机文本 -->
-                <div class="text-xl md:text-2xl font-medium min-h-[2rem] flex flex-col items-center justify-center px-2">
+                <div class="text-lg sm:text-xl md:text-2xl font-medium min-h-[2rem] px-2">
                     <Typewriter 
                         words={subtitleTexts}
                         typeSpeed={100}
                         deleteSpeed={50}
                         delay={3000}
-                        class="drop-shadow-md"
+                        class="drop-shadow-md break-words"
                     />
                 </div>
                 
                 <!-- 作者显示区域（动态显示） -->
                 <div 
-                    class="typewriter-author absolute -bottom-10 text-sm md:text-base font-light tracking-wide opacity-0 transition-opacity duration-1000 whitespace-nowrap"
-                    style="left: 100%; margin-left: -4rem;"
+                    class="typewriter-author absolute -bottom-8 sm:-bottom-10 md:left-full md:-translate-x-16 left-1/2 -translate-x-1/2 md:translate-x-0 text-xs sm:text-sm md:text-base font-light tracking-wide opacity-0 transition-opacity duration-1000 max-w-[90vw] md:max-w-none text-center md:text-left px-2 md:whitespace-nowrap"
                     data-authors={JSON.stringify(subtitleData)}
                 ></div>
             </div>
@@ -128,8 +127,9 @@ const subtitleData = subtitle || [];
             const author = this.authors[index].author;
             this.authorElement.textContent = `—— 「 ${author} 」`;
             
-            // 淡入作者
+            // 检测溢出并调整位置
             requestAnimationFrame(() => {
+                this.adjustAuthorPosition();
                 this.authorElement?.classList.add('show-author');
             });
 
@@ -142,6 +142,22 @@ const subtitleData = subtitle || [];
             this.hideAuthorTimeout = window.setTimeout(() => {
                 this.hideAuthor();
             }, 4000);
+        }
+
+        /**
+         * 调整作者位置防止溢出
+         */
+        private adjustAuthorPosition() {
+            if (!this.authorElement || window.innerWidth < 768) return;
+
+            const rect = this.authorElement.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            const padding = 32;
+
+            if (rect.right > viewportWidth - padding || rect.left < padding) {
+                this.authorElement.style.left = '50%';
+                this.authorElement.style.transform = 'translateX(-50%)';
+            }
         }
 
         /**
