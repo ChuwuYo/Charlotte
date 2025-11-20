@@ -23,6 +23,13 @@ export type SiteConfig = {
 			text: string;
 			url?: string;
 		};
+		text?: {
+			title?: string;
+			subtitle?: Array<{
+				text: string;
+				author?: string;
+			}>;
+		};
 	};
 	toc: {
 		enable: boolean;

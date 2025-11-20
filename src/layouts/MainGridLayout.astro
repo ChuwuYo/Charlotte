@@ -14,6 +14,7 @@ import {
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "../constants/constants";
 import Layout from "./Layout.astro";
+import BannerText from "@components/widget/BannerText.astro";
 
 interface Props {
 	title?: string;
@@ -57,6 +58,9 @@ const mainPanelTop = siteConfig.banner.enable
                   src={siteConfig.banner.src} position={siteConfig.banner.position}
     >
     </ImageWrapper>
+    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+        <BannerText />
+    </div>
 </div>}
 
 <!-- Main content -->

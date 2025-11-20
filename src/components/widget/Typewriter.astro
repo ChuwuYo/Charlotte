@@ -1,0 +1,239 @@
+---
+interface Props {
+	/** 要轮播的文字数组 */
+	words: string[];
+	/** 打字速度 (ms) - 每个字符的输入间隔 */
+	typeSpeed?: number;
+	/** 删除速度 (ms) - 每个字符的删除间隔 */
+	deleteSpeed?: number;
+	/** 打完字后的停留时间 (ms) */
+	delay?: number;
+	/** 自定义 CSS 类名 */
+	class?: string;
+	/** 光标字符，默认为 | */
+	cursor?: string;
+	/** 是否显示光标 */
+	showCursor?: boolean;
+}
+
+const { 
+	words = ["Hello World", "Welcome to Astro"], 
+	typeSpeed = 100, 
+	deleteSpeed = 50, 
+	delay = 2000,
+	class: className = "",
+	cursor = "|",
+	showCursor = true
+} = Astro.props;
+
+// 生成唯一 ID 以支持页面中多个打字机实例
+const uniqueId = `typewriter-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<span class:list={["typewriter-wrapper", className]}>
+	<span 
+		id={uniqueId}
+		class="typewriter-text" 
+		data-words={JSON.stringify(words)} 
+		data-type-speed={typeSpeed}
+		data-delete-speed={deleteSpeed}
+		data-delay={delay}
+	></span>
+	{showCursor && <span class="typewriter-cursor">{cursor}</span>}
+</span>
+
+<style>
+	.typewriter-wrapper {
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.typewriter-text {
+		display: inline-block;
+	}
+
+	.typewriter-cursor {
+		display: inline-block;
+		margin-left: 2px;
+		animation: blink 1s step-end infinite;
+		opacity: 1;
+	}
+
+	@keyframes blink {
+		0%, 50% { opacity: 1; }
+		50.01%, 100% { opacity: 0; }
+	}
+</style>
+
+<script>
+	class TypewriterEffect {
+		private element: HTMLElement;
+		private words: string[];
+		private typeSpeed: number;
+		private deleteSpeed: number;
+		private delay: number;
+		private currentText: string = '';
+		private wordIndex: number = 0;
+		private isDeleting: boolean = false;
+		private timeoutId: number | null = null;
+
+		constructor(element: HTMLElement) {
+			this.element = element;
+			
+			// 从 DOM 属性读取配置
+			try {
+				this.words = JSON.parse(element.dataset.words || '[]');
+				this.typeSpeed = parseInt(element.dataset.typeSpeed || '100');
+				this.deleteSpeed = parseInt(element.dataset.deleteSpeed || '50');
+				this.delay = parseInt(element.dataset.delay || '2000');
+			} catch (error) {
+				console.error('Typewriter: 配置解析失败', error);
+				this.words = ['Error'];
+				this.typeSpeed = 100;
+				this.deleteSpeed = 50;
+				this.delay = 2000;
+			}
+
+			if (this.words.length > 0) {
+				this.tick();
+			}
+		}
+
+		/**
+		 * 检测字符是否为中文、日文或韩文
+		 */
+		private isCJKCharacter(char: string): boolean {
+			const code = char.charCodeAt(0);
+			return (
+				(code >= 0x4E00 && code <= 0x9FFF) ||   // CJK 统一表意文字
+				(code >= 0x3400 && code <= 0x4DBF) ||   // CJK 扩展 A
+				(code >= 0x20000 && code <= 0x2A6DF) || // CJK 扩展 B
+				(code >= 0x2A700 && code <= 0x2B73F) || // CJK 扩展 C
+				(code >= 0x2B740 && code <= 0x2B81F) || // CJK 扩展 D
+				(code >= 0x2B820 && code <= 0x2CEAF) || // CJK 扩展 E
+				(code >= 0x3040 && code <= 0x309F) ||   // 日文平假名
+				(code >= 0x30A0 && code <= 0x30FF) ||   // 日文片假名
+				(code >= 0xAC00 && code <= 0xD7AF)      // 韩文音节
+			);
+		}
+
+		/**
+		 * 获取当前字符的打字速度（中文字符使用更长的间隔）
+		 */
+		private getTypeSpeed(char: string): number {
+			if (this.isCJKCharacter(char)) {
+				// 中文字符使用 2 倍的基础打字速度
+				return this.typeSpeed * 2;
+			}
+			return this.typeSpeed;
+		}
+
+		/**
+		 * 获取当前字符的删除速度
+		 */
+		private getDeleteSpeed(char: string): number {
+			if (this.isCJKCharacter(char)) {
+				// 中文字符使用 2 倍的基础删除速度
+				return this.deleteSpeed * 2;
+			}
+			return this.deleteSpeed;
+		}
+
+		/**
+		 * 触发自定义事件
+		 */
+		private dispatchEvent(eventName: string, detail: any = {}) {
+			const event = new CustomEvent(eventName, { 
+				detail,
+				bubbles: true,
+				composed: true
+			});
+			this.element.dispatchEvent(event);
+		}
+
+		private tick() {
+			const currentWordIndex = this.wordIndex % this.words.length;
+			const fullText = this.words[currentWordIndex];
+
+			// 状态 1: 打字中
+			if (!this.isDeleting && this.currentText.length < fullText.length) {
+				this.currentText = fullText.substring(0, this.currentText.length + 1);
+				this.element.textContent = this.currentText;
+				
+				// 获取刚打出的字符的速度
+				const lastChar = this.currentText[this.currentText.length - 1];
+				const speed = this.getTypeSpeed(lastChar);
+				
+				this.timeoutId = window.setTimeout(() => this.tick(), speed);
+			} 
+			// 状态 2: 打字完成 - 停留并触发事件
+			else if (!this.isDeleting && this.currentText === fullText) {
+				// 触发打字完成事件，传递当前文本索引
+				this.dispatchEvent('typewriter:complete', { 
+					text: fullText, 
+					index: currentWordIndex 
+				});
+				
+				this.isDeleting = true;
+				// 增加 2s 的额外停留时间
+				this.timeoutId = window.setTimeout(() => this.tick(), this.delay + 2000);
+			} 
+			// 状态 3: 删除中
+			else if (this.isDeleting && this.currentText.length > 0) {
+				const charToDelete = this.currentText[this.currentText.length - 1];
+				this.currentText = fullText.substring(0, this.currentText.length - 1);
+				this.element.textContent = this.currentText;
+				
+				const speed = this.getDeleteSpeed(charToDelete);
+				this.timeoutId = window.setTimeout(() => this.tick(), speed);
+			} 
+			// 状态 4: 删除完成 - 切换到下一个单词并触发事件
+			else if (this.isDeleting && this.currentText === '') {
+				this.isDeleting = false;
+				this.wordIndex++;
+				
+				// 触发删除完成事件
+				this.dispatchEvent('typewriter:deleted', { 
+					nextIndex: this.wordIndex % this.words.length 
+				});
+				
+				// 删除完成后，光标原地闪烁 2s (约 2000ms) 后再开始下一句
+				this.timeoutId = window.setTimeout(() => this.tick(), 2000);
+			}
+		}
+
+		/**
+		 * 清理定时器（组件卸载时调用）
+		 */
+		public destroy() {
+			if (this.timeoutId) {
+				clearTimeout(this.timeoutId);
+				this.timeoutId = null;
+			}
+		}
+	}
+
+	/**
+	 * 初始化所有打字机实例
+	 * 使用类选择器支持页面中多个打字机
+	 */
+	function initTypewriters() {
+		const elements = document.querySelectorAll<HTMLElement>('.typewriter-text');
+		elements.forEach(el => {
+			// 避免重复初始化
+			if (!(el as any).__typewriter) {
+				(el as any).__typewriter = new TypewriterEffect(el);
+			}
+		});
+	}
+
+	// 页面加载时初始化
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initTypewriters);
+	} else {
+		initTypewriters();
+	}
+
+	// 支持 Astro 页面切换（View Transitions）
+	document.addEventListener('astro:page-load', initTypewriters);
+</script>

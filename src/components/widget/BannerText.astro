@@ -1,0 +1,230 @@
+---
+import { siteConfig } from '@/config';
+import Typewriter from './Typewriter.astro';
+
+const { title, subtitle } = siteConfig.banner.text || {};
+const subtitleTexts = subtitle?.map(s => s.text) || [];
+const subtitleData = subtitle || [];
+---
+
+{(title || (subtitle && subtitle.length > 0)) && (
+    <div class="banner-text-container text-center text-white pointer-events-none select-none w-full max-w-[90%] mb-8 md:mb-0">
+        {title && (
+            <h1 class="text-4xl md:text-5xl font-bold mb-8 tracking-wider drop-shadow-lg">{title}</h1>
+        )}
+        
+        {subtitle && subtitle.length > 0 && (
+            <div class="relative inline-block max-w-full">
+                <!-- 装饰引号 -->
+                <span class="quote-left absolute -top-4 -left-8 md:-left-10 text-2xl md:text-3xl opacity-0 transition-opacity duration-300">『</span>
+                <span class="quote-right absolute -bottom-4 -right-8 md:-right-10 text-2xl md:text-3xl opacity-0 transition-opacity duration-300">』</span>
+                
+                <!-- 打字机文本 -->
+                <div class="text-xl md:text-2xl font-medium min-h-[2rem] flex flex-col items-center justify-center px-2">
+                    <Typewriter 
+                        words={subtitleTexts}
+                        typeSpeed={100}
+                        deleteSpeed={50}
+                        delay={3000}
+                        class="drop-shadow-md"
+                    />
+                </div>
+                
+                <!-- 作者显示区域（动态显示） -->
+                <div 
+                    class="typewriter-author absolute -bottom-10 text-sm md:text-base font-light tracking-wide opacity-0 transition-opacity duration-1000 whitespace-nowrap"
+                    style="left: 100%; margin-left: -4rem;"
+                    data-authors={JSON.stringify(subtitleData)}
+                ></div>
+            </div>
+        )}
+    </div>
+)}
+
+<script>
+    /**
+     * Banner 文本可见性控制和作者显示逻辑
+     */
+    class BannerTextController {
+        private container: HTMLElement | null;
+        private authorElement: HTMLElement | null;
+        private typewriterElement: HTMLElement | null;
+        private authors: Array<{ text: string; author?: string }> = [];
+        private hideAuthorTimeout: number | null = null;
+
+        constructor() {
+            this.container = document.querySelector('.banner-text-container');
+            this.authorElement = document.querySelector('.typewriter-author');
+            this.typewriterElement = document.querySelector('.typewriter-text');
+            
+            // 读取作者数据
+            if (this.authorElement?.dataset.authors) {
+                try {
+                    this.authors = JSON.parse(this.authorElement.dataset.authors);
+                } catch (error) {
+                    console.error('解析作者数据失败:', error);
+                }
+            }
+            
+            this.checkVisibility();
+            this.setupNavigationListeners();
+            this.setupTypewriterListeners();
+        }
+
+        /**
+         * 检查并设置可见性
+         */
+        private checkVisibility() {
+            const path = window.location.pathname;
+            const isHome = path === '/' || path === '/index.html' || path === '';
+            
+            if (this.container) {
+                if (isHome) {
+                    this.show();
+                } else {
+                    this.hide();
+                }
+            }
+        }
+
+        private show() {
+            if (this.container) {
+                this.container.classList.add('banner-visible');
+            }
+        }
+
+        private hide() {
+            if (this.container) {
+                this.container.classList.remove('banner-visible');
+            }
+        }
+
+        /**
+         * 设置打字机事件监听器
+         */
+        private setupTypewriterListeners() {
+            if (!this.typewriterElement) return;
+
+            // 监听打字完成事件
+            this.typewriterElement.addEventListener('typewriter:complete', ((event: CustomEvent) => {
+                const { index } = event.detail;
+                this.showAuthor(index);
+            }) as EventListener);
+
+            // 监听删除开始事件
+            this.typewriterElement.addEventListener('typewriter:deleted', (() => {
+                this.hideAuthor();
+            }) as EventListener);
+        }
+
+        /**
+         * 显示指定索引的作者
+         */
+        private showAuthor(index: number) {
+            if (!this.authorElement || !this.authors[index]?.author) {
+                return;
+            }
+
+            const author = this.authors[index].author;
+            this.authorElement.textContent = `—— 「 ${author} 」`;
+            
+            // 淡入作者
+            requestAnimationFrame(() => {
+                this.authorElement?.classList.add('show-author');
+            });
+
+            // 清除之前的隐藏定时器
+            if (this.hideAuthorTimeout) {
+                clearTimeout(this.hideAuthorTimeout);
+            }
+
+            // 4 秒后开始淡出作者（配合删除动画 + 额外停留）
+            this.hideAuthorTimeout = window.setTimeout(() => {
+                this.hideAuthor();
+            }, 4000);
+        }
+
+        /**
+         * 隐藏作者
+         */
+        private hideAuthor() {
+            if (!this.authorElement) return;
+            
+            this.authorElement.classList.remove('show-author');
+            
+            // 等待淡出动画完成后清空文本
+            setTimeout(() => {
+                if (this.authorElement) {
+                    this.authorElement.textContent = '';
+                }
+            }, 1000);
+        }
+
+        private setupNavigationListeners() {
+            document.addEventListener('astro:page-load', () => {
+                this.checkVisibility();
+            });
+            document.addEventListener('swup:contentReplaced', () => {
+                this.checkVisibility();
+            });
+        }
+    }
+
+    /**
+     * 初始化
+     */
+    function initBannerText() {
+        // 先检查是否在首页
+        const path = window.location.pathname;
+        const isHome = path === '/' || path === '/index.html' || path === '';
+        
+        if (isHome) {
+            const container = document.querySelector('.banner-text-container');
+            if (container) {
+                container.classList.add('banner-visible');
+            }
+        }
+
+        // 初始化控制器
+        new BannerTextController();
+    }
+
+    // 页面加载时初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBannerText);
+    } else {
+        initBannerText();
+    }
+
+    // 支持页面切换
+    document.addEventListener('astro:page-load', initBannerText);
+</script>
+
+<style>
+    .banner-text-container {
+        opacity: 0;
+        transition: opacity 300ms ease-in-out;
+    }
+
+    .banner-text-container.banner-visible {
+        opacity: 1;
+    }
+
+    /* 引号淡入效果 */
+    .banner-text-container.banner-visible .quote-left,
+    .banner-text-container.banner-visible .quote-right {
+        opacity: 0.8;
+    }
+
+    /* 作者显示/隐藏动画 */
+    .typewriter-author {
+        opacity: 0;
+        transform: translateY(-5px);
+        transition: opacity 1000ms ease, transform 1000ms ease;
+    }
+
+    .typewriter-author.show-author {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
