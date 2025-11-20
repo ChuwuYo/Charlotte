@@ -27,7 +27,7 @@ const {
 } = Astro.props;
 
 // 生成唯一 ID 以支持页面中多个打字机实例
-const uniqueId = `typewriter-${Math.random().toString(36).substr(2, 9)}`;
+const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 ---
 
 <span class:list={["typewriter-wrapper", className]}>
