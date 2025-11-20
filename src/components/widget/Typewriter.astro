@@ -236,4 +236,14 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 
 	// 支持 Astro 页面切换（View Transitions）
 	document.addEventListener('astro:page-load', initTypewriters);
+
+	// 在页面切换前清理所有打字机实例
+	document.addEventListener('astro:before-swap', () => {
+		document.querySelectorAll<HTMLElement>('.typewriter-text').forEach(el => {
+			if ((el as any).__typewriter) {
+				(el as any).__typewriter.destroy();
+				delete (el as any).__typewriter;
+			}
+		});
+	});
 </script>
