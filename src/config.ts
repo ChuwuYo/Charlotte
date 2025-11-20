@@ -47,6 +47,7 @@ export const siteConfig: SiteConfig = {
 				subtitle: { light: "#f0e5db", dark: "#fff1cdff" },
 				author: "default",
 			},
+			quoteFloat: true, // 引号浮动动画
 		},
 	},
 	toc: {

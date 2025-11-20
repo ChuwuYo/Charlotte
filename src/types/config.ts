@@ -34,6 +34,7 @@ export type SiteConfig = {
 				subtitle?: { light: string; dark: string } | "default";
 				author?: { light: string; dark: string } | "default";
 			};
+			quoteFloat?: boolean;
 		};
 	};
 	toc: {

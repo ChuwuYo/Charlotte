@@ -2,7 +2,7 @@
 import { siteConfig } from "@/config";
 import Typewriter from "./Typewriter.astro";
 
-const { title, subtitle, color } = siteConfig.banner.text || {};
+const { title, subtitle, color, quoteFloat } = siteConfig.banner.text || {};
 const subtitleTexts = subtitle?.map((s) => s.text) || [];
 const subtitleData = subtitle || [];
 
@@ -29,8 +29,8 @@ const authorColor =
         {subtitle && subtitle.length > 0 && (
             <div class="relative inline-block max-w-full">
                 <!-- 装饰引号 -->
-                <span class="quote-left absolute -top-4 -left-6 sm:-left-8 md:-left-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>『</span>
-                <span class="quote-right absolute -bottom-4 -right-6 sm:-right-8 md:-right-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>』</span>
+                <span class="quote-left absolute -top-4 -left-6 sm:-left-8 md:-left-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" class:list={[quoteFloat && 'quote-float']} style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>『</span>
+                <span class="quote-right absolute -bottom-4 -right-6 sm:-right-8 md:-right-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" class:list={[quoteFloat && 'quote-float-delayed']} style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>』</span>
                 
                 <!-- 打字机文本 -->
                 <div class="text-lg sm:text-xl md:text-2xl font-medium min-h-[2rem] px-2 text-autospace-no-autospace" style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>
@@ -244,6 +244,20 @@ const authorColor =
     .banner-text-container.banner-visible .quote-left,
     .banner-text-container.banner-visible .quote-right {
         opacity: 0.8;
+    }
+
+    /* 引号浮动动画 */
+    .banner-text-container.banner-visible .quote-float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .banner-text-container.banner-visible .quote-float-delayed {
+        animation: float 3s ease-in-out infinite 1.5s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
     }
 
     /* 作者显示/隐藏动画 */
