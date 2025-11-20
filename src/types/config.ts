@@ -29,6 +29,11 @@ export type SiteConfig = {
 				text: string;
 				author?: string;
 			}>;
+			color?: {
+				title?: { light: string; dark: string } | "default";
+				subtitle?: { light: string; dark: string } | "default";
+				author?: { light: string; dark: string } | "default";
+			};
 		};
 	};
 	toc: {

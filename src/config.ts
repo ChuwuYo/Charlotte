@@ -42,6 +42,11 @@ export const siteConfig: SiteConfig = {
 					author: "86 —不存在的战区—",
 				},
 			],
+			color: {
+				title: "default", // 'default' (亮暗模式均为白色) 或 { light: '#000000', dark: '#ffffff' }
+				subtitle: { light: "#f0e5db", dark: "#fff1cdff" },
+				author: "default",
+			},
 		},
 	},
 	toc: {
