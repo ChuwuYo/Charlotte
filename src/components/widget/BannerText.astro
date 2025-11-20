@@ -6,7 +6,7 @@ const { title, subtitle, color, quoteFloat } = siteConfig.banner.text || {};
 const subtitleTexts = subtitle?.map((s) => s.text) || [];
 const subtitleData = subtitle || [];
 
-const getColorOrDefault = (colorValue: any) =>
+const getColorOrDefault = (colorValue: { light: string; dark: string } | "default" | undefined) =>
 	colorValue === "default" || !colorValue
 		? { light: "#ffffff", dark: "#ffffff" }
 		: colorValue;
@@ -82,7 +82,7 @@ const authorColor = getColorOrDefault(color?.author);
         /**
          * 检查并设置可见性
          */
-        public checkVisibility() {
+        private checkVisibility() {
             const path = window.location.pathname;
             const isHome = path === '/' || path === '/index.html' || path === '';
             
@@ -178,26 +178,20 @@ const authorColor = getColorOrDefault(color?.author);
             this.authorElement.classList.remove('show-author');
             
             // 等待淡出动画完成后清空文本
-            setTimeout(() => {
+            this.authorElement.addEventListener('transitionend', () => {
                 if (this.authorElement) {
                     this.authorElement.textContent = '';
                 }
-            }, 1000);
+            }, { once: true });
         }
 
     }
-
-    let controller: BannerTextController | null = null;
 
     /**
      * 初始化
      */
     function initBannerText() {
-        if (!controller) {
-            controller = new BannerTextController();
-        } else {
-            controller.checkVisibility();
-        }
+        new BannerTextController();
     }
 
     // 页面加载时初始化
@@ -208,9 +202,7 @@ const authorColor = getColorOrDefault(color?.author);
     }
 
     // 支持页面切换
-    document.addEventListener('astro:page-load', () => {
-        controller?.checkVisibility();
-    });
+    document.addEventListener('astro:page-load', initBannerText);
 </script>
 
 <style>
