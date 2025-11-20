@@ -6,7 +6,9 @@ const { title, subtitle, color, quoteFloat } = siteConfig.banner.text || {};
 const subtitleTexts = subtitle?.map((s) => s.text) || [];
 const subtitleData = subtitle || [];
 
-const getColorOrDefault = (colorValue: { light: string; dark: string } | "default" | undefined) =>
+const getColorOrDefault = (
+	colorValue: { light: string; dark: string } | "default" | undefined,
+) =>
 	colorValue === "default" || !colorValue
 		? { light: "#ffffff", dark: "#ffffff" }
 		: colorValue;
