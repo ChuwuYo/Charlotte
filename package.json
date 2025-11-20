@@ -74,5 +74,5 @@
 		"postcss-import": "^16.1.1",
 		"postcss-nesting": "^13.0.2"
 	},
-	"packageManager": "pnpm@10.22.0"
+	"packageManager": "pnpm@10.23.0"
 }
