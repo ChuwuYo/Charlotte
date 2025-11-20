@@ -53,9 +53,7 @@ const authorColor = getColorOrDefault(color?.author);
 )}
 
 <script>
-    /**
-     * Banner 文本可见性控制和作者显示逻辑
-     */
+    // Banner 文本可见性控制和作者显示逻辑
     class BannerTextController {
         private container: HTMLElement | null;
         private authorElement: HTMLElement | null;
@@ -81,9 +79,7 @@ const authorColor = getColorOrDefault(color?.author);
             this.setupTypewriterListeners();
         }
 
-        /**
-         * 检查并设置可见性
-         */
+        // 检查并设置可见性
         private checkVisibility() {
             const path = window.location.pathname;
             const isHome = path === '/' || path === '/index.html' || path === '';
@@ -109,9 +105,7 @@ const authorColor = getColorOrDefault(color?.author);
             }
         }
 
-        /**
-         * 设置打字机事件监听器
-         */
+        // 设置打字机事件监听器
         private setupTypewriterListeners() {
             if (!this.typewriterElement) return;
 
@@ -127,9 +121,7 @@ const authorColor = getColorOrDefault(color?.author);
             }) as EventListener);
         }
 
-        /**
-         * 显示指定索引的作者
-         */
+        // 显示指定索引的作者
         private showAuthor(index: number) {
             if (!this.authorElement || !this.authors[index]?.author) {
                 return;
@@ -155,9 +147,7 @@ const authorColor = getColorOrDefault(color?.author);
             }, 4000);
         }
 
-        /**
-         * 调整作者位置防止溢出
-         */
+        // 调整作者位置防止溢出
         private adjustAuthorPosition() {
             if (!this.authorElement || window.innerWidth < 768) return;
 
@@ -170,10 +160,7 @@ const authorColor = getColorOrDefault(color?.author);
                 this.authorElement.style.transform = 'translateX(-50%)';
             }
         }
-
-        /**
-         * 隐藏作者
-         */
+        // 隐藏作者
         private hideAuthor() {
             if (!this.authorElement) return;
             
@@ -187,13 +174,30 @@ const authorColor = getColorOrDefault(color?.author);
             }, { once: true });
         }
 
+        public destroy() {
+            if (this.hideAuthorTimeout) {
+                clearTimeout(this.hideAuthorTimeout);
+                this.hideAuthorTimeout = null;
+            }
+        }
+
     }
 
-    /**
-     * 初始化
-     */
+    let bannerTextController: BannerTextController | null = null;
+
+    // 初始化
     function initBannerText() {
-        new BannerTextController();
+        if (document.querySelector('.banner-text-container')) {
+            bannerTextController = new BannerTextController();
+        }
+    }
+
+    // 清理
+    function cleanup() {
+        if (bannerTextController) {
+            bannerTextController.destroy();
+            bannerTextController = null;
+        }
     }
 
     // 页面加载时初始化
@@ -204,7 +208,13 @@ const authorColor = getColorOrDefault(color?.author);
     }
 
     // 支持页面切换
-    document.addEventListener('astro:page-load', initBannerText);
+    document.addEventListener('astro:page-load', () => {
+        cleanup();
+        initBannerText();
+    });
+
+    // 在页面切换前也进行清理
+    document.addEventListener('astro:before-swap', cleanup);
 </script>
 
 <style>
