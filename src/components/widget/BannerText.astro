@@ -6,18 +6,14 @@ const { title, subtitle, color, quoteFloat } = siteConfig.banner.text || {};
 const subtitleTexts = subtitle?.map((s) => s.text) || [];
 const subtitleData = subtitle || [];
 
-const titleColor =
-	color?.title === "default" || !color?.title
+const getColorOrDefault = (colorValue: any) =>
+	colorValue === "default" || !colorValue
 		? { light: "#ffffff", dark: "#ffffff" }
-		: color.title;
-const subtitleColor =
-	color?.subtitle === "default" || !color?.subtitle
-		? { light: "#ffffff", dark: "#ffffff" }
-		: color.subtitle;
-const authorColor =
-	color?.author === "default" || !color?.author
-		? { light: "#ffffff", dark: "#ffffff" }
-		: color.author;
+		: colorValue;
+
+const titleColor = getColorOrDefault(color?.title);
+const subtitleColor = getColorOrDefault(color?.subtitle);
+const authorColor = getColorOrDefault(color?.author);
 ---
 
 {(title || (subtitle && subtitle.length > 0)) && (
@@ -80,7 +76,6 @@ const authorColor =
             }
             
             this.checkVisibility();
-            this.setupNavigationListeners();
             this.setupTypewriterListeners();
         }
 
@@ -190,32 +185,12 @@ const authorColor =
             }, 1000);
         }
 
-        private setupNavigationListeners() {
-            document.addEventListener('astro:page-load', () => {
-                this.checkVisibility();
-            });
-            document.addEventListener('swup:contentReplaced', () => {
-                this.checkVisibility();
-            });
-        }
     }
 
     /**
      * 初始化
      */
     function initBannerText() {
-        // 先检查是否在首页
-        const path = window.location.pathname;
-        const isHome = path === '/' || path === '/index.html' || path === '';
-        
-        if (isHome) {
-            const container = document.querySelector('.banner-text-container');
-            if (container) {
-                container.classList.add('banner-visible');
-            }
-        }
-
-        // 初始化控制器
         new BannerTextController();
     }
 
