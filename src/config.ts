@@ -29,6 +29,26 @@ export const siteConfig: SiteConfig = {
 			text: "", // 要显示的版权文本
 			url: "", // （可选）原始作品或艺术家页面的 URL 链接
 		},
+		text: {
+			title: "Chuwu's Blog", // 可选：主标题（大标题）
+			subtitle: [
+				// 必需：副标题数组（打字机文本）
+				{
+					text: "命中注定一般的邂逅，这场邂逅，我绝对不会忘记",
+					author: "可塑性记忆 - To You", //此行可不写
+				},
+				{
+					text: "如果有一天，你来到了我们的终点，能为我们献上一束花吗",
+					author: "86 —不存在的战区—",
+				},
+			],
+			color: {
+				title: "default", // 'default' (亮暗模式均为白色) 或 { light: '#000000', dark: '#ffffff' }
+				subtitle: { light: "#f0e5db", dark: "#fff1cdff" },
+				author: "default",
+			},
+			quoteFloat: true, // 引号浮动动画
+		},
 	},
 	toc: {
 		enable: true, // 在文章右侧显示目录
@@ -58,7 +78,7 @@ export const navBarConfig: NavBarConfig = {
 		},
 	],
 	opacity: 70, // 导航栏透明度百分比，范围 0-100。100 表示完全不透明，0 表示完全透明
-	hideButtonsOnPostPage: true, // 在文章页面隐藏主题切换、主题色按钮
+	hideButtonsOnPostPage: false, // 在文章页面隐藏主题切换、主题色按钮
 };
 
 export const profileConfig: ProfileConfig = {

@@ -1,0 +1,245 @@
+---
+import { siteConfig } from "@/config";
+import Typewriter from "./Typewriter.astro";
+
+const { title, subtitle, color, quoteFloat } = siteConfig.banner.text || {};
+const subtitleTexts = subtitle?.map((s) => s.text) || [];
+const subtitleData = subtitle || [];
+
+function getColorOrDefault(
+	colorValue: { light: string; dark: string } | "default" | undefined,
+) {
+	return colorValue === "default" || !colorValue
+		? { light: "#ffffff", dark: "#ffffff" }
+		: colorValue;
+}
+
+const titleColor = getColorOrDefault(color?.title);
+const subtitleColor = getColorOrDefault(color?.subtitle);
+const authorColor = getColorOrDefault(color?.author);
+---
+
+{(title || (subtitle && subtitle.length > 0)) && (
+    <div class="banner-text-container text-center pointer-events-none select-none w-full px-4 sm:px-8 max-w-[min(90%,1200px)] mb-8 md:mb-0 text-autospace-no-autospace">
+        {title && (
+            <h1 class="banner-title text-3xl sm:text-4xl md:text-5xl font-bold mb-8 tracking-wider break-words text-autospace-no-autospace" style={titleColor ? `color: light-dark(${titleColor.light}, ${titleColor.dark})` : undefined}>{title}</h1>
+        )}
+        
+        {subtitle && subtitle.length > 0 && (
+            <div class="relative inline-block max-w-full">
+                <!-- 装饰引号 -->
+                <span class="quote-left absolute -top-4 -left-6 sm:-left-8 md:-left-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" class:list={[quoteFloat && 'quote-float']} style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>『</span>
+                <span class="quote-right absolute -bottom-4 -right-6 sm:-right-8 md:-right-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" class:list={[quoteFloat && 'quote-float-delayed']} style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>』</span>
+                
+                <!-- 打字机文本 -->
+                <div class="text-lg sm:text-xl md:text-2xl font-medium min-h-[2rem] px-2 text-autospace-no-autospace" style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>
+                    <Typewriter 
+                        words={subtitleTexts}
+                        typeSpeed={100}
+                        deleteSpeed={50}
+                        delay={3000}
+                        class="drop-shadow-md break-words"
+                    />
+                </div>
+                
+                <!-- 作者显示区域（动态显示） -->
+                <div 
+                    class="typewriter-author absolute -bottom-8 sm:-bottom-10 md:left-full md:-translate-x-16 left-1/2 -translate-x-1/2 md:translate-x-0 text-xs sm:text-sm md:text-base font-light tracking-wide opacity-0 transition-opacity duration-1000 max-w-[90vw] md:max-w-none text-center md:text-left px-2 md:whitespace-nowrap text-autospace-no-autospace"
+                    style={authorColor ? `color: light-dark(${authorColor.light}, ${authorColor.dark})` : undefined}
+                    data-authors={JSON.stringify(subtitleData)}
+                ></div>
+            </div>
+        )}
+    </div>
+)}
+
+<script>
+// Banner 文本可见性控制和作者显示逻辑
+class BannerTextController {
+    private container: HTMLElement | null;
+    private authorElement: HTMLElement | null;
+    private typewriterElement: HTMLElement | null;
+    private authors: Array<{ text: string; author?: string }> = [];
+    private hideAuthorTimeout: number | null = null;
+
+    constructor() {
+        this.container = document.querySelector('.banner-text-container');
+        this.authorElement = document.querySelector('.typewriter-author');
+        this.typewriterElement = document.querySelector('.typewriter-text');
+        
+        if (this.authorElement?.dataset.authors) {
+            try {
+                this.authors = JSON.parse(this.authorElement.dataset.authors);
+            } catch (error) {
+                console.error('解析作者数据失败:', error);
+            }
+        }
+        
+        this.checkVisibility();
+        this.setupTypewriterListeners();
+    }
+
+    // 检查并设置可见性
+    private checkVisibility() {
+        const path = window.location.pathname;
+        const isHome = path === '/' || path === '/index.html' || path === '';
+        
+        if (this.container) {
+            if (isHome) {
+                this.container.classList.add('banner-visible');
+            } else {
+                this.container.classList.remove('banner-visible');
+            }
+        }
+    }
+
+    // 设置打字机事件监听器
+    private setupTypewriterListeners() {
+        if (!this.typewriterElement) return;
+
+        this.typewriterElement.addEventListener('typewriter:complete', ((event: CustomEvent) => {
+            const { index } = event.detail;
+            this.showAuthor(index);
+        }) as EventListener);
+
+        this.typewriterElement.addEventListener('typewriter:deleted', (() => {
+            this.hideAuthor();
+        }) as EventListener);
+    }
+
+    // 显示指定索引的作者
+    private showAuthor(index: number) {
+        if (!this.authorElement || !this.authors[index]?.author) return;
+
+        const author = this.authors[index].author;
+        this.authorElement.textContent = `—— 「 ${author} 」`;
+        
+        // 检测溢出并调整位置
+        requestAnimationFrame(() => {
+            this.adjustAuthorPosition();
+            this.authorElement?.classList.add('show-author');
+        });
+
+        if (this.hideAuthorTimeout) {
+            clearTimeout(this.hideAuthorTimeout);
+        }
+
+        this.hideAuthorTimeout = window.setTimeout(() => {
+            this.hideAuthor();
+        }, 4000);
+    }
+
+    // 调整作者位置防止溢出
+    private adjustAuthorPosition() {
+        if (!this.authorElement || window.innerWidth < 768) return;
+
+        const rect = this.authorElement.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const padding = 32;
+
+        if (rect.right > viewportWidth - padding || rect.left < padding) {
+            this.authorElement.style.left = '50%';
+            this.authorElement.style.transform = 'translateX(-50%)';
+        }
+    }
+
+    private hideAuthor() {
+        if (!this.authorElement) return;
+        
+        this.authorElement.classList.remove('show-author');
+        
+        this.authorElement.addEventListener('transitionend', () => {
+            if (this.authorElement) {
+                this.authorElement.textContent = '';
+            }
+        }, { once: true });
+    }
+
+    public destroy() {
+        if (this.hideAuthorTimeout) {
+            clearTimeout(this.hideAuthorTimeout);
+            this.hideAuthorTimeout = null;
+        }
+    }
+}
+
+let bannerTextController: BannerTextController | null = null;
+
+function initBannerText() {
+    if (document.querySelector('.banner-text-container')) {
+        bannerTextController = new BannerTextController();
+    }
+}
+
+function cleanup() {
+    if (bannerTextController) {
+        bannerTextController.destroy();
+        bannerTextController = null;
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBannerText);
+} else {
+    initBannerText();
+}
+
+// 支持页面切换
+document.addEventListener('astro:page-load', () => {
+    cleanup();
+    initBannerText();
+});
+
+document.addEventListener('astro:before-swap', cleanup);
+</script>
+
+<style>
+    .banner-text-container {
+        opacity: 0;
+        transition: opacity 300ms ease-in-out;
+    }
+
+    .banner-text-container.banner-visible {
+        opacity: 1;
+    }
+
+    /* 引号淡入效果 */
+    .banner-text-container.banner-visible .quote-left,
+    .banner-text-container.banner-visible .quote-right {
+        opacity: 0.8;
+    }
+
+    /* 引号浮动动画 */
+    .banner-text-container.banner-visible .quote-float {
+        animation: float 4s ease-in-out infinite;
+    }
+
+    .banner-text-container.banner-visible .quote-float-delayed {
+        animation: float 4s ease-in-out infinite 2s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    /* 主标题增强可读性 */
+    .banner-title {
+        text-shadow: 
+            0 0 3.5px oklch(0.75 0.14 var(--hue) / 0.575);
+        -webkit-text-stroke: 0.5px rgba(0,0,0,0.2);
+        paint-order: stroke fill;
+    }
+
+    /* 作者显示/隐藏动画 */
+    .typewriter-author {
+        opacity: 0;
+        transform: translateY(-5px);
+        transition: opacity 1000ms ease, transform 1000ms ease;
+    }
+
+    .typewriter-author.show-author {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>

@@ -120,8 +120,6 @@
     /* Navbar透明度支持 - 必须在@layer外定义以避免与Tailwind冲突 */
     .navbar-with-opacity {
         background-color: color-mix(in srgb, var(--card-bg) calc(var(--navbar-opacity) * 100%), transparent);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
     }
     .btn-regular-dark.success {
         @apply bg-[var(--btn-regular-dark-success)]
