@@ -37,7 +37,7 @@ let links: NavBarLink[] = navBarConfig.links.map(
 );
 ---
 <div id="navbar" class="z-50 onload-animation" style={`--navbar-opacity: ${opacityValue};`}>
-    <div class="absolute h-8 left-0 right-0 -top-8 bg-[var(--card-bg)] transition" style={`opacity: ${opacityValue};`}></div> <!-- used for onload animation -->
+    <div class="absolute h-8 left-0 right-0 -top-8 bg-[var(--card-bg)] transition opacity-0 pointer-events-none" style={`opacity: ${opacityValue};`}></div>
     <div class:list={[
         className,
         "card-base navbar-with-opacity !overflow-visible max-w-[var(--page-width)] h-[4.5rem] !rounded-t-none mx-auto flex items-center justify-between px-4"]}>
