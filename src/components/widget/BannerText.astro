@@ -82,7 +82,7 @@ const authorColor = getColorOrDefault(color?.author);
         /**
          * 检查并设置可见性
          */
-        private checkVisibility() {
+        public checkVisibility() {
             const path = window.location.pathname;
             const isHome = path === '/' || path === '/index.html' || path === '';
             
@@ -187,11 +187,17 @@ const authorColor = getColorOrDefault(color?.author);
 
     }
 
+    let controller: BannerTextController | null = null;
+
     /**
      * 初始化
      */
     function initBannerText() {
-        new BannerTextController();
+        if (!controller) {
+            controller = new BannerTextController();
+        } else {
+            controller.checkVisibility();
+        }
     }
 
     // 页面加载时初始化
@@ -202,7 +208,9 @@ const authorColor = getColorOrDefault(color?.author);
     }
 
     // 支持页面切换
-    document.addEventListener('astro:page-load', initBannerText);
+    document.addEventListener('astro:page-load', () => {
+        controller?.checkVisibility();
+    });
 </script>
 
 <style>

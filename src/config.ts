@@ -78,7 +78,7 @@ export const navBarConfig: NavBarConfig = {
 		},
 	],
 	opacity: 70, // 导航栏透明度百分比，范围 0-100。100 表示完全不透明，0 表示完全透明
-	hideButtonsOnPostPage: true, // 在文章页面隐藏主题切换、主题色按钮
+	hideButtonsOnPostPage: false, // 在文章页面隐藏主题切换、主题色按钮
 };
 
 export const profileConfig: ProfileConfig = {
