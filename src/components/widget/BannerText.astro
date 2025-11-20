@@ -23,7 +23,7 @@ const authorColor =
 {(title || (subtitle && subtitle.length > 0)) && (
     <div class="banner-text-container text-center pointer-events-none select-none w-full px-4 sm:px-8 max-w-[min(90%,1200px)] mb-8 md:mb-0 text-autospace-no-autospace">
         {title && (
-            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 tracking-wider drop-shadow-lg break-words text-autospace-no-autospace" style={titleColor ? `color: light-dark(${titleColor.light}, ${titleColor.dark})` : undefined}>{title}</h1>
+            <h1 class="banner-title text-3xl sm:text-4xl md:text-5xl font-bold mb-8 tracking-wider break-words text-autospace-no-autospace" style={titleColor ? `color: light-dark(${titleColor.light}, ${titleColor.dark})` : undefined}>{title}</h1>
         )}
         
         {subtitle && subtitle.length > 0 && (
@@ -258,6 +258,14 @@ const authorColor =
     @keyframes float {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-8px); }
+    }
+
+    /* 主标题增强可读性 */
+    .banner-title {
+        text-shadow: 
+            0 0 3.5px oklch(0.75 0.14 var(--hue) / 0.575);
+        -webkit-text-stroke: 0.5px rgba(0,0,0,0.2);
+        paint-order: stroke fill;
     }
 
     /* 作者显示/隐藏动画 */
