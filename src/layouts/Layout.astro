@@ -416,10 +416,22 @@ const setup = () => {
 
 		// change banner height immediately when a link is clicked
 		const bodyElement = document.querySelector('body')
-		if (pathsEqual(visit.to.url, url('/'))) {
+		const isHomePage = pathsEqual(visit.to.url, url('/'))
+		
+		if (isHomePage) {
 			bodyElement!.classList.add('is-home');
 		} else {
 			bodyElement!.classList.remove('is-home');
+		}
+
+		// Control banner text visibility based on page
+		const bannerTextOverlay = document.querySelector('.banner-text-overlay')
+		if (bannerTextOverlay) {
+			if (isHomePage) {
+				bannerTextOverlay.classList.remove('hidden')
+			} else {
+				bannerTextOverlay.classList.add('hidden')
+			}
 		}
 
 		// increase the page height during page transition to prevent the scrolling animation from jumping

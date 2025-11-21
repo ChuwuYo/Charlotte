@@ -38,6 +38,7 @@ const authorColor = getColorOrDefault(color?.author);
                         typeSpeed={100}
                         deleteSpeed={50}
                         delay={3000}
+                        startDelay={2000}
                         class="drop-shadow-md break-words"
                     />
                 </div>
@@ -70,9 +71,10 @@ class BannerTextController {
         this.container = document.querySelector('.banner-text-container');
         this.authorElement = document.querySelector('.typewriter-author');
         
-        // 直接设置为可见（组件仅在首页渲染）
-        if (this.container) {
-            this.container.classList.add('banner-visible');
+        // 清空可能被缓存的文本内容
+        if (this.authorElement) {
+            this.authorElement.classList.remove('show-author');
+            this.authorElement.textContent = '';
         }
         
         if (this.authorElement?.dataset.authors) {
@@ -159,6 +161,14 @@ class BannerTextController {
             clearTimeout(this.hideAuthorTimeout);
             this.hideAuthorTimeout = null;
         }
+
+        // 销毁打字机实例
+        if (this.typewriterElement) {
+            const typewriterInstance = (this.typewriterElement as any).__typewriter;
+            if (typewriterInstance) {
+                typewriterInstance.destroy();
+            }
+        }
     }
 }
 
@@ -193,27 +203,19 @@ document.addEventListener('astro:before-swap', cleanup);
 </script>
 
 <style>
-    .banner-text-container {
-        opacity: 0;
-        transition: opacity 300ms ease-in-out;
-    }
 
-    .banner-text-container.banner-visible {
-        opacity: 1;
-    }
-
-    /* 引号淡入效果 */
-    .banner-text-container.banner-visible .quote-left,
-    .banner-text-container.banner-visible .quote-right {
+    /* 引号显示效果 */
+    .quote-left,
+    .quote-right {
         opacity: 0.8;
     }
 
     /* 引号浮动动画 */
-    .banner-text-container.banner-visible .quote-float {
+    .quote-float {
         animation: float 4s ease-in-out infinite;
     }
 
-    .banner-text-container.banner-visible .quote-float-delayed {
+    .quote-float-delayed {
         animation: float 4s ease-in-out infinite 2s;
     }
 
