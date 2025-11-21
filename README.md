@@ -71,6 +71,7 @@ export const siteConfig: SiteConfig = {
 		hue: 60, // 主题颜色的默认色相，范围 0-360。
 		fixed: false, // 隐藏访客的主题颜色选择器
 	},
+	defaultTheme: "dark", // 默认主题模式：'light' | 'dark' | 'auto'
 	banner: {
 		enable: true,
 		src: "assets/images/banner.png", // 相对于 /src 目录的路径。如果以 '/' 开头则相对于 /public 目录
@@ -80,11 +81,32 @@ export const siteConfig: SiteConfig = {
 			text: "", // 要显示的版权文本
 			url: "", // （可选）原始作品或艺术家页面的 URL 链接
 		},
+		text: {
+			title: "Chuwu's Blog", // 可选：主标题（大标题）
+			subtitle: [
+				// 必需：副标题数组（打字机文本）
+				{
+					text: "ex1",
+					author: "ex2", //此行可不写
+				},
+				{
+					text: "ex3",
+					author: "ex4",
+				},
+			],
+			color: {
+				title: "default", // 'default' (亮暗模式均为白色) 或 { light: '#000000', dark: '#ffffff' }
+				subtitle: { light: "#f0e5db", dark: "#fff1cdff" },
+				author: "default",
+			},
+			quoteFloat: true, // 引号浮动动画
+		},
 	},
 	toc: {
 		enable: true, // 在文章右侧显示目录
 		depth: 2, // 目录中显示的最大标题深度，范围 1-3
 	},
+	startDate: "2025-09-29T12:30:00", // 网站运行时间起始日期
 	favicon: [
 		// 留空此数组以使用默认网站图标
 		{
