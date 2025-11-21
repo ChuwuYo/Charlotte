@@ -56,6 +56,10 @@ const authorColor = getColorOrDefault(color?.author);
 <script>
 // Banner 文本可见性控制和作者显示逻辑
 class BannerTextController {
+    // 时间配置常量
+    private static readonly AUTHOR_DISPLAY_TIME = 5000; // 作者显示时间（delay 3000 + COMPLETE_EXTRA_DELAY 2000）
+    private static readonly AUTHOR_CLEAR_DELAY = 1200;  // 作者元素内容清空延迟
+
     private container: HTMLElement | null;
     private authorElement: HTMLElement | null;
     private typewriterElement: HTMLElement | null;
@@ -65,7 +69,11 @@ class BannerTextController {
     constructor() {
         this.container = document.querySelector('.banner-text-container');
         this.authorElement = document.querySelector('.typewriter-author');
-        this.typewriterElement = document.querySelector('.typewriter-text');
+        
+        // 直接设置为可见（组件仅在首页渲染）
+        if (this.container) {
+            this.container.classList.add('banner-visible');
+        }
         
         if (this.authorElement?.dataset.authors) {
             try {
@@ -75,36 +83,25 @@ class BannerTextController {
             }
         }
         
-        this.checkVisibility();
         this.setupTypewriterListeners();
     }
 
-    // 检查并设置可见性
-    private checkVisibility() {
-        const path = window.location.pathname;
-        const isHome = path === '/' || path === '/index.html' || path === '';
-        
-        if (this.container) {
-            if (isHome) {
-                this.container.classList.add('banner-visible');
-            } else {
-                this.container.classList.remove('banner-visible');
-            }
-        }
-    }
-
-    // 设置打字机事件监听器
+    // 设置打字机事件监听器（延迟查询确保 Typewriter 已初始化）
     private setupTypewriterListeners() {
-        if (!this.typewriterElement) return;
+        requestAnimationFrame(() => {
+            this.typewriterElement = document.querySelector('.typewriter-text');
+            
+            if (!this.typewriterElement) return;
 
-        this.typewriterElement.addEventListener('typewriter:complete', ((event: CustomEvent) => {
-            const { index } = event.detail;
-            this.showAuthor(index);
-        }) as EventListener);
+            this.typewriterElement.addEventListener('typewriter:complete', ((event: CustomEvent) => {
+                const { index } = event.detail;
+                this.showAuthor(index);
+            }) as EventListener);
 
-        this.typewriterElement.addEventListener('typewriter:deleted', (() => {
-            this.hideAuthor();
-        }) as EventListener);
+            this.typewriterElement.addEventListener('typewriter:deleted', (() => {
+                this.hideAuthor();
+            }) as EventListener);
+        });
     }
 
     // 显示指定索引的作者
@@ -124,9 +121,10 @@ class BannerTextController {
             clearTimeout(this.hideAuthorTimeout);
         }
 
+        // 使用同步的显示时间
         this.hideAuthorTimeout = window.setTimeout(() => {
             this.hideAuthor();
-        }, 4000);
+        }, BannerTextController.AUTHOR_DISPLAY_TIME);
     }
 
     // 调整作者位置防止溢出
@@ -148,11 +146,12 @@ class BannerTextController {
         
         this.authorElement.classList.remove('show-author');
         
+        // 优化后的清空延迟（略长于 CSS transition 时间）
         setTimeout(() => {
             if (this.authorElement && !this.authorElement.classList.contains('show-author')) {
                 this.authorElement.textContent = '';
             }
-        }, 2000);
+        }, BannerTextController.AUTHOR_CLEAR_DELAY);
     }
 
     public destroy() {

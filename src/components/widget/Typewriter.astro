@@ -60,6 +60,10 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 
 <script>
 	class TypewriterEffect {
+		// 时间配置常量（毫秒）
+		private static readonly COMPLETE_EXTRA_DELAY = 2000; // 打字完成后额外停留时间
+		private static readonly DELETE_PAUSE_DELAY = 2000;   // 删除完成后光标闪烁时间
+
 		private element: HTMLElement;
 		private words: string[];
 		private typeSpeed: number;
@@ -90,6 +94,11 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 			if (this.words.length > 0) {
 				this.tick();
 			}
+		}
+
+		// 获取总显示时间（供外部组件使用）
+		public getTotalDisplayTime(): number {
+			return this.delay + TypewriterEffect.COMPLETE_EXTRA_DELAY;
 		}
 
 		// 检测字符是否为中文、日文或韩文
@@ -152,8 +161,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 				});
 				
 				this.isDeleting = true;
-				// 增加 2s 的额外停留时间
-				this.timeoutId = window.setTimeout(() => this.tick(), this.delay + 2000);
+				this.timeoutId = window.setTimeout(() => this.tick(), this.delay + TypewriterEffect.COMPLETE_EXTRA_DELAY);
 			} 
 			// 状态 3: 删除中
 			else if (this.isDeleting && this.currentText.length > 0) {
@@ -174,8 +182,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 					nextIndex: this.wordIndex % this.words.length 
 				});
 				
-				// 删除完成后，光标原地闪烁 2s 后再开始下一句
-				this.timeoutId = window.setTimeout(() => this.tick(), 2000);
+				this.timeoutId = window.setTimeout(() => this.tick(), TypewriterEffect.DELETE_PAUSE_DELAY);
 			}
 		}
 
