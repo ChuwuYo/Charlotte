@@ -418,20 +418,12 @@ const setup = () => {
 		const bodyElement = document.querySelector('body')
 		const isHomePage = pathsEqual(visit.to.url, url('/'))
 		
-		if (isHomePage) {
-			bodyElement!.classList.add('is-home');
-		} else {
-			bodyElement!.classList.remove('is-home');
-		}
+		bodyElement!.classList.toggle('is-home', isHomePage);
 
 		// Control banner text visibility based on page
 		const bannerTextOverlay = document.querySelector('.banner-text-overlay')
 		if (bannerTextOverlay) {
-			if (isHomePage) {
-				bannerTextOverlay.classList.remove('hidden')
-			} else {
-				bannerTextOverlay.classList.add('hidden')
-			}
+			bannerTextOverlay.classList.toggle('hidden', !isHomePage);
 		}
 
 		// increase the page height during page transition to prevent the scrolling animation from jumping
