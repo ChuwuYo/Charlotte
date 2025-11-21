@@ -7,6 +7,7 @@ interface Props {
 	class?: string;
 	cursor?: string;
 	showCursor?: boolean;
+	startDelay?: number; // 开始打字前的延迟（用于光标闪烁预热）
 }
 
 const {
@@ -17,6 +18,7 @@ const {
 	class: className = "",
 	cursor = "|",
 	showCursor = true,
+	startDelay = 0,
 } = Astro.props;
 
 // 生成唯一 ID 以支持页面中多个打字机实例
@@ -31,6 +33,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 		data-type-speed={typeSpeed}
 		data-delete-speed={deleteSpeed}
 		data-delay={delay}
+		data-start-delay={startDelay}
 	></span>{showCursor && <span class="typewriter-cursor">{cursor}</span>}
 </span>
 
@@ -69,6 +72,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 		private typeSpeed: number;
 		private deleteSpeed: number;
 		private delay: number;
+		private startDelay: number;
 		private currentText: string = '';
 		private wordIndex: number = 0;
 		private isDeleting: boolean = false;
@@ -77,22 +81,32 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 		constructor(element: HTMLElement) {
 			this.element = element;
 			
+			// 强制清空内容（防止 View Transitions 缓存导致闪现旧文本）
+			this.element.textContent = '';
+			
 			// 从 DOM 属性读取配置
 			try {
 				this.words = JSON.parse(element.dataset.words || '[]');
 				this.typeSpeed = parseInt(element.dataset.typeSpeed || '100');
 				this.deleteSpeed = parseInt(element.dataset.deleteSpeed || '50');
 				this.delay = parseInt(element.dataset.delay || '2000');
+				this.startDelay = parseInt(element.dataset.startDelay || '0');
 			} catch (error) {
 				console.error('Typewriter: 配置解析失败', error);
 				this.words = ['Error'];
 				this.typeSpeed = 100;
 				this.deleteSpeed = 50;
 				this.delay = 2000;
+				this.startDelay = 0;
 			}
 
 			if (this.words.length > 0) {
-				this.tick();
+				// 如果有启动延迟，先等待
+				if (this.startDelay > 0) {
+					this.timeoutId = window.setTimeout(() => this.tick(), this.startDelay);
+				} else {
+					this.tick();
+				}
 			}
 		}
 
