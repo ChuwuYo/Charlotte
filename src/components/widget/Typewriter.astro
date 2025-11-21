@@ -96,11 +96,6 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 			}
 		}
 
-		// 获取总显示时间（供外部组件使用）
-		public getTotalDisplayTime(): number {
-			return this.delay + TypewriterEffect.COMPLETE_EXTRA_DELAY;
-		}
-
 		// 检测字符是否为中文、日文或韩文
 		private isCJKCharacter(char: string): boolean {
 			const code = char.charCodeAt(0);
