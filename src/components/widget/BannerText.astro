@@ -148,11 +148,11 @@ class BannerTextController {
         
         this.authorElement.classList.remove('show-author');
         
-        this.authorElement.addEventListener('transitionend', () => {
-            if (this.authorElement) {
+        setTimeout(() => {
+            if (this.authorElement && !this.authorElement.classList.contains('show-author')) {
                 this.authorElement.textContent = '';
             }
-        }, { once: true });
+        }, 2000);
     }
 
     public destroy() {
