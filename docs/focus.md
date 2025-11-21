@@ -9,3 +9,8 @@
 ### 添加导航栏透明度配置功能、调整 navbar 透明度样式定义位置
 3. https://github.com/ChuwuYo/Charlotte/commit/94f4edea478886614b15ad25344028df590e6221
 4. https://github.com/ChuwuYo/Charlotte/commit/dd442fcacc46bd18f5693aeea46b7643afa66805
+
+### BannerText的添加与修改
+5. https://github.com/ChuwuYo/Charlotte/commit/914e4c3484af406573d94c826ecbaa0f55cfd64b
+6. https://github.com/ChuwuYo/Charlotte/commit/8402ccda389aaa581378a0854507edf77283f66d
+7. https://github.com/ChuwuYo/Charlotte/commit/f8f67a6cc374ba38e0b10007f39f08e2fcdd21bd
