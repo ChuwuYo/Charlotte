@@ -126,9 +126,13 @@ class BannerTextController {
 
         this.authorElement.textContent = `—— 「 ${author} 」`;
         
-        // 显示作者元素
+        // 显示作者
+        // 第一个 RAF: 让浏览器注意到 DOM 变化（文本内容更新）
         requestAnimationFrame(() => {
-            this.authorElement?.classList.add('show-author');
+            // 第二个 RAF: 在下一帧添加 class，触发 transition
+            requestAnimationFrame(() => {
+                this.authorElement?.classList.add('show-author');
+            });
         });
 
         if (this.hideAuthorTimeout) {
