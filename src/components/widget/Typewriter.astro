@@ -69,12 +69,13 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 
 		private element: HTMLElement;
 		private words: string[];
+		private shuffledIndices: number[] = []; // 洗牌后的索引数组
 		private typeSpeed: number;
 		private deleteSpeed: number;
 		private delay: number;
 		private startDelay: number;
 		private currentText: string = '';
-		private wordIndex: number = 0;
+		private wordIndex: number = 0; // 当前在洗牌数组中的位置
 		private isDeleting: boolean = false;
 		private timeoutId: number | null = null;
 
@@ -101,12 +102,25 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 			}
 
 			if (this.words.length > 0) {
+				// 初始化时洗牌一次
+				this.shuffleWords();
+				
 				// 如果有启动延迟，先等待
 				if (this.startDelay > 0) {
 					this.timeoutId = window.setTimeout(() => this.tick(), this.startDelay);
 				} else {
 					this.tick();
 				}
+			}
+		}
+
+		// Fisher-Yates 洗牌算法
+		private shuffleWords() {
+			this.shuffledIndices = Array.from({ length: this.words.length }, (_, i) => i);
+			for (let i = this.shuffledIndices.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[this.shuffledIndices[i], this.shuffledIndices[j]] = 
+					[this.shuffledIndices[j], this.shuffledIndices[i]];
 			}
 		}
 
@@ -147,8 +161,11 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 		}
 
 		private tick() {
-			const currentWordIndex = this.wordIndex % this.words.length;
-			const fullText = this.words[currentWordIndex];
+			// 获取当前在洗牌数组中的位置
+			const currentPosition = this.wordIndex % this.shuffledIndices.length;
+			// 通过洗牌索引获取实际的文本索引
+			const actualIndex = this.shuffledIndices[currentPosition];
+			const fullText = this.words[actualIndex];
 
 			// 状态 1: 打字中
 			if (!this.isDeleting && this.currentText.length < fullText.length) {
@@ -163,10 +180,10 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 			} 
 			// 状态 2: 打字完成 - 停留并触发事件
 			else if (!this.isDeleting && this.currentText === fullText) {
-				// 触发打字完成事件，传递当前文本索引
+				// 触发打字完成事件，传递实际的文本索引
 				this.dispatchEvent('typewriter:complete', { 
 					text: fullText, 
-					index: currentWordIndex 
+					index: actualIndex 
 				});
 				
 				this.isDeleting = true;
@@ -186,9 +203,19 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 				this.isDeleting = false;
 				this.wordIndex++;
 				
+				// 检查是否完成一轮（到达洗牌数组的末尾）
+				if (this.wordIndex % this.shuffledIndices.length === 0) {
+					// 重新洗牌，开始新一轮
+					this.shuffleWords();
+				}
+				
+				// 获取下一个位置的实际索引
+				const nextPosition = this.wordIndex % this.shuffledIndices.length;
+				const nextActualIndex = this.shuffledIndices[nextPosition];
+				
 				// 触发删除完成事件
 				this.dispatchEvent('typewriter:deleted', { 
-					nextIndex: this.wordIndex % this.words.length 
+					nextIndex: nextActualIndex 
 				});
 				
 				this.timeoutId = window.setTimeout(() => this.tick(), TypewriterEffect.DELETE_PAUSE_DELAY);
