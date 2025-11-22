@@ -1,3 +1,4 @@
+import { subtitles } from "./data/subtitles";
 import type {
 	ExpressiveCodeConfig,
 	LicenseConfig,
@@ -6,7 +7,6 @@ import type {
 	SiteConfig,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
-import { subtitles } from "./data/subtitles";
 
 export const siteConfig: SiteConfig = {
 	title: "初五的小窝",
@@ -75,7 +75,7 @@ export const navBarConfig: NavBarConfig = {
 export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/avatar.webp", // 相对于 /src 目录的路径。如果以 '/' 开头则相对于 /public 目录
 	name: "ChuwuYo",
-	bio: "时光流转，愿你能与重要之人重逢",
+	bio: "消失了什么，我不知道",
 	links: [
 		{
 			name: "Bilibili",
