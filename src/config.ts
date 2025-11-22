@@ -1,3 +1,4 @@
+import { subtitles } from "./data/subtitles";
 import type {
 	ExpressiveCodeConfig,
 	LicenseConfig,
@@ -31,17 +32,7 @@ export const siteConfig: SiteConfig = {
 		},
 		text: {
 			title: "Chuwu's Blog", // 可选：主标题（大标题）
-			subtitle: [
-				// 必需：副标题数组（打字机文本）
-				{
-					text: "命中注定一般的邂逅，这场邂逅，我绝对不会忘记",
-					author: "可塑性记忆 - To You", //此行可不写
-				},
-				{
-					text: "如果有一天，你来到了我们的终点，能为我们献上一束花吗",
-					author: "86 —不存在的战区—",
-				},
-			],
+			subtitle: subtitles, // 从./data/subtitles.ts导入的副标题数组（打字机文本）
 			color: {
 				title: "default", // 'default' (亮暗模式均为白色) 或 { light: '#000000', dark: '#ffffff' }
 				subtitle: { light: "#f0e5db", dark: "#fff1cdff" },
@@ -84,7 +75,7 @@ export const navBarConfig: NavBarConfig = {
 export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/avatar.webp", // 相对于 /src 目录的路径。如果以 '/' 开头则相对于 /public 目录
 	name: "ChuwuYo",
-	bio: "时光流转，愿你能与重要之人重逢",
+	bio: "消失了什么，我不知道",
 	links: [
 		{
 			name: "Bilibili",

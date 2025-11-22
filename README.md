@@ -83,17 +83,7 @@ export const siteConfig: SiteConfig = {
 		},
 		text: {
 			title: "Chuwu's Blog", // 可选：主标题（大标题）
-			subtitle: [
-				// 必需：副标题数组（打字机文本）
-				{
-					text: "ex1",
-					author: "ex2", //此行可不写
-				},
-				{
-					text: "ex3",
-					author: "ex4",
-				},
-			],
+			subtitle: subtitles, // 从./data/subtitles.ts导入的副标题数组（打字机文本）
 			color: {
 				title: "default", // 'default' (亮暗模式均为白色) 或 { light: '#000000', dark: '#ffffff' }
 				subtitle: { light: "#f0e5db", dark: "#fff1cdff" },

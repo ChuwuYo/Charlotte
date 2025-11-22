@@ -3,8 +3,10 @@ import { siteConfig } from "@/config";
 import Typewriter from "./Typewriter.astro";
 
 const { title, subtitle, color, quoteFloat } = siteConfig.banner.text || {};
-const subtitleTexts = subtitle?.map((s) => s.text) || [];
-const subtitleData = subtitle || [];
+// 过滤掉空的 text，允许在数据文件中保留空占位符
+const validSubtitles = subtitle?.filter((s) => s.text?.trim()) || [];
+const subtitleTexts = validSubtitles.map((s) => s.text);
+const subtitleData = validSubtitles;
 
 function getColorOrDefault(
 	colorValue: { light: string; dark: string } | "default" | undefined,
@@ -25,10 +27,10 @@ const authorColor = getColorOrDefault(color?.author);
             <h1 class="banner-title text-3xl sm:text-4xl md:text-5xl font-bold mb-8 tracking-wider break-words" style={titleColor ? `color: light-dark(${titleColor.light}, ${titleColor.dark})` : undefined}>{title}</h1>
         )}
         
-        {subtitle && subtitle.length > 0 && (
+        {validSubtitles.length > 0 && (
             <div class="relative inline-block max-w-full">
                 <!-- 装饰引号 -->
-                <span class="quote-left absolute -top-4 -left-6 sm:-left-8 md:-left-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" class:list={[quoteFloat && 'quote-float']} style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>『</span>
+                <span class="quote-left absolute -top-3 -left-6 sm:-left-8 md:-left-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" class:list={[quoteFloat && 'quote-float']} style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>『</span>
                 <span class="quote-right absolute -bottom-4 -right-6 sm:-right-8 md:-right-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" class:list={[quoteFloat && 'quote-float-delayed']} style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>』</span>
                 
                 <!-- 打字机文本 -->
@@ -44,11 +46,13 @@ const authorColor = getColorOrDefault(color?.author);
                 </div>
                 
                 <!-- 作者显示区域（动态显示） -->
-                <div 
-                    class="typewriter-author absolute -bottom-8 sm:-bottom-10 md:left-full md:-translate-x-[66px] left-1/2 -translate-x-1/2 text-xs sm:text-sm md:text-base font-light tracking-wide opacity-0 transition-opacity duration-1000 max-w-[90vw] md:max-w-none text-center md:text-left px-2 md:whitespace-nowrap"
-                    style={authorColor ? `color: light-dark(${authorColor.light}, ${authorColor.dark})` : undefined}
-                    data-authors={JSON.stringify(subtitleData)}
-                ></div>
+                <div class="absolute -bottom-8 sm:-bottom-10 left-0 right-0 flex justify-center">
+                    <div 
+                        class="typewriter-author text-xs sm:text-sm md:text-base font-light tracking-wide opacity-0 transition-opacity duration-1000 max-w-[90vw] px-2 whitespace-nowrap"
+                        style={authorColor ? `color: light-dark(${authorColor.light}, ${authorColor.dark})` : undefined}
+                        data-authors={JSON.stringify(subtitleData)}
+                    ></div>
+                </div>
             </div>
         )}
     </div>
@@ -66,6 +70,10 @@ class BannerTextController {
     private typewriterElement: HTMLElement | null = null;
     private authors: Array<{ text: string; author?: string }> = [];
     private hideAuthorTimeout: number | null = null;
+    
+    // 事件监听器引用（用于清理）
+    private onTypewriterComplete: EventListener | null = null;
+    private onTypewriterDeleted: EventListener | null = null;
 
     constructor() {
         this.container = document.querySelector('.banner-text-container');
@@ -95,28 +103,36 @@ class BannerTextController {
             
             if (!this.typewriterElement) return;
 
-            this.typewriterElement.addEventListener('typewriter:complete', ((event: CustomEvent) => {
+            // 创建并存储事件监听器引用
+            this.onTypewriterComplete = ((event: CustomEvent) => {
                 const { index } = event.detail;
                 this.showAuthor(index);
-            }) as EventListener);
+            }) as EventListener;
 
-            this.typewriterElement.addEventListener('typewriter:deleted', (() => {
+            this.onTypewriterDeleted = (() => {
                 this.hideAuthor();
-            }) as EventListener);
+            }) as EventListener;
+
+            this.typewriterElement.addEventListener('typewriter:complete', this.onTypewriterComplete);
+            this.typewriterElement.addEventListener('typewriter:deleted', this.onTypewriterDeleted);
         });
     }
 
     // 显示指定索引的作者
     private showAuthor(index: number) {
-        if (!this.authorElement || !this.authors[index]?.author) return;
+        // 检查作者字段是否存在且不为空（包括只有空格的情况）
+        const author = this.authors[index]?.author?.trim();
+        if (!this.authorElement || !author) return;
 
-        const author = this.authors[index].author;
         this.authorElement.textContent = `—— 「 ${author} 」`;
         
-        // 检测溢出并调整位置
+        // 显示作者
+        // 第一个 RAF: 让浏览器注意到 DOM 变化（文本内容更新）
         requestAnimationFrame(() => {
-            this.adjustAuthorPosition();
-            this.authorElement?.classList.add('show-author');
+            // 第二个 RAF: 在下一帧添加 class，触发 transition
+            requestAnimationFrame(() => {
+                this.authorElement?.classList.add('show-author');
+            });
         });
 
         if (this.hideAuthorTimeout) {
@@ -127,20 +143,6 @@ class BannerTextController {
         this.hideAuthorTimeout = window.setTimeout(() => {
             this.hideAuthor();
         }, BannerTextController.AUTHOR_DISPLAY_TIME);
-    }
-
-    // 调整作者位置防止溢出
-    private adjustAuthorPosition() {
-        if (!this.authorElement || window.innerWidth < 768) return;
-
-        const rect = this.authorElement.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
-        const padding = 32;
-
-        if (rect.right > viewportWidth - padding || rect.left < padding) {
-            this.authorElement.style.left = '50%';
-            this.authorElement.style.transform = 'translateX(-50%)';
-        }
     }
 
     private hideAuthor() {
@@ -157,13 +159,24 @@ class BannerTextController {
     }
 
     public destroy() {
+        // 清理定时器
         if (this.hideAuthorTimeout) {
             clearTimeout(this.hideAuthorTimeout);
             this.hideAuthorTimeout = null;
         }
 
-        // 销毁打字机实例
+        // 移除事件监听器
         if (this.typewriterElement) {
+            if (this.onTypewriterComplete) {
+                this.typewriterElement.removeEventListener('typewriter:complete', this.onTypewriterComplete);
+                this.onTypewriterComplete = null;
+            }
+            if (this.onTypewriterDeleted) {
+                this.typewriterElement.removeEventListener('typewriter:deleted', this.onTypewriterDeleted);
+                this.onTypewriterDeleted = null;
+            }
+
+            // 销毁打字机实例
             const typewriterInstance = (this.typewriterElement as any).__typewriter;
             if (typewriterInstance) {
                 typewriterInstance.destroy();
@@ -234,9 +247,11 @@ document.addEventListener('astro:before-swap', cleanup);
 
     /* 作者显示/隐藏动画 */
     .typewriter-author {
+        transition: 
+            opacity 1000ms ease,
+            transform 1000ms ease;
         opacity: 0;
         transform: translateY(-5px);
-        transition: opacity 1000ms ease, transform 1000ms ease;
     }
 
     .typewriter-author.show-author {
