@@ -3,8 +3,10 @@ import { siteConfig } from "@/config";
 import Typewriter from "./Typewriter.astro";
 
 const { title, subtitle, color, quoteFloat } = siteConfig.banner.text || {};
-const subtitleTexts = subtitle?.map((s) => s.text) || [];
-const subtitleData = subtitle || [];
+// 过滤掉空的 text，允许在数据文件中保留空占位符
+const validSubtitles = subtitle?.filter((s) => s.text && s.text.trim() !== '') || [];
+const subtitleTexts = validSubtitles.map((s) => s.text);
+const subtitleData = validSubtitles;
 
 function getColorOrDefault(
 	colorValue: { light: string; dark: string } | "default" | undefined,
@@ -108,9 +110,10 @@ class BannerTextController {
 
     // 显示指定索引的作者
     private showAuthor(index: number) {
-        if (!this.authorElement || !this.authors[index]?.author) return;
+        // 检查作者字段是否存在且不为空（包括只有空格的情况）
+        const author = this.authors[index]?.author?.trim();
+        if (!this.authorElement || !author) return;
 
-        const author = this.authors[index].author;
         this.authorElement.textContent = `—— 「 ${author} 」`;
         
         // 检测溢出并调整位置
