@@ -116,11 +116,24 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 
 		// Fisher-Yates 洗牌算法
 		private shuffleWords() {
+			// 记住上一轮的最后一个词的实际索引
+			const lastWordActualIndex = this.shuffledIndices.length > 0 
+				? this.shuffledIndices[this.shuffledIndices.length - 1] 
+				: -1;
+
+			// 执行标准的 Fisher-Yates 洗牌
 			this.shuffledIndices = Array.from({ length: this.words.length }, (_, i) => i);
 			for (let i = this.shuffledIndices.length - 1; i > 0; i--) {
 				const j = Math.floor(Math.random() * (i + 1));
 				[this.shuffledIndices[i], this.shuffledIndices[j]] = 
 					[this.shuffledIndices[j], this.shuffledIndices[i]];
+			}
+
+			// 如果新一轮的第一个词与上一轮的最后一个词相同，交换前两个
+			// 避免用户看到删除后立即重新打出相同的词
+			if (this.words.length > 1 && this.shuffledIndices[0] === lastWordActualIndex) {
+				[this.shuffledIndices[0], this.shuffledIndices[1]] = 
+					[this.shuffledIndices[1], this.shuffledIndices[0]];
 			}
 		}
 
