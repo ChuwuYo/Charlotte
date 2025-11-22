@@ -24,16 +24,16 @@ export const subtitles: Subtitle[] = [
 		author: "T.S.艾略特 - Gerontion",
 	},
 	{
-		text: "",
-		author: "",
+		text: "我知道他们怎么对你，因为我也经历过同样的事，这就是为什么我们要证明给他们看",
+		author: "葛洛莉亚·马丁内斯 - 赛博朋克 边缘行者",
 	},
 	{
-		text: "",
-		author: "",
+		text: "我们永不消逝",
+		author: "强尼·银手 - 赛博朋克 2077",
 	},
 	{
-		text: "",
-		author: "",
+		text: "时光流转，愿你能与重要之人重逢",
+		author: "艾拉 - 可塑性记忆",
 	},
 	{
 		text: "",
