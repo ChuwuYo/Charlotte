@@ -4,8 +4,7 @@ import Typewriter from "./Typewriter.astro";
 
 const { title, subtitle, color, quoteFloat } = siteConfig.banner.text || {};
 // 过滤掉空的 text，允许在数据文件中保留空占位符
-const validSubtitles =
-	subtitle?.filter((s) => s.text && s.text.trim() !== "") || [];
+const validSubtitles = subtitle?.filter((s) => s.text?.trim()) || [];
 const subtitleTexts = validSubtitles.map((s) => s.text);
 const subtitleData = validSubtitles;
 
