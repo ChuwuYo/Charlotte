@@ -10,6 +10,9 @@ const currentYear = new Date().getFullYear();
 const version = pkg.version;
 ---
 
+<!-- 不蒜子访问量统计 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
 <!--<div class="border-t border-[var(&#45;&#45;primary)] mx-16 border-dashed py-8 max-w-[var(&#45;&#45;page-width)] flex flex-col items-center justify-center px-6">-->
 <div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
 
@@ -80,6 +83,9 @@ window.addEventListener('beforeunload', () => {
 <div class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
     <div class="transition text-50 text-sm text-center mb-2">
         {i18n(I18nKey.websiteRuntimeText)} <span class="uptime-display transition link text-[var(--primary)] font-medium">{i18n(I18nKey.loading)}</span>
+    </div>
+    <div class="transition text-50 text-sm text-center mb-2">
+        <span id="busuanzi_container_site_pv" style="display:none">本站总访问量 <span id="busuanzi_value_site_pv" class="transition link text-[var(--primary)] font-medium"></span> 次</span>
     </div>
     <div class="transition text-50 text-sm text-center mb-2">
         &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. {i18n(I18nKey.allRightsReserved)}<br>
