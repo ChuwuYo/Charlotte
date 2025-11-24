@@ -105,7 +105,7 @@ export const siteConfig: SiteConfig = {
 			//   sizes: '32x32',              // （可选）网站图标的尺寸，仅在您有不同尺寸的网站图标时设置
 		},
 	],
-	pinnedPost: "xxx", // 置顶文章的 slug 路径，如果为空则不置顶
+	pinnedPost: ["xxx/yyy.md , zzz.md"], // 置顶文章的 slug 路径，如果为空则不置顶，按顺序排序多个置顶，逗号分隔
 };
 ```
 
