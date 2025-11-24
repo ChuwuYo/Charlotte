@@ -7,19 +7,22 @@ import { siteConfig } from "@/config";
 // Pinned Posts
 type PostEntry = CollectionEntry<"posts">;
 
+function getPinnedSlugs(): string[] {
+	const rawPinned = siteConfig.pinnedPost;
+	if (!rawPinned) {
+		return [];
+	}
+	return (Array.isArray(rawPinned) ? rawPinned : [rawPinned]).map((slug) =>
+		slug.trim().toLowerCase(),
+	);
+}
+
 function applyPinnedOrdering(sorted: PostEntry[]): PostEntry[] {
 	if (!sorted.length) {
 		return sorted;
 	}
 
-	const rawPinned = siteConfig.pinnedPost;
-	if (!rawPinned) {
-		return sorted;
-	}
-
-	const pinnedSlugs = (Array.isArray(rawPinned) ? rawPinned : [rawPinned]).map(
-		(slug) => slug.trim().toLowerCase(),
-	);
+	const pinnedSlugs = getPinnedSlugs();
 
 	// 过滤置顶文章和未置顶文章
 	const pinnedPosts: PostEntry[] = [];
@@ -43,7 +46,7 @@ function applyPinnedOrdering(sorted: PostEntry[]): PostEntry[] {
 	// Map 中剩余的文章是未置顶的，保留原顺序（按日期排序）
 	// 再次遍历原始排序数组
 	for (const post of sorted) {
-		if (!pinnedPosts.includes(post)) {
+		if (postsMap.has(post.slug.toLowerCase())) {
 			post.data.isPinned = false;
 			nonPinnedPosts.push(post);
 		}
@@ -100,15 +103,10 @@ export async function getSortedPostsList(options?: {
 		sortedFullPosts = applyPinnedOrdering(sortedFullPosts);
 	} else {
 		// 即使不重新排序，也要设置 isPinned 属性用于显示图标
-		const rawPinned = siteConfig.pinnedPost;
-		const pinnedSlugs = rawPinned
-			? (Array.isArray(rawPinned) ? rawPinned : [rawPinned]).map((slug) =>
-					slug.trim().toLowerCase(),
-				)
-			: [];
-
+		const pinnedSlugs = getPinnedSlugs();
+		const pinnedSlugsSet = new Set(pinnedSlugs);
 		sortedFullPosts.forEach((post) => {
-			post.data.isPinned = pinnedSlugs.includes(post.slug.toLowerCase());
+			post.data.isPinned = pinnedSlugsSet.has(post.slug.toLowerCase());
 		});
 	}
 
