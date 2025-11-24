@@ -12,34 +12,47 @@ function applyPinnedOrdering(sorted: PostEntry[]): PostEntry[] {
 		return sorted;
 	}
 
-	const rawSlug = siteConfig.pinnedPost?.trim();
-	const pinnedSlug = rawSlug ? rawSlug.toLowerCase() : undefined;
-
-	const pinnedPostIndex = pinnedSlug
-		? sorted.findIndex((post) => post.slug.toLowerCase() === pinnedSlug)
-		: -1;
-
-	// Set isPinned for all posts based on whether they are the pinned one.
-	sorted.forEach((post, index) => {
-		post.data.isPinned = index === pinnedPostIndex;
-	});
-
-	if (pinnedPostIndex === -1) {
+	const rawPinned = siteConfig.pinnedPost;
+	if (!rawPinned) {
 		return sorted;
 	}
 
-	// Reorder with pinned post first
-	const pinnedPost = sorted[pinnedPostIndex];
-	const ordered = [
-		pinnedPost,
-		...sorted.slice(0, pinnedPostIndex),
-		...sorted.slice(pinnedPostIndex + 1),
-	];
+	const pinnedSlugs = (Array.isArray(rawPinned) ? rawPinned : [rawPinned]).map(
+		(slug) => slug.trim().toLowerCase(),
+	);
 
-	return ordered;
+	// 过滤置顶文章和未置顶文章
+	const pinnedPosts: PostEntry[] = [];
+	const nonPinnedPosts: PostEntry[] = [];
+
+	// 创建一个 Map 以便通过 slug 快速查找已排序的文章
+	const postsMap = new Map(
+		sorted.map((post) => [post.slug.toLowerCase(), post]),
+	);
+
+	// 按配置中定义的顺序检索置顶文章
+	for (const slug of pinnedSlugs) {
+		const post = postsMap.get(slug);
+		if (post) {
+			post.data.isPinned = true;
+			pinnedPosts.push(post);
+			postsMap.delete(slug); // 从 Map 中移除以避免重复（如果配置中有重复项）
+		}
+	}
+
+	// Map 中剩余的文章是未置顶的，保留原顺序（按日期排序）
+	// 再次遍历原始排序数组
+	for (const post of sorted) {
+		if (!pinnedPosts.includes(post)) {
+			post.data.isPinned = false;
+			nonPinnedPosts.push(post);
+		}
+	}
+
+	return [...pinnedPosts, ...nonPinnedPosts];
 }
 
-// Retrieve posts and sort them by publication date
+// 获取文章并按发布日期排序
 async function getRawSortedPosts() {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
@@ -87,12 +100,15 @@ export async function getSortedPostsList(options?: {
 		sortedFullPosts = applyPinnedOrdering(sortedFullPosts);
 	} else {
 		// 即使不重新排序，也要设置 isPinned 属性用于显示图标
-		const rawSlug = siteConfig.pinnedPost?.trim();
-		const pinnedSlug = rawSlug ? rawSlug.toLowerCase() : undefined;
+		const rawPinned = siteConfig.pinnedPost;
+		const pinnedSlugs = rawPinned
+			? (Array.isArray(rawPinned) ? rawPinned : [rawPinned]).map((slug) =>
+					slug.trim().toLowerCase(),
+				)
+			: [];
+
 		sortedFullPosts.forEach((post) => {
-			post.data.isPinned = pinnedSlug
-				? post.slug.toLowerCase() === pinnedSlug
-				: false;
+			post.data.isPinned = pinnedSlugs.includes(post.slug.toLowerCase());
 		});
 	}
 
