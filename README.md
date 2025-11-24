@@ -144,12 +144,6 @@ draft: false
 
 欢迎提交 Issue 和 Pull Request！
 
-## ❔ FAQ
-
-> [!NOTE]
-> 为什么更新这么谨慎？  
-> 因为我不想增添冗余、无效的花架子功能。
-
 ## 📄 许可证
 
 [MIT License](LICENSE)
