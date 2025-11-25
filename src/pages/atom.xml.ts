@@ -21,7 +21,7 @@ function absoluteUrl(path: string): string {
 export async function GET() {
 	const blog = await getSortedPosts();
 
-	return getAtomResponse({
+	const response = await getAtomResponse({
 		title: siteConfig.title,
 		id: siteConfig.url,
 		updated: new Date().toISOString(),
@@ -71,5 +71,14 @@ export async function GET() {
 			siteConfig.subtitle ||
 			"No description provided for the site.",
 		lang: siteConfig.lang.replace("_", "-"), // Convert zh_CN to zh-CN
+	});
+
+	return new Response(response.body, {
+		status: response.status,
+		statusText: response.statusText,
+		headers: {
+			...Object.fromEntries(response.headers),
+			"Content-Type": "application/xml",
+		},
 	});
 }
