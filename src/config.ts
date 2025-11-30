@@ -63,8 +63,13 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Archive,
 		LinkPreset.About,
 		{
-			name: "初五的书签",
+			name: "书签柜",
 			url: "https://tabs.chuwu.top/", // 内部链接不应包含基础路径，因为它会自动添加
+			external: true, // 显示外部链接图标并将在新标签页中打开
+		},
+		{
+			name: "番茄钟",
+			url: "https://pomo.chuwu.top/", // 内部链接不应包含基础路径，因为它会自动添加
 			external: true, // 显示外部链接图标并将在新标签页中打开
 		},
 	],
