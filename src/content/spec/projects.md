@@ -6,3 +6,4 @@
 ::github{repo="ChuwuYo/proxy-cleaner"}
 ::github{repo="ChuwuYo/AudioRename"}
 ::github{repo="ChuwuYo/NCMCoverSnatcher"}
+::github{repo="ChuwuYo/Endfield-Pomodoro"}
