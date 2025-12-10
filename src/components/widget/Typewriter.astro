@@ -93,7 +93,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 				this.delay = parseInt(element.dataset.delay || '2000');
 				this.startDelay = parseInt(element.dataset.startDelay || '0');
 			} catch (error) {
-				console.error('Typewriter: 配置解析失败', error);
+				console.error('Typewriter: Failed to parse configuration', error);
 				this.words = ['Error'];
 				this.typeSpeed = 100;
 				this.deleteSpeed = 50;

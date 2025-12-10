@@ -89,7 +89,7 @@ class BannerTextController {
             try {
                 this.authors = JSON.parse(this.authorElement.dataset.authors);
             } catch (error) {
-                console.error('解析作者数据失败:', error);
+                console.error('Failed to parse author data:', error);
             }
         }
         
