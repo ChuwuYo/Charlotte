@@ -264,23 +264,49 @@ function disableAnimation() {
 
 const bannerEnabled = !!document.getElementById('banner-wrapper')
 
-function setClickOutsideToClose(panel: string, ignores: string[]) {
+// 面板配置 - 使用事件委托，只注册一次 click 监听器
+const PANEL_CONFIG = [
+	{ id: "display-setting", ignores: ["display-setting", "display-settings-switch"] },
+	{ id: "nav-menu-panel", ignores: ["nav-menu-panel", "nav-menu-switch"] },
+	{ id: "search-panel", ignores: ["search-panel", "search-bar", "search-switch"] }
+];
+
+let clickHandlerInitialized = false;
+
+function setupClickOutsideHandlers() {
+	// 防止重复初始化
+	if (clickHandlerInitialized) return;
+	clickHandlerInitialized = true;
+
 	document.addEventListener("click", event => {
-		let panelDom = document.getElementById(panel);
-		let tDom = event.target;
-		if (!(tDom instanceof Node)) return;		// Ensure the event target is an HTML Node
-		for (let ig of ignores) {
-			let ie = document.getElementById(ig)
-			if (ie == tDom || (ie?.contains(tDom))) {
-				return;
+		const target = event.target;
+		if (!(target instanceof Node)) return;
+
+		PANEL_CONFIG.forEach(({ id, ignores }) => {
+			const panelDom = document.getElementById(id);
+			let shouldClose = true;
+
+			for (let ig of ignores) {
+				const ie = document.getElementById(ig);
+				if (ie === target || ie?.contains(target)) {
+					shouldClose = false;
+					break;
+				}
 			}
-		}
-		panelDom!.classList.add("float-panel-closed");
+
+			if (shouldClose && panelDom) {
+				panelDom.classList.add("float-panel-closed");
+			}
+		});
 	});
 }
-setClickOutsideToClose("display-setting", ["display-setting", "display-settings-switch"])
-setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"])
-setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"])
+
+// 在脚本加载时调用一次
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', setupClickOutsideHandlers, { once: true });
+} else {
+	setupClickOutsideHandlers();
+}
 
 
 function loadTheme() {
