@@ -378,6 +378,11 @@ function initCustomScrollbar() {
 		element.setAttribute('data-scrollbar-initialized', 'true');
 	};
 
+	// Disconnect existing observer before creating new one (defensive)
+	if (katexObserver) {
+		katexObserver.disconnect();
+	}
+
 	katexObserver = new IntersectionObserver((entries, observer) => {
 		entries.forEach(entry => {
 			if (entry.isIntersecting) {
