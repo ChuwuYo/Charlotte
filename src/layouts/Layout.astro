@@ -318,25 +318,33 @@ function loadHue() {
 	setHue(getHue())
 }
 
+// Store instances - body scrollbar persists, katex observer is recreated per page
+let bodyScrollbarInstance: ReturnType<typeof OverlayScrollbars> | null = null;
+let katexObserver: IntersectionObserver | null = null;
+
 function initCustomScrollbar() {
 	const bodyElement = document.querySelector('body');
 	if (!bodyElement) return;
-	OverlayScrollbars(
+
+	// Only initialize body scrollbar once, it persists across page transitions
+	if (!bodyScrollbarInstance) {
 		// docs say that a initialization to the body element would affect native functionality like window.scrollTo
 		// but just leave it here for now
-		{
-			target: bodyElement,
-			cancel: {
-				nativeScrollbarsOverlaid: true,    // don't initialize the overlay scrollbar if there is a native one
-			}
-		}, {
-		scrollbars: {
-			theme: 'scrollbar-base scrollbar-auto py-1',
-			autoHide: 'move',
-			autoHideDelay: 500,
-			autoHideSuspend: false,
-		},
-	});
+		bodyScrollbarInstance = OverlayScrollbars(
+			{
+				target: bodyElement,
+				cancel: {
+					nativeScrollbarsOverlaid: true,    // don't initialize the overlay scrollbar if there is a native one
+				}
+			}, {
+			scrollbars: {
+				theme: 'scrollbar-base scrollbar-auto py-1',
+				autoHide: 'move',
+				autoHideDelay: 500,
+				autoHideSuspend: false,
+			},
+		});
+	}
 
 	const katexElements = document.querySelectorAll('.katex-display') as NodeListOf<HTMLElement>;
 
@@ -357,6 +365,7 @@ function initCustomScrollbar() {
 		element.parentNode.insertBefore(container, element);
 		container.appendChild(element);
 
+		// KaTeX scrollbar instances are automatically cleaned up when containers are removed from DOM
 		OverlayScrollbars(container, {
 			scrollbars: {
 				theme: 'scrollbar-base scrollbar-auto',
@@ -369,17 +378,17 @@ function initCustomScrollbar() {
 		element.setAttribute('data-scrollbar-initialized', 'true');
 	};
 
-	const katexObserver = new IntersectionObserver((entries, observer) => {
+	katexObserver = new IntersectionObserver((entries, observer) => {
 		entries.forEach(entry => {
 			if (entry.isIntersecting) {
-			processKatexElement(entry.target as HTMLElement);
-			observer.unobserve(entry.target);
+				processKatexElement(entry.target as HTMLElement);
+				observer.unobserve(entry.target);
 			}
 		});
 	}, katexObserverOptions);
 
 	katexElements.forEach(element => {
-		katexObserver.observe(element);
+		katexObserver!.observe(element);
 	});
 }
 
@@ -436,8 +445,13 @@ const setup = () => {
 			navbar.classList.add('navbar-hidden')
 		}
 	})
-	window.swup.hooks.on('content:replace', initCustomScrollbar)
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
+		// Clean up previous KaTeX observer to prevent memory leaks
+		if (katexObserver) {
+			katexObserver.disconnect();
+			katexObserver = null;
+		}
+
 		// Add a class to the body to hide new content via CSS until the scroll animation is finished
 		document.body.classList.add('is-transitioning');
 
@@ -465,6 +479,9 @@ const setup = () => {
 			toc.classList.add('toc-not-ready')
 		}
 	});
+
+	window.swup.hooks.on('content:replace', initCustomScrollbar)
+
 
 	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
 		// Use a small timeout to ensure the browser has finished painting after the scroll
