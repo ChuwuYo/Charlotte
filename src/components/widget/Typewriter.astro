@@ -189,7 +189,10 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 				const lastChar = this.currentText[this.currentText.length - 1];
 				const speed = this.getTypeSpeed(lastChar);
 				
-				this.timeoutId = window.setTimeout(() => this.tick(), speed);
+				// 使用 RAF 确保 DOM 更新完成后再继续，避免换行时的视觉加速
+				requestAnimationFrame(() => {
+					this.timeoutId = window.setTimeout(() => this.tick(), speed);
+				});
 			} 
 			// 状态 2: 打字完成 - 停留并触发事件
 			else if (!this.isDeleting && this.currentText === fullText) {
