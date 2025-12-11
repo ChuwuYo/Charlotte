@@ -264,23 +264,49 @@ function disableAnimation() {
 
 const bannerEnabled = !!document.getElementById('banner-wrapper')
 
-function setClickOutsideToClose(panel: string, ignores: string[]) {
+// 面板配置 - 使用事件委托，只注册一次 click 监听器
+const PANEL_CONFIG = [
+	{ id: "display-setting", ignores: ["display-setting", "display-settings-switch"] },
+	{ id: "nav-menu-panel", ignores: ["nav-menu-panel", "nav-menu-switch"] },
+	{ id: "search-panel", ignores: ["search-panel", "search-bar", "search-switch"] }
+];
+
+let clickHandlerInitialized = false;
+
+function setupClickOutsideHandlers() {
+	// 防止重复初始化
+	if (clickHandlerInitialized) return;
+	clickHandlerInitialized = true;
+
 	document.addEventListener("click", event => {
-		let panelDom = document.getElementById(panel);
-		let tDom = event.target;
-		if (!(tDom instanceof Node)) return;		// Ensure the event target is an HTML Node
-		for (let ig of ignores) {
-			let ie = document.getElementById(ig)
-			if (ie == tDom || (ie?.contains(tDom))) {
-				return;
+		const target = event.target;
+		if (!(target instanceof Node)) return;
+
+		PANEL_CONFIG.forEach(({ id, ignores }) => {
+			const panelDom = document.getElementById(id);
+			let shouldClose = true;
+
+			for (let ig of ignores) {
+				const ie = document.getElementById(ig);
+				if (ie === target || ie?.contains(target)) {
+					shouldClose = false;
+					break;
+				}
 			}
-		}
-		panelDom!.classList.add("float-panel-closed");
+
+			if (shouldClose && panelDom) {
+				panelDom.classList.add("float-panel-closed");
+			}
+		});
 	});
 }
-setClickOutsideToClose("display-setting", ["display-setting", "display-settings-switch"])
-setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"])
-setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"])
+
+// 在脚本加载时调用一次
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', setupClickOutsideHandlers, { once: true });
+} else {
+	setupClickOutsideHandlers();
+}
 
 
 function loadTheme() {
@@ -292,25 +318,33 @@ function loadHue() {
 	setHue(getHue())
 }
 
+// Store instances - body scrollbar persists, katex observer is recreated per page
+let bodyScrollbarInstance: ReturnType<typeof OverlayScrollbars> | null = null;
+let katexObserver: IntersectionObserver | null = null;
+
 function initCustomScrollbar() {
 	const bodyElement = document.querySelector('body');
 	if (!bodyElement) return;
-	OverlayScrollbars(
+
+	// Only initialize body scrollbar once, it persists across page transitions
+	if (!bodyScrollbarInstance) {
 		// docs say that a initialization to the body element would affect native functionality like window.scrollTo
 		// but just leave it here for now
-		{
-			target: bodyElement,
-			cancel: {
-				nativeScrollbarsOverlaid: true,    // don't initialize the overlay scrollbar if there is a native one
-			}
-		}, {
-		scrollbars: {
-			theme: 'scrollbar-base scrollbar-auto py-1',
-			autoHide: 'move',
-			autoHideDelay: 500,
-			autoHideSuspend: false,
-		},
-	});
+		bodyScrollbarInstance = OverlayScrollbars(
+			{
+				target: bodyElement,
+				cancel: {
+					nativeScrollbarsOverlaid: true,    // don't initialize the overlay scrollbar if there is a native one
+				}
+			}, {
+			scrollbars: {
+				theme: 'scrollbar-base scrollbar-auto py-1',
+				autoHide: 'move',
+				autoHideDelay: 500,
+				autoHideSuspend: false,
+			},
+		});
+	}
 
 	const katexElements = document.querySelectorAll('.katex-display') as NodeListOf<HTMLElement>;
 
@@ -331,6 +365,7 @@ function initCustomScrollbar() {
 		element.parentNode.insertBefore(container, element);
 		container.appendChild(element);
 
+		// KaTeX scrollbar instances are automatically cleaned up when containers are removed from DOM
 		OverlayScrollbars(container, {
 			scrollbars: {
 				theme: 'scrollbar-base scrollbar-auto',
@@ -343,17 +378,22 @@ function initCustomScrollbar() {
 		element.setAttribute('data-scrollbar-initialized', 'true');
 	};
 
-	const katexObserver = new IntersectionObserver((entries, observer) => {
+	// Disconnect existing observer before creating new one (defensive)
+	if (katexObserver) {
+		katexObserver.disconnect();
+	}
+
+	katexObserver = new IntersectionObserver((entries, observer) => {
 		entries.forEach(entry => {
 			if (entry.isIntersecting) {
-			processKatexElement(entry.target as HTMLElement);
-			observer.unobserve(entry.target);
+				processKatexElement(entry.target as HTMLElement);
+				observer.unobserve(entry.target);
 			}
 		});
 	}, katexObserverOptions);
 
 	katexElements.forEach(element => {
-		katexObserver.observe(element);
+		katexObserver!.observe(element);
 	});
 }
 
@@ -410,8 +450,13 @@ const setup = () => {
 			navbar.classList.add('navbar-hidden')
 		}
 	})
-	window.swup.hooks.on('content:replace', initCustomScrollbar)
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
+		// Clean up previous KaTeX observer to prevent memory leaks
+		if (katexObserver) {
+			katexObserver.disconnect();
+			katexObserver = null;
+		}
+
 		// Add a class to the body to hide new content via CSS until the scroll animation is finished
 		document.body.classList.add('is-transitioning');
 
@@ -439,6 +484,9 @@ const setup = () => {
 			toc.classList.add('toc-not-ready')
 		}
 	});
+
+	window.swup.hooks.on('content:replace', initCustomScrollbar)
+
 
 	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
 		// Use a small timeout to ensure the browser has finished painting after the scroll

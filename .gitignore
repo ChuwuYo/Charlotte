@@ -30,4 +30,4 @@ yarn.lock
 .idea
 *.iml
 .kilocode
-.codebuddy
+.kiro

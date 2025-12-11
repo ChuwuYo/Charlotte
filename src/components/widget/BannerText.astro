@@ -30,7 +30,7 @@ const authorColor = getColorOrDefault(color?.author);
         {validSubtitles.length > 0 && (
             <div class="relative inline-block max-w-full">
                 <!-- 装饰引号 -->
-                <span class="quote-left absolute -top-3 -left-6 sm:-left-8 md:-left-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" class:list={[quoteFloat && 'quote-float']} style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>『</span>
+                <span class="quote-left absolute -top-2 -left-6 sm:-left-8 md:-left-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" class:list={[quoteFloat && 'quote-float']} style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>『</span>
                 <span class="quote-right absolute -bottom-4 -right-6 sm:-right-8 md:-right-10 text-xl sm:text-2xl md:text-3xl opacity-0 transition-opacity duration-300" class:list={[quoteFloat && 'quote-float-delayed']} style={subtitleColor ? `color: light-dark(${subtitleColor.light}, ${subtitleColor.dark})` : undefined}>』</span>
                 
                 <!-- 打字机文本 -->
@@ -89,7 +89,7 @@ class BannerTextController {
             try {
                 this.authors = JSON.parse(this.authorElement.dataset.authors);
             } catch (error) {
-                console.error('解析作者数据失败:', error);
+                console.error('Failed to parse author data:', error);
             }
         }
         
