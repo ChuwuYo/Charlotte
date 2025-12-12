@@ -243,7 +243,7 @@ export function pluginCodeToolbar() {
 						const toolbar = createToolbar(language);
 
 						// 如果有 header
-						if (headerIndex !== undefined && headerIndex >= 0) {
+						if (headerIndex > -1) {
 							const header = node.children?.[headerIndex];
 							// 检查 header 是否为空（没有子元素或只有空白文本）
 							const isEmpty =

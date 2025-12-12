@@ -39,7 +39,6 @@ document.addEventListener("click", function (e: MouseEvent) {
     // 提取代码内容（排除折叠区域的 summary）
     const code = Array.from(codeEle.querySelectorAll(".code:not(summary *)"))
         .map(el => el.textContent)
-        .map(t => t === "\n" ? "" : t)
         .join("\n");
     
     // 检查代码是否为空
