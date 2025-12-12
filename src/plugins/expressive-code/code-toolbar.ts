@@ -112,13 +112,12 @@ function createToolbar(language: string | undefined): Element {
 	const children: Element[] = [];
 
 	// 添加语言标签
-	// 如果没有语言或是 plaintext/text，显示 "TEXT"
+	// 如果没有语言或是 plaintext/text，默认显示 "text"（CSS 会将其转换为大写）
+	const trimmed = language?.trim() || "";
+	const normalized = trimmed.toLowerCase();
 	const displayLanguage =
-		language &&
-		language.trim() !== "" &&
-		language !== "plaintext" &&
-		language !== "text"
-			? language
+		normalized && normalized !== "plaintext" && normalized !== "text"
+			? trimmed
 			: "text";
 	children.push(createLanguageBadge(displayLanguage));
 
