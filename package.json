@@ -14,7 +14,7 @@
 		"format": "biome format --write ./src",
 		"lint": "biome check --write ./src",
 		"preinstall": "npx only-allow pnpm",
-		"clean": "rmdir /s /q .astro 2>nul & rmdir /s /q dist 2>nul & rmdir /s /q node_modules\\.vite 2>nul & exit /b 0"
+		"clean": "rimraf .astro dist node_modules/.vite"
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.4",
@@ -73,7 +73,8 @@
 		"@types/node": "^24.6.2",
 		"@types/sanitize-html": "^2.16.0",
 		"postcss-import": "^16.1.1",
-		"postcss-nesting": "^13.0.2"
+		"postcss-nesting": "^13.0.2",
+		"rimraf": "^6.1.2"
 	},
 	"packageManager": "pnpm@10.25.0"
 }
