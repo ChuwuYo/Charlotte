@@ -14,30 +14,65 @@ const className = Astro.props.class;
 </div>
 
 <script>
+/**
+ * Code Toolbar Copy Button Handler
+ * 处理代码块工具栏中的复制按钮点击事件
+ */
 document.addEventListener("click", function (e: MouseEvent) {
     const target = e.target as Element | null;
-    if (target && target.classList.contains("copy-btn")) {
-        const preEle = target.closest("pre");
-        const codeEle = preEle?.querySelector("code");
-        const code = Array.from(codeEle?.querySelectorAll(".code:not(summary *)") ?? [])
-            .map(el => el.textContent)
-            .map(t => t === "\n" ? "" : t)
-            .join("\n");
-        navigator.clipboard.writeText(code);
-
-        const timeoutId = target.getAttribute("data-timeout-id");
+    if (!target) return;
+    
+    // 查找复制按钮
+    const copyBtn = target.closest(".code-toolbar-copy") as HTMLElement | null;
+    if (!copyBtn) return;
+    
+    // 防止重复点击和并发复制
+    if (copyBtn.classList.contains("success")) return;
+    if (copyBtn.getAttribute("data-copying") === "true") return;
+    
+    // 查找对应的代码块
+    const frame = copyBtn.closest(".frame");
+    const preEle = frame?.querySelector("pre");
+    const codeEle = preEle?.querySelector("code");
+    
+    if (!codeEle) return;
+    
+    // 提取代码内容（排除折叠区域的 summary）
+    const code = Array.from(codeEle.querySelectorAll(".code"))
+        .filter(el => !el.closest("summary"))
+        .map(el => el.textContent)
+        .join("\n");
+    
+    // 检查代码是否为空
+    if (!code || code.trim() === "") {
+        console.warn("Code block is empty");
+        return;
+    }
+    
+    // 设置复制中状态
+    copyBtn.setAttribute("data-copying", "true");
+    
+    // 复制到剪贴板
+    navigator.clipboard.writeText(code).then(() => {
+        // 清除之前的 timeout
+        const timeoutId = copyBtn.getAttribute("data-timeout-id");
         if (timeoutId) {
             clearTimeout(parseInt(timeoutId));
         }
-
-        target.classList.add("success");
-
-        // 设置新的timeout并保存ID到按钮的自定义属性中
+        
+        // 添加成功状态
+        copyBtn.classList.add("success");
+        
+        // 设置新的 timeout 并保存 ID
         const newTimeoutId = setTimeout(() => {
-            target.classList.remove("success");
-        }, 1000);
-
-        target.setAttribute("data-timeout-id", newTimeoutId.toString());
-    }
+            copyBtn.classList.remove("success");
+        }, 1500);
+        
+        copyBtn.setAttribute("data-timeout-id", newTimeoutId.toString());
+        copyBtn.removeAttribute("data-copying");
+    }).catch(err => {
+        console.error("Failed to copy code:", err);
+        copyBtn.removeAttribute("data-copying");
+    });
 });
 </script>
