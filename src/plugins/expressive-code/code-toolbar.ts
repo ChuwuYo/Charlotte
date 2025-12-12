@@ -85,8 +85,6 @@ function createCopyButton(): Element {
 
 /**
  * 创建语言标签元素
- * 使用 data-language 属性存储语言，同时在文本内容中显示
- * 这样可以保证无论是否有语言都能正确显示
  */
 function createLanguageBadge(language: string): Element {
 	return {
@@ -112,13 +110,9 @@ function createToolbar(language: string | undefined): Element {
 	const children: Element[] = [];
 
 	// 添加语言标签
-	// 如果没有语言或是 plaintext/text，默认显示 "text"（CSS 会将其转换为大写）
+	// 如果没有语言，默认显示 "text"（CSS 会将其转换为大写）
 	const trimmed = language?.trim() || "";
-	const normalized = trimmed.toLowerCase();
-	const displayLanguage =
-		normalized && normalized !== "plaintext" && normalized !== "text"
-			? trimmed
-			: "text";
+	const displayLanguage = trimmed || "text";
 	children.push(createLanguageBadge(displayLanguage));
 
 	// 添加复制按钮
@@ -140,7 +134,7 @@ export function pluginCodeToolbar() {
 	return definePlugin({
 		name: "Code Toolbar",
 		// @ts-expect-error
-		// 注：分割线高度由 markdown.css 中的 flex-shrink: 0 决定，border 宽度不需要指定
+		// 注：flex-shrink: 0 确保工具栏保持其固有尺寸（包括 padding 和 border），明确指定 1px 是 CSS 最佳实践
 		baseStyles: ({ _cssVar }) => `
 			.code-toolbar {
 				display: flex;
@@ -150,7 +144,7 @@ export function pluginCodeToolbar() {
 				background: var(--codeblock-topbar-bg);
 				font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 				user-select: none;
-				border-bottom: solid color-mix(in srgb, var(--primary) 50%, transparent);
+				border-bottom: 1px solid color-mix(in srgb, var(--primary) 50%, transparent);
 			}
 			.code-toolbar-lang {
 				font-size: 0.75rem;
