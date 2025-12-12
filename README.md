@@ -46,9 +46,9 @@
 pnpm new-post <filename>
 ```
 
-### 清理未使用的图片
+### 清理构建缓存
 
-清理 `src/content/assets` 目录下未被引用的图片文件：
+清理 Astro、Vite 和 dist 的缓存文件，解决渲染缓存问题：
 
 ```bash
 pnpm clean

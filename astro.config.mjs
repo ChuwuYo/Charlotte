@@ -39,7 +39,7 @@ export default defineConfig({
 			// when the Tailwind class `transition-all` is used
 			containers: ["main", "#toc"],
 			smoothScrolling: true,
-			cache: true,
+			cache: false, // 禁用 Swup 缓存以避免与 Astro/Vite 缓存冲突
 			preload: true,
 			accessibility: true,
 			updateHead: true,
