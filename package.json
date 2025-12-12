@@ -3,8 +3,8 @@
 	"type": "module",
 	"version": "0.0.3",
 	"scripts": {
-		"dev": "astro dev",
-		"start": "astro dev",
+		"dev": "pnpm clean && astro dev",
+		"start": "pnpm clean && astro dev",
 		"check": "astro check",
 		"build": "astro build && pagefind --site dist",
 		"preview": "astro preview",
@@ -14,7 +14,7 @@
 		"format": "biome format --write ./src",
 		"lint": "biome check --write ./src",
 		"preinstall": "npx only-allow pnpm",
-		"clean": "if (Test-Path .astro) { Remove-Item -Recurse -Force .astro }; if (Test-Path dist) { Remove-Item -Recurse -Force dist }; if (Test-Path node_modules/.vite) { Remove-Item -Recurse -Force node_modules/.vite }"
+		"clean": "rmdir /s /q .astro 2>nul & rmdir /s /q dist 2>nul & rmdir /s /q node_modules\\.vite 2>nul & exit /b 0"
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.4",
