@@ -140,6 +140,7 @@ export function pluginCodeToolbar() {
 	return definePlugin({
 		name: "Code Toolbar",
 		// @ts-expect-error
+		// 注：分割线高度由 markdown.css 中的 flex-shrink: 0 决定，border 宽度不需要指定
 		baseStyles: ({ _cssVar }) => `
 			.code-toolbar {
 				display: flex;
@@ -149,6 +150,7 @@ export function pluginCodeToolbar() {
 				background: var(--codeblock-topbar-bg);
 				font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 				user-select: none;
+				border-bottom: solid color-mix(in srgb, var(--primary) 50%, transparent);
 			}
 			.code-toolbar-lang {
 				font-size: 0.75rem;
