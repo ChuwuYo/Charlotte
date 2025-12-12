@@ -230,8 +230,11 @@ export function pluginCodeToolbar() {
 						Array.isArray(node.properties.className) &&
 						node.properties.className.includes("frame")
 					) {
+						// 规范化 children 为数组
+						if (!node.children) node.children = [];
+
 						// 查找标题栏（.header）
-						const headerIndex = node.children?.findIndex(
+						const headerIndex = node.children.findIndex(
 							(child) =>
 								child.type === "element" &&
 								child.properties?.className &&
@@ -244,7 +247,7 @@ export function pluginCodeToolbar() {
 
 						// 如果有 header
 						if (headerIndex > -1) {
-							const header = node.children?.[headerIndex];
+							const header = node.children[headerIndex];
 							// 检查 header 是否为空（没有子元素或只有空白文本）
 							const isEmpty =
 								header?.type === "element" &&
@@ -258,14 +261,14 @@ export function pluginCodeToolbar() {
 
 							if (isEmpty) {
 								// 如果 header 为空，用工具栏替换它
-								node.children?.splice(headerIndex, 1, toolbar);
+								node.children.splice(headerIndex, 1, toolbar);
 							} else {
 								// 如果 header 有内容，在它后面插入工具栏
-								node.children?.splice(headerIndex + 1, 0, toolbar);
+								node.children.splice(headerIndex + 1, 0, toolbar);
 							}
 						} else {
 							// 没有 header，在最前面插入工具栏
-							node.children?.unshift(toolbar);
+							node.children.unshift(toolbar);
 						}
 
 						return true;

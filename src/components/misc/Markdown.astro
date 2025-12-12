@@ -26,8 +26,9 @@ document.addEventListener("click", function (e: MouseEvent) {
     const copyBtn = target.closest(".code-toolbar-copy") as HTMLElement | null;
     if (!copyBtn) return;
     
-    // 防止重复点击
+    // 防止重复点击和并发复制
     if (copyBtn.classList.contains("success")) return;
+    if (copyBtn.getAttribute("data-copying") === "true") return;
     
     // 查找对应的代码块
     const frame = copyBtn.closest(".frame");
@@ -37,7 +38,8 @@ document.addEventListener("click", function (e: MouseEvent) {
     if (!codeEle) return;
     
     // 提取代码内容（排除折叠区域的 summary）
-    const code = Array.from(codeEle.querySelectorAll(".code:not(summary *)"))
+    const code = Array.from(codeEle.querySelectorAll(".code"))
+        .filter(el => !el.closest("summary"))
         .map(el => el.textContent)
         .join("\n");
     
@@ -46,6 +48,9 @@ document.addEventListener("click", function (e: MouseEvent) {
         console.warn("Code block is empty");
         return;
     }
+    
+    // 设置复制中状态
+    copyBtn.setAttribute("data-copying", "true");
     
     // 复制到剪贴板
     navigator.clipboard.writeText(code).then(() => {
@@ -64,8 +69,10 @@ document.addEventListener("click", function (e: MouseEvent) {
         }, 1500);
         
         copyBtn.setAttribute("data-timeout-id", newTimeoutId.toString());
+        copyBtn.removeAttribute("data-copying");
     }).catch(err => {
         console.error("Failed to copy code:", err);
+        copyBtn.removeAttribute("data-copying");
     });
 });
 </script>
