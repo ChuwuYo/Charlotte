@@ -20,7 +20,7 @@ export const subtitles: Subtitle[] = [
 	},
 	{
 		text: "你既无青春也无老年，而只像饭后的一场睡眠，把两者梦见",
-		author: "T.S.艾略特 - Gerontion",
+		author: "T.S.艾略特 - Gerontion（小老人）",
 	},
 	{
 		text: "我知道他们怎么对你，因为我也经历过同样的事，这就是为什么我们要证明给他们看",
@@ -44,7 +44,7 @@ export const subtitles: Subtitle[] = [
 	},
 	{
 		text: "人性一个最特别的弱点就是：在意别人如何看待自己",
-		author: "亚瑟·叔本华 - 附录和补遗·人生的智慧",
+		author: "亚瑟·叔本华 - 附录和补遗（人生的智慧）",
 	},
 	{
 		text: "每一真理的反面也同样真实，只有片面的真理才能形诸于言辞",
