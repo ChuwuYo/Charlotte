@@ -99,7 +99,19 @@ const links = Astro.props.links;
                  (content as HTMLElement).style.maxHeight = '0px';
                  (icon as SVGElement).style.transform = 'rotate(0deg)';
              } else {
-                 // 展开菜单
+                 // 先关闭所有其他菜单
+                 document.querySelectorAll('[data-mobile-dropdown-content]').forEach(otherContent => {
+                     if (otherContent !== content) {
+                         (otherContent as HTMLElement).style.maxHeight = '0px';
+                     }
+                 });
+                 document.querySelectorAll('[data-mobile-dropdown-icon]').forEach(otherIcon => {
+                     if (otherIcon !== icon) {
+                         (otherIcon as SVGElement).style.transform = 'rotate(0deg)';
+                     }
+                 });
+                 
+                 // 展开当前菜单
                  (content as HTMLElement).style.maxHeight = (content as HTMLElement).scrollHeight + 'px';
                  (icon as SVGElement).style.transform = 'rotate(180deg)';
              }
