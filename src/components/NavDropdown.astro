@@ -22,7 +22,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
         aria-haspopup="true"
         aria-expanded="false"
         aria-controls={dropdownId}
-        class="relative btn-plain scale-animation rounded-lg md:h-11 h-12 font-bold px-5 active:scale-95 flex items-center gap-1"
+        class="relative btn-plain scale-animation rounded-lg md:h-11 h-12 font-bold px-5 active:scale-95 flex items-center gap-1 min-w-[2.75rem] justify-start"
         data-dropdown-trigger
     >
         {title}
@@ -37,8 +37,8 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
     >
         <div class="card-base float-panel p-2">
             {items.map((item) => (
-                <a 
-                    href={item.external ? item.url : url(item.url)} 
+                <a
+                    href={item.external ? item.url : url(item.url)}
                     target={item.external ? "_blank" : null}
                     role="menuitem"
                     tabindex="-1"
