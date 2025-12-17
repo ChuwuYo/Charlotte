@@ -144,8 +144,9 @@ $: if (
       margin-top 0.75rem
 
     .radio-inputs .radio
-      flex 1 1 auto
+      flex 1 1 0%
       text-align center
+      min-width 0
 
     .radio-inputs .radio input
       display none

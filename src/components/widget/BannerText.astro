@@ -239,9 +239,12 @@ document.addEventListener('astro:before-swap', cleanup);
 
     /* 主标题增强可读性 */
     .banner-title {
-        text-shadow: 
-            0 0 3.5px oklch(0.75 0.14 var(--hue) / 0.575);
-        -webkit-text-stroke: 0.5px rgba(0,0,0,0.2);
+        text-shadow:
+            0 0 1px oklch(0.75 0.14 var(--hue) / 0.8),
+            0 0 3px oklch(0.75 0.14 var(--hue) / 0.6),
+            0 0 6px oklch(0.75 0.14 var(--hue) / 0.4),
+            0 0 12px oklch(0.75 0.14 var(--hue) / 0.2);
+        -webkit-text-stroke: 0.3px rgba(0,0,0,0.15);
         paint-order: stroke fill;
     }
 

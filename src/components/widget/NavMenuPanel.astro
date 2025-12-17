@@ -99,7 +99,17 @@ const links = Astro.props.links;
                  (content as HTMLElement).style.maxHeight = '0px';
                  (icon as SVGElement).style.transform = 'rotate(0deg)';
              } else {
-                 // 展开菜单
+                 // 先关闭所有其他菜单
+                 document.querySelectorAll('[data-mobile-dropdown]').forEach(otherDropdown => {
+                     if (otherDropdown !== dropdown) {
+                         const otherContent = otherDropdown.querySelector('[data-mobile-dropdown-content]');
+                         const otherIcon = otherDropdown.querySelector('[data-mobile-dropdown-icon]');
+                         if (otherContent) (otherContent as HTMLElement).style.maxHeight = '0px';
+                         if (otherIcon) (otherIcon as SVGElement).style.transform = 'rotate(0deg)';
+                     }
+                 });
+                 
+                 // 展开当前菜单
                  (content as HTMLElement).style.maxHeight = (content as HTMLElement).scrollHeight + 'px';
                  (icon as SVGElement).style.transform = 'rotate(180deg)';
              }
@@ -110,11 +120,11 @@ const links = Astro.props.links;
  // 点击外部关闭所有菜单
  document.addEventListener('click', (e) => {
      if (!(e.target as Element)?.closest('[data-mobile-dropdown]')) {
-         document.querySelectorAll('[data-mobile-dropdown-content]').forEach(content => {
-             (content as HTMLElement).style.maxHeight = '0px';
-         });
-         document.querySelectorAll('[data-mobile-dropdown-icon]').forEach(icon => {
-             (icon as SVGElement).style.transform = 'rotate(0deg)';
+         document.querySelectorAll('[data-mobile-dropdown]').forEach(dropdown => {
+             const content = dropdown.querySelector('[data-mobile-dropdown-content]');
+             const icon = dropdown.querySelector('[data-mobile-dropdown-icon]');
+             if (content) (content as HTMLElement).style.maxHeight = '0px';
+             if (icon) (icon as SVGElement).style.transform = 'rotate(0deg)';
          });
      }
  });
@@ -130,11 +140,11 @@ const links = Astro.props.links;
  if (window.swup?.hooks) {
      window.swup.hooks.on('page:view', () => {
          // 重置所有菜单状态后重新初始化
-         document.querySelectorAll('[data-mobile-dropdown-content]').forEach(content => {
-             (content as HTMLElement).style.maxHeight = '0px';
-         });
-         document.querySelectorAll('[data-mobile-dropdown-icon]').forEach(icon => {
-             (icon as SVGElement).style.transform = 'rotate(0deg)';
+         document.querySelectorAll('[data-mobile-dropdown]').forEach(dropdown => {
+             const content = dropdown.querySelector('[data-mobile-dropdown-content]');
+             const icon = dropdown.querySelector('[data-mobile-dropdown-icon]');
+             if (content) (content as HTMLElement).style.maxHeight = '0px';
+             if (icon) (icon as SVGElement).style.transform = 'rotate(0deg)';
          });
          initMobileDropdowns();
      });
