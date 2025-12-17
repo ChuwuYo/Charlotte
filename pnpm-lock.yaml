@@ -31,7 +31,7 @@ importers:
         version: 0.41.5
       '@expressive-code/plugin-line-numbers':
         specifier: ^0.41.3
-        version: 0.41.4
+        version: 0.41.5
       '@fontsource-variable/jetbrains-mono':
         specifier: ^5.2.8
         version: 5.2.8
@@ -1077,8 +1077,8 @@ packages:
   '@expressive-code/plugin-frames@0.41.4':
     resolution: {integrity: sha512-W9jZW8LsPS8fW5T5CQyXUyyCrMxb7qfl6oxlLZB1rW74qM572Id4CWEXOM/7fFDcd1pW2fUxMoGzJMh0T2Awhg==}
 
-  '@expressive-code/plugin-line-numbers@0.41.4':
-    resolution: {integrity: sha512-h7P0OQBvz4vikkV/XXyMecFsMPHZldm4Sx/AlZVsYFLMFTJ212M40bC1BTWupFw4Rd6mfDGimSNlK4EQuENaHA==}
+  '@expressive-code/plugin-line-numbers@0.41.5':
+    resolution: {integrity: sha512-WjUYYjIyTYyze8SsW2ERZ3zSxl3rW95aPTe9EumoWVggfQbBt3Sp51saUHnuNAJpeJCRS/wjF5JNsEzFhqflig==}
 
   '@expressive-code/plugin-shiki@0.41.4':
     resolution: {integrity: sha512-zOc0tfWISODHnnpfRJyssTvSWVVe+gj08GcFYiR2a6M8fKF1w5CJkpgf7tTvnoUTuVmL1DHRmiQFUnpGjtRGog==}
@@ -6095,7 +6095,7 @@ snapshots:
     dependencies:
       '@expressive-code/core': 0.41.5
 
-  '@expressive-code/plugin-line-numbers@0.41.4':
+  '@expressive-code/plugin-line-numbers@0.41.5':
     dependencies:
       '@expressive-code/core': 0.41.5
 
