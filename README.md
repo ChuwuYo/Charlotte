@@ -75,7 +75,7 @@ export const siteConfig: SiteConfig = {
 	banner: {
 		enable: true,
 		src: "assets/images/banner.png", // 相对于 /src 目录的路径。如果以 '/' 开头则相对于 /public 目录
-		position: "center", // 等同于 object-position，仅支持 'top', 'center', 'bottom'。默认为 'center'
+		position: "center", // 等同于 object-position，仅支持 'top', 'center', 'bottom'（默认为 'center'）
 		credit: {
 			enable: false, // 显示横幅图片的版权信息
 			text: "", // 要显示的版权文本
@@ -83,7 +83,7 @@ export const siteConfig: SiteConfig = {
 		},
 		text: {
 			title: "Chuwu's Blog", // 可选：主标题（大标题）
-			subtitle: subtitles, // 从./data/subtitles.ts导入的副标题数组（打字机文本）
+			subtitle: subtitles, // 从 ./src/data/subtitles.ts 导入的副标题数组（打字机文本）
 			color: {
 				title: "default", // 'default' (亮暗模式均为白色) 或 { light: '#000000', dark: '#ffffff' }
 				subtitle: { light: "#f0e5db", dark: "#fff1cdff" },
