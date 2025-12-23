@@ -106,7 +106,10 @@ function createLanguageBadge(language: string): Element {
 /**
  * 创建工具栏元素
  */
-function createToolbar(language: string | undefined, title: string | undefined): Element {
+function createToolbar(
+	language: string | undefined,
+	title: string | undefined,
+): Element {
 	const children: Element[] = [];
 
 	// 添加语言标签
@@ -258,7 +261,7 @@ export function pluginCodeToolbar() {
 			postprocessRenderedBlock: (context) => {
 				const { codeBlock, renderData } = context;
 				const language = codeBlock.language || "";
-				
+
 				// 从 meta 中提取 title
 				let title = "";
 				if (codeBlock.meta) {
