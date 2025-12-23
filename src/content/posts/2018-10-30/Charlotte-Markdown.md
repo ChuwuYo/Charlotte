@@ -21,7 +21,7 @@ lang: ''
 
 ## 文章元数据
 
-```
+```Markdown
 ---
 title: Charlotte-Markdown
 published: 2018-10-30
@@ -48,7 +48,7 @@ lang: ''
 
 你发布的文章应当在 `src/content/posts/` 目录下. 你也可以创建一个子目录，用来存放文章和文章中的资源。
 
-```
+```shell title="目录结构"
 src/content/posts/
 ├── post-1.md
 └── post-2/

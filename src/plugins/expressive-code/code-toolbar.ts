@@ -106,14 +106,43 @@ function createLanguageBadge(language: string): Element {
 /**
  * 创建工具栏元素
  */
-function createToolbar(language: string | undefined): Element {
+function createToolbar(
+	language: string | undefined,
+	title: string | undefined,
+): Element {
 	const children: Element[] = [];
 
 	// 添加语言标签
-	// 如果没有语言，默认显示 "text"（CSS 会将其转换为大写）
 	const trimmed = language?.trim() || "";
 	const displayLanguage = trimmed || "text";
 	children.push(createLanguageBadge(displayLanguage));
+
+	// 弹性间隔（保持左右元素分开）
+	children.push({
+		type: "element",
+		tagName: "div",
+		properties: {
+			className: ["code-toolbar-spacer"],
+		},
+		children: [],
+	});
+
+	// 如果有 title，添加绝对定位的 title 元素
+	if (title && title.trim()) {
+		children.push({
+			type: "element",
+			tagName: "span",
+			properties: {
+				className: ["code-toolbar-title"],
+			},
+			children: [
+				{
+					type: "text",
+					value: title.trim(),
+				},
+			],
+		});
+	}
 
 	// 添加复制按钮
 	children.push(createCopyButton());
@@ -139,12 +168,12 @@ export function pluginCodeToolbar() {
 			.code-toolbar {
 				display: flex;
 				align-items: center;
-				justify-content: space-between;
 				padding: 0.5rem 0.75rem;
 				background: var(--codeblock-topbar-bg);
 				font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 				user-select: none;
 				border-bottom: 1px solid color-mix(in srgb, var(--primary) 50%, transparent);
+				position: relative;
 			}
 			.code-toolbar-lang {
 				font-size: 0.75rem;
@@ -159,12 +188,27 @@ export function pluginCodeToolbar() {
 				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
 				transition: all 0.2s ease;
 				border: 1px solid color-mix(in srgb, var(--codeblock-toolbar-element-bg) 30%, transparent);
+				display: inline-flex;
 			}
 			.code-toolbar-lang:hover {
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 25%, transparent);
 				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
 			}
 			.code-toolbar-spacer { flex: 1; }
+			.code-toolbar-title {
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
+				font-size: 0.875rem;
+				font-weight: 500;
+				color: var(--codeblock-toolbar-element-color);
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				max-width: calc(100% - 14rem);
+				pointer-events: none;
+			}
 			.code-toolbar-copy {
 				display: flex;
 				align-items: center;
@@ -178,7 +222,6 @@ export function pluginCodeToolbar() {
 				color: var(--codeblock-toolbar-element-color);
 				cursor: pointer;
 				transition: all 0.2s ease;
-				outline: none;
 				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
 			}
 			.code-toolbar-copy:hover {
@@ -190,7 +233,10 @@ export function pluginCodeToolbar() {
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 35%, transparent);
 				box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(255, 255, 255, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
 			}
-			.code-toolbar-copy:focus-visible { box-shadow: 0 0 0 2px oklch(0.75 0.14 var(--hue) / 0.5); }
+			.code-toolbar-copy:focus-visible { 
+				outline: 2px solid oklch(0.75 0.14 var(--hue));
+				outline-offset: 2px;
+			}
 			.code-toolbar-copy.success {
 				background: color-mix(in srgb, oklch(0.6 0.12 var(--hue)) 40%, transparent);
 				color: oklch(0.85 0.12 var(--hue));
@@ -201,7 +247,6 @@ export function pluginCodeToolbar() {
 			.success-icon { opacity: 0; transform: scale(0.8); }
 			.code-toolbar-copy.success .copy-icon { opacity: 0; transform: scale(0.8); }
 			.code-toolbar-copy.success .success-icon { opacity: 1; transform: scale(1); }
-			.frame.has-title .code-toolbar-lang { display: none; }
 			.frame.is-terminal .code-toolbar { background: var(--codeblock-topbar-bg); }
 			@media (max-width: 640px) {
 				.code-toolbar { padding: 0.375rem 0.5rem; }
@@ -217,6 +262,15 @@ export function pluginCodeToolbar() {
 				const { codeBlock, renderData } = context;
 				const language = codeBlock.language || "";
 
+				// 从 meta 中提取 title
+				let title = "";
+				if (codeBlock.meta) {
+					const titleMatch = codeBlock.meta.match(/title=["']([^"']+)["']/);
+					if (titleMatch) {
+						title = titleMatch[1];
+					}
+				}
+
 				// 查找 .frame 元素并在其内部顶部插入工具栏
 				function findAndProcessFrame(node: Element): boolean {
 					if (
@@ -228,7 +282,7 @@ export function pluginCodeToolbar() {
 						// 规范化 children 为数组
 						if (!node.children) node.children = [];
 
-						// 查找标题栏（.header）
+						// 查找并删除旧的 header 节点（工具栏已完全替代其功能）
 						const headerIndex = node.children.findIndex(
 							(child) =>
 								child.type === "element" &&
@@ -237,34 +291,13 @@ export function pluginCodeToolbar() {
 								child.properties.className.includes("header"),
 						);
 
-						// 创建工具栏
-						const toolbar = createToolbar(language);
-
-						// 如果有 header
 						if (headerIndex > -1) {
-							const header = node.children[headerIndex];
-							// 检查 header 是否为空（没有子元素或只有空白文本）
-							const isEmpty =
-								header?.type === "element" &&
-								(!header.children ||
-									header.children.length === 0 ||
-									header.children.every(
-										(child) =>
-											child.type === "text" &&
-											(!child.value || child.value.trim() === ""),
-									));
-
-							if (isEmpty) {
-								// 如果 header 为空，用工具栏替换它
-								node.children.splice(headerIndex, 1, toolbar);
-							} else {
-								// 如果 header 有内容，在它后面插入工具栏
-								node.children.splice(headerIndex + 1, 0, toolbar);
-							}
-						} else {
-							// 没有 header，在最前面插入工具栏
-							node.children.unshift(toolbar);
+							node.children.splice(headerIndex, 1);
 						}
+
+						// 创建工具栏并在最前面插入
+						const toolbar = createToolbar(language, title);
+						node.children.unshift(toolbar);
 
 						return true;
 					}
