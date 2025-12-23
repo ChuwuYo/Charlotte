@@ -48,7 +48,7 @@ lang: ''
 
 你发布的文章应当在 `src/content/posts/` 目录下. 你也可以创建一个子目录，用来存放文章和文章中的资源。
 
-```
+```shell
 src/content/posts/
 ├── post-1.md
 └── post-2/

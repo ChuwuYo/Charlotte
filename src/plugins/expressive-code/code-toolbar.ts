@@ -240,31 +240,13 @@ export function pluginCodeToolbar() {
 						// 创建工具栏
 						const toolbar = createToolbar(language);
 
-						// 如果有 header
+						// 删除旧的 header（工具栏已完全替代其功能）
 						if (headerIndex > -1) {
-							const header = node.children[headerIndex];
-							// 检查 header 是否为空（没有子元素或只有空白文本）
-							const isEmpty =
-								header?.type === "element" &&
-								(!header.children ||
-									header.children.length === 0 ||
-									header.children.every(
-										(child) =>
-											child.type === "text" &&
-											(!child.value || child.value.trim() === ""),
-									));
-
-							if (isEmpty) {
-								// 如果 header 为空，用工具栏替换它
-								node.children.splice(headerIndex, 1, toolbar);
-							} else {
-								// 如果 header 有内容，在它后面插入工具栏
-								node.children.splice(headerIndex + 1, 0, toolbar);
-							}
-						} else {
-							// 没有 header，在最前面插入工具栏
-							node.children.unshift(toolbar);
+							node.children.splice(headerIndex, 1);
 						}
+
+						// 在最前面插入工具栏
+						node.children.unshift(toolbar);
 
 						return true;
 					}
