@@ -1,0 +1,173 @@
+---
+import type { MarkdownHeading } from "astro";
+import { Icon } from "astro-icon/components";
+import TOC from "./TOC.astro";
+
+interface Props {
+	headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+---
+
+<div class="collapsible-toc-wrapper block 2xl:hidden">
+    <!-- Trigger Button -->
+    <div id="collapsible-toc-btn" class="collapsible-toc-btn flex items-center rounded-full overflow-hidden transition shadow-xl border border-black/10 dark:border-white/10 bg-[var(--card-bg)]">
+        <button aria-label="Table of Contents" class="h-12 w-12 md:h-[3.75rem] md:w-[3.75rem] flex items-center justify-center hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition">
+            <Icon name="material-symbols:format-list-bulleted" class="text-xl md:text-[1.75rem] text-[var(--primary)]"></Icon>
+        </button>
+    </div>
+
+    <!-- TOC Panel -->
+    <div id="collapsible-toc-panel" class="collapsible-toc-panel fixed top-20 bottom-20 right-4 bg-[var(--card-bg)]/95 backdrop-blur-md shadow-2xl rounded-2xl border-2 border-[oklch(0.70_0.14_var(--hue))] z-50 flex flex-col">
+        <div class="px-3 py-3 md:px-4 md:py-4 font-bold text-base md:text-lg text-neutral-900 dark:text-neutral-100 border-b border-[oklch(0.70_0.14_var(--hue))]/30 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-2">
+                <Icon name="material-symbols:format-list-bulleted" class="text-base md:text-lg text-[var(--primary)]"></Icon>
+                <span>目录</span>
+            </div>
+            <button id="collapsible-toc-close" class="btn-plain p-1.5 md:p-2 rounded-lg hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition">
+                <Icon name="material-symbols:close-rounded" class="text-lg md:text-xl text-neutral-600 dark:text-neutral-400"></Icon>
+            </button>
+        </div>
+        <div class="collapsible-toc-inner flex-1 overflow-y-auto px-2 md:px-4 py-2 hide-scrollbar">
+            <div id="collapsible-toc">
+                <TOC headings={headings}></TOC>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Backdrop -->
+    <div id="collapsible-toc-backdrop" class="fixed inset-0 bg-black/10 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+</div>
+
+<style lang="stylus">
+.collapsible-toc-btn
+    position: fixed
+    bottom: 30rem
+    right: 1.5rem
+    z-index: 40
+    cursor: pointer
+    &.hide
+        transform: translateX(5rem) scale(0.9)
+        opacity: 0
+        pointer-events: none
+
+.collapsible-toc-panel
+    width: min(18rem, 75vw)
+    transform: translateX(calc(100% + 1rem))
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+    &.open
+        transform: translateX(0)
+
+#collapsible-toc-backdrop
+    &.open
+        opacity: 1
+        pointer-events: auto
+
+.collapsible-toc-inner
+    position: relative  /* Critical: makes offsetTop work correctly for TOC scroll tracking */
+    scrollbar-width: none
+    -ms-overflow-style: none
+    &::-webkit-scrollbar
+        display: none
+    mask-image: linear-gradient(to bottom, transparent 0%, black 1rem, black calc(100% - 1rem), transparent 100%)
+
+</style>
+
+<script>
+function initCollapsibleTOC() {
+    const btn = document.getElementById('collapsible-toc-btn');
+    const panel = document.getElementById('collapsible-toc-panel');
+    const closeBtn = document.getElementById('collapsible-toc-close');
+    const backdrop = document.getElementById('collapsible-toc-backdrop');
+    const wrapper = document.querySelector('.collapsible-toc-wrapper');
+
+    if (!btn || !panel || !wrapper || !backdrop) return;
+
+    const togglePanel = (e?: Event) => {
+        e?.stopPropagation();
+        const isOpen = panel.classList.contains('open');
+        if (isOpen) {
+            closePanel();
+        } else {
+            openPanel();
+        }
+    };
+
+    const openPanel = () => {
+        panel.classList.add('open');
+        backdrop.classList.add('open');
+        btn.classList.add('hide'); // Hide trigger button when panel is open
+        
+        // Trigger TOC update after animation completes
+        setTimeout(() => {
+            syncTocScroll();
+        }, 350);
+    };
+    
+    // Sync TOC scroll position using the Web Component's built-in logic
+    const syncTocScroll = () => {
+        const tocComponent = panel.querySelector('table-of-contents') as any;
+        const tocInner = panel.querySelector('.collapsible-toc-inner');
+        if (!tocComponent || !tocInner) return;
+        
+        // Re-run fallback and update to sync indicator and scroll
+        tocComponent.fallback?.();
+        tocComponent.update?.();
+        
+        // If no active items, reset scroll to top
+        const activeItems = tocComponent.querySelectorAll('.visible');
+        if (activeItems.length === 0) {
+            tocInner.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
+    const closePanel = () => {
+        panel.classList.remove('open');
+        backdrop.classList.remove('open');
+        // Only show button if we are scrolled down enough (handled by scroll listener)
+        if (window.scrollY > 300) {
+            btn.classList.remove('hide');
+        }
+    };
+
+    btn.addEventListener('click', togglePanel);
+    closeBtn?.addEventListener('click', closePanel);
+    backdrop.addEventListener('click', closePanel);
+
+    // Close panel when a link is clicked
+    panel.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).closest('a')) {
+            closePanel();
+        }
+    });
+
+    // ESC to close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closePanel();
+        }
+    });
+
+    // Handle scroll visibility (don't auto-sync when panel is open to avoid conflicts)
+    const handleScroll = () => {
+        const isOpen = panel.classList.contains('open');
+        
+        // When panel is open, don't interfere with user's TOC scrolling
+        if (isOpen) return;
+
+        if (window.scrollY > 300) {
+            btn.classList.remove('hide');
+        } else {
+            btn.classList.add('hide');
+        }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+}
+
+// Initialize on load and after swup transitions
+initCollapsibleTOC();
+document.addEventListener('swup:contentReplaced', initCollapsibleTOC);
+</script>

@@ -35,7 +35,7 @@ const maxLevel = siteConfig.toc.depth;
 <table-of-contents class:list={[className, "group"]}>
     {headings.filter((heading) => heading.depth < minDepth + maxLevel).map((heading) =>
             <a href={`#${heading.slug}`} class="px-2 flex gap-2 items-center relative transition w-full min-h-9 rounded-xl
-        hover:bg-[var(--toc-btn-hover)] active:bg-[var(--toc-btn-active)] md:py-2 py-3">
+        hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] md:py-2 py-3">
                 <div class:list={["transition w-5 h-5 shrink-0 rounded-lg text-xs flex items-center justify-center font-bold",
                     {
                         "bg-[var(--toc-badge-bg)] text-[var(--btn-content)]": heading.depth == minDepth,
@@ -54,8 +54,8 @@ const maxLevel = siteConfig.toc.depth;
                 }]}>{removeTailingHash(heading.text)}</div>
             </a>
     )}
-    <div id="active-indicator" style="opacity: 0" class:list={[{'hidden': headings.length == 0}, "-z-10 absolute bg-[var(--toc-btn-hover)] left-0 right-0 rounded-xl transition-all " +
-        "group-hover:bg-transparent border-2 border-[var(--toc-btn-hover)] group-hover:border-[var(--toc-btn-active)] border-dashed"]}></div>
+    <div id="active-indicator" style="opacity: 0" class:list={[{'hidden': headings.length == 0}, "-z-10 absolute bg-[var(--btn-plain-bg-hover)] left-0 right-0 rounded-xl transition-all " +
+        "md:group-hover:bg-transparent border-2 border-[var(--btn-plain-bg-active)] md:group-hover:border-[var(--toc-btn-active)] border-dashed"]}></div>
 </table-of-contents>}
 
 <script>
@@ -129,7 +129,7 @@ class TableOfContents extends HTMLElement {
 
         if (this.anchorNavTarget || !this.tocEl) return;
         const activeHeading =
-            document.querySelectorAll<HTMLDivElement>(`#toc .${this.visibleClass}`);
+            this.querySelectorAll<HTMLDivElement>(`.${this.visibleClass}`);
         if (!activeHeading.length) return;
 
         const topmost = activeHeading[0];
@@ -212,9 +212,7 @@ class TableOfContents extends HTMLElement {
     };
 
     init() {
-        this.tocEl = document.getElementById(
-            "toc-inner-wrapper"
-        );
+        this.tocEl = this.closest('.collapsible-toc-inner') || document.getElementById("toc-inner-wrapper");
 
         if (!this.tocEl) return;
 
@@ -222,10 +220,10 @@ class TableOfContents extends HTMLElement {
             capture: true,
         });
 
-        this.activeIndicator = document.getElementById("active-indicator");
+        this.activeIndicator = this.querySelector("#active-indicator");
 
         this.tocEntries = Array.from(
-            document.querySelectorAll<HTMLAnchorElement>("#toc a[href^='#']")
+            this.querySelectorAll<HTMLAnchorElement>("a[href^='#']")
         );
 
         if (this.tocEntries.length === 0) return;
