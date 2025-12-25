@@ -1,4 +1,6 @@
 ---
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
 import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
 import TOC from "./TOC.astro";
@@ -19,11 +21,11 @@ const { headings } = Astro.props;
     </div>
 
     <!-- TOC Panel -->
-    <div id="collapsible-toc-panel" class="collapsible-toc-panel fixed top-20 bottom-20 right-4 bg-[var(--card-bg)]/95 backdrop-blur-md shadow-2xl rounded-2xl border-2 border-[oklch(0.70_0.14_var(--hue))] z-50 flex flex-col">
-        <div class="px-3 py-3 md:px-4 md:py-4 font-bold text-base md:text-lg text-neutral-900 dark:text-neutral-100 border-b border-[oklch(0.70_0.14_var(--hue))]/30 flex items-center justify-between shrink-0">
+    <div id="collapsible-toc-panel" class="collapsible-toc-panel fixed top-20 bottom-28 right-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] rounded-2xl border-2 border-[var(--toc-panel-border)] z-50 flex flex-col">
+        <div class="px-3 py-3 md:px-4 md:py-4 font-bold text-base md:text-lg text-neutral-900 dark:text-neutral-100 border-b border-[var(--toc-panel-border)]/30 flex items-center justify-between shrink-0">
             <div class="flex items-center gap-2">
                 <Icon name="material-symbols:format-list-bulleted" class="text-base md:text-lg text-[var(--primary)]"></Icon>
-                <span>目录</span>
+                <span>{i18n(I18nKey.tableOfContents)}</span>
             </div>
             <button id="collapsible-toc-close" class="btn-plain p-1.5 md:p-2 rounded-lg hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition">
                 <Icon name="material-symbols:close-rounded" class="text-lg md:text-xl text-neutral-600 dark:text-neutral-400"></Icon>
@@ -35,9 +37,6 @@ const { headings } = Astro.props;
             </div>
         </div>
     </div>
-    
-    <!-- Backdrop -->
-    <div id="collapsible-toc-backdrop" class="fixed inset-0 bg-black/10 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
 </div>
 
 <style lang="stylus">
@@ -56,13 +55,10 @@ const { headings } = Astro.props;
     width: min(18rem, 75vw)
     transform: translateX(calc(100% + 1rem))
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+    background: var(--card-bg)
+    opacity: 0.9
     &.open
         transform: translateX(0)
-
-#collapsible-toc-backdrop
-    &.open
-        opacity: 1
-        pointer-events: auto
 
 .collapsible-toc-inner
     position: relative  /* Critical: makes offsetTop work correctly for TOC scroll tracking */
@@ -70,7 +66,6 @@ const { headings } = Astro.props;
     -ms-overflow-style: none
     &::-webkit-scrollbar
         display: none
-    mask-image: linear-gradient(to bottom, transparent 0%, black 1rem, black calc(100% - 1rem), transparent 100%)
 
 </style>
 
@@ -79,10 +74,9 @@ function initCollapsibleTOC() {
     const btn = document.getElementById('collapsible-toc-btn');
     const panel = document.getElementById('collapsible-toc-panel');
     const closeBtn = document.getElementById('collapsible-toc-close');
-    const backdrop = document.getElementById('collapsible-toc-backdrop');
     const wrapper = document.querySelector('.collapsible-toc-wrapper');
 
-    if (!btn || !panel || !wrapper || !backdrop) return;
+    if (!btn || !panel || !wrapper) return;
 
     const togglePanel = (e?: Event) => {
         e?.stopPropagation();
@@ -96,7 +90,6 @@ function initCollapsibleTOC() {
 
     const openPanel = () => {
         panel.classList.add('open');
-        backdrop.classList.add('open');
         btn.classList.add('hide'); // Hide trigger button when panel is open
         
         // Trigger TOC update after animation completes
@@ -124,7 +117,6 @@ function initCollapsibleTOC() {
 
     const closePanel = () => {
         panel.classList.remove('open');
-        backdrop.classList.remove('open');
         // Only show button if we are scrolled down enough (handled by scroll listener)
         if (window.scrollY > 300) {
             btn.classList.remove('hide');
@@ -133,7 +125,6 @@ function initCollapsibleTOC() {
 
     btn.addEventListener('click', togglePanel);
     closeBtn?.addEventListener('click', closePanel);
-    backdrop.addEventListener('click', closePanel);
 
     // Close panel when a link is clicked
     panel.addEventListener('click', (e) => {
@@ -169,5 +160,7 @@ function initCollapsibleTOC() {
 
 // Initialize on load and after swup transitions
 initCollapsibleTOC();
-document.addEventListener('swup:contentReplaced', initCollapsibleTOC);
+if (window.swup?.hooks) {
+    window.swup.hooks.on('page:view', initCollapsibleTOC);
+}
 </script>

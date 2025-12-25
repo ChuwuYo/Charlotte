@@ -58,4 +58,5 @@ export const zh_CN: Translation = {
 	[Key.secondUnitSingular]: "秒",
 
 	[Key.pinned]: "置顶",
+	[Key.tableOfContents]: "目录",
 };
