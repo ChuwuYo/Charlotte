@@ -271,6 +271,36 @@ function disableAnimation() {
 
 const bannerEnabled = !!document.getElementById('banner-wrapper')
 
+/*
+ * ============================================================================
+ * 代码组织说明 - 后期可提取到独立模块的功能块
+ * ============================================================================
+ * 
+ * 当前 Layout.astro 包含多个功能领域，如文件增长到 1000+ 行，应分割为：
+ * 
+ * 1. useScrollVisibility.ts
+ *    - scrollFunction(): 控制 BackToTop、CollapsibleTOC、TOC 的滚动显示
+ *    - updateScrollElements(): 更新 DOM 元素引用
+ *    - 相关常量：backToTopBtn, toc, navbar
+ * 
+ * 2. useCollapsibleTOC.ts
+ *    - toggleCollapsibleTOC(): 打开/关闭面板
+ *    - closeCollapsibleTOC(): 关闭并隐藏
+ *    - 事件监听：ESC、链接点击、动画回调
+ *    - TOC 同步滚动逻辑
+ * 
+ * 3. useSwupHooks.ts
+ *    - visit:start: 页面切换前的清理（关闭 CollapsibleTOC、KaTeX、TOC 等）
+ *    - visit:end: 页面切换后的初始化（滚动元素、CollapsibleTOC）
+ *    - content:replace: DOM 替换后的回调（KaTeX、滚动条）
+ *    - link:click: 链接点击时的处理
+ * 
+ * 4. usePhotoSwipe.ts (已基本独立，可进一步提取)
+ * 
+ * 5. Layout 保留：初始化流程、全局 UI 设置、类型定义
+ * ============================================================================
+ */
+
 // 面板配置 - 使用事件委托，只注册一次 click 监听器
 const PANEL_CONFIG = [
 	{ id: "display-setting", ignores: ["display-setting", "display-settings-switch"] },
@@ -430,6 +460,7 @@ function updateScrollElements() {
 function scrollFunction() {
 	let bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100)
 
+	// BackToTop button: show when scrolled past banner
 	if (backToTopBtn) {
 		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
 			backToTopBtn.classList.remove('hide')
@@ -438,7 +469,9 @@ function scrollFunction() {
 		}
 	}
 
-	// CollapsibleTOC button visibility - use dynamic query to handle first load
+	// CollapsibleTOC button visibility
+	// 注意：CollapsibleTOC 在 #swup-container 内，Swup 导航会重新创建 DOM
+	// 所以必须动态查询元素，不能缓存引用（与 BackToTop 不同）
 	const collapsibleTocBtn = document.getElementById('collapsible-toc-btn');
 	const collapsibleTocPanel = document.getElementById('collapsible-toc-panel');
 	
@@ -488,12 +521,13 @@ const toggleCollapsibleTOC = () => {
 	const isOpening = !panel.classList.contains('open');
 	
 	if (isOpening) {
-		// First remove hidden, then add open for animation
+		// 动画时序：先移除 hidden（display:block），强制重排，再加 open（transform 动画）
+		// 这样可以触发 CSS transition，否则会直接跳到最终状态
 		panel.classList.remove('hidden');
-		// Force reflow to ensure transition works
-		panel.offsetHeight;
+		panel.offsetHeight; // 强制浏览器重排，确保 transition 生效
 		panel.classList.add('open');
 		btn.classList.add('hide');
+		// 等待滑入动画完成（300ms transition + 50ms 缓冲）后同步 TOC 滚动位置
 		setTimeout(() => {
 			const tocComponent = panel.querySelector('table-of-contents');
 			if (tocComponent && 'fallback' in tocComponent) (tocComponent as any).fallback?.();
@@ -507,14 +541,14 @@ const toggleCollapsibleTOC = () => {
 const closeCollapsibleTOC = () => {
 	const panel = document.getElementById('collapsible-toc-panel');
 	if (!panel) return;
-	panel.classList.remove('open');
-	// Hide after animation completes
+	panel.classList.remove('open'); // 触发滑出动画（300ms）
+	// 等待动画结束后添加 hidden，避免面板仍在 DOM 中占用空间
 	setTimeout(() => {
 		if (!panel.classList.contains('open')) {
-			panel.classList.add('hidden');
+			panel.classList.add('hidden'); // display: none
 		}
-	}, 300);
-	// Trigger scroll update to restore button visibility
+	}, 300); // 匹配 CSS transition-duration
+	// 触发滚动事件，让 scrollFunction 重新评估按钮可见性
 	window.dispatchEvent(new Event('scroll'));
 };
 
@@ -522,9 +556,11 @@ const closeCollapsibleTOC = () => {
 (window as any).toggleCollapsibleTOC = toggleCollapsibleTOC;
 (window as any).closeCollapsibleTOC = closeCollapsibleTOC;
 
-// Close on link click / ESC
+// 全局事件监听：点击 TOC 链接 / 按 ESC 关闭面板
+// 使用 __collapsibleTocBound 标记防止重复绑定（Swup 不会重新加载 Layout 脚本）
 if (!(window as any).__collapsibleTocBound) {
 	(window as any).__collapsibleTocBound = true;
+	// 点击 TOC 内链接时自动关闭面板（用户体验优化）
 	document.addEventListener('click', e => {
 		const panel = document.getElementById('collapsible-toc-panel');
 		if (!panel || !panel.classList.contains('open')) return;
@@ -534,6 +570,7 @@ if (!(window as any).__collapsibleTocBound) {
 		}
 	});
 
+	// ESC 键关闭面板（标准 UI 行为）
 	document.addEventListener('keydown', e => {
 		if (e.key === 'Escape') {
 			closeCollapsibleTOC();
@@ -603,12 +640,14 @@ const setup = () => {
 			navbar.classList.add('navbar-hidden')
 		}
 	})
+	// Swup 钩子：visit:start - 页面切换开始（点击链接后，内容替换前）
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
-		// Immediately hide CollapsibleTOC panel before page transition
+		// 立即关闭 CollapsibleTOC 面板，避免页面过渡期间的视觉问题
+		// 如果不这样做，面板会先滑动到正文区内（因为容器高度变化），再被 Swup 移除
 		const collapsibleTocPanel = document.getElementById('collapsible-toc-panel');
 		if (collapsibleTocPanel) {
-			collapsibleTocPanel.classList.remove('open');
-			collapsibleTocPanel.classList.add('hidden');
+			collapsibleTocPanel.classList.remove('open');   // 移除打开状态
+			collapsibleTocPanel.classList.add('hidden');    // 立即隐藏（不等动画）
 		}
 
 		// Clean up previous KaTeX observer to prevent memory leaks
@@ -651,14 +690,19 @@ const setup = () => {
 		updateScrollElements();
 	});
 
+	// Swup 钩子：visit:end - 滚动动画完成后
 	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
-		// Wait for CollapsibleTOC to render before calling scrollFunction
+		// 初始化 CollapsibleTOC 按钮的滚动可见性
+		// 关键问题：CollapsibleTOC 在 #swup-container 内，Swup 会重新渲染 DOM
+		// 但在 visit:end 触发时，新 DOM 可能还没完全插入，需要处理时序
 		const initCollapsibleTocBtn = () => {
 			const btn = document.getElementById('collapsible-toc-btn');
 			if (btn) {
+				// 元素已存在，直接更新可见性
 				scrollFunction();
 			} else {
-				// Element not found, watch for it to appear
+				// 元素尚未渲染，使用 MutationObserver 等待
+				// 这种情况在快速导航或慢速设备上可能发生
 				const observer = new MutationObserver(() => {
 					if (document.getElementById('collapsible-toc-btn')) {
 						observer.disconnect();
@@ -666,6 +710,7 @@ const setup = () => {
 					}
 				});
 				observer.observe(document.body, { childList: true, subtree: true });
+				// 2 秒超时防止内存泄漏（如果页面没有 CollapsibleTOC）
 				setTimeout(() => observer.disconnect(), 2000);
 			}
 		};
