@@ -64,11 +64,15 @@ const closeIcon = "material-symbols:close-rounded";
         transform: translateX(0)
 
 .collapsible-toc-inner
-    position: relative  /* Critical: makes offsetTop work correctly for TOC scroll tracking */
+    position: relative /* Critical: makes offsetTop work correctly for TOC scroll tracking */
     scrollbar-width: none
     -ms-overflow-style: none
     &::-webkit-scrollbar
         display: none
+
+@media not (any-hover: hover)
+    :global(#collapsible-toc-btn button:hover)
+        background-color: transparent
 
 </style>
 
