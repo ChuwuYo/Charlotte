@@ -17,20 +17,20 @@ const closeIcon = "material-symbols:close-rounded";
 
 <div class="collapsible-toc-wrapper block 2xl:hidden">
     <!-- Trigger Button -->
-    <div id="collapsible-toc-btn" class="collapsible-toc-btn flex items-center rounded-full overflow-hidden transition shadow-xl border border-black/10 dark:border-white/10 bg-[var(--card-bg)]">
+    <div id="collapsible-toc-btn" class="collapsible-toc-btn hide flex items-center rounded-full overflow-hidden transition shadow-xl border border-black/10 dark:border-white/10 bg-[var(--card-bg)]" onclick="toggleCollapsibleTOC()">
         <button aria-label="Table of Contents" class="h-12 w-12 md:h-[3.75rem] md:w-[3.75rem] flex items-center justify-center hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition">
             <Icon name={tocIcon} class="text-xl md:text-[1.75rem] text-[var(--primary)]"></Icon>
         </button>
     </div>
 
-    <!-- TOC Panel -->
-    <div id="collapsible-toc-panel" class="collapsible-toc-panel fixed top-20 bottom-28 right-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] rounded-2xl border-2 border-[var(--toc-panel-border)] z-50 flex flex-col">
+    <!-- TOC Panel - hidden by default, shown on button click -->
+    <div id="collapsible-toc-panel" class="collapsible-toc-panel hidden fixed top-20 bottom-28 right-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] rounded-2xl border-2 border-[var(--toc-panel-border)] z-50 flex flex-col">
         <div class="px-3 py-3 md:px-4 md:py-4 font-bold text-base md:text-lg text-neutral-900 dark:text-neutral-100 border-b border-[var(--toc-panel-border)]/30 flex items-center justify-between shrink-0">
             <div class="flex items-center gap-2">
                 <Icon name={tocIcon} class="text-base md:text-lg text-[var(--primary)]"></Icon>
                 <span>{i18n(I18nKey.tableOfContents)}</span>
             </div>
-            <button id="collapsible-toc-close" class="btn-plain p-1.5 md:p-2 rounded-lg hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition">
+            <button id="collapsible-toc-close" onclick="closeCollapsibleTOC()" class="btn-plain p-1.5 md:p-2 rounded-lg hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition">
                 <Icon name={closeIcon} class="text-lg md:text-xl text-neutral-600 dark:text-neutral-400"></Icon>
             </button>
         </div>
@@ -72,223 +72,3 @@ const closeIcon = "material-symbols:close-rounded";
 
 </style>
 
-<script>
-import { BANNER_HEIGHT } from '@constants/constants';
-
-const win = globalThis as unknown as Window;
-
-function initCollapsibleTOC() {
-    // Clean up global listeners from previous page views (swup keeps the same window)
-    const prevResize = win.__collapsibleTocResizeHandler;
-    if (prevResize) {
-        win.removeEventListener('resize', prevResize);
-        win.__collapsibleTocResizeHandler = undefined;
-    }
-    const prevScroll = win.__collapsibleTocScrollHandler;
-    if (prevScroll) {
-        win.removeEventListener('scroll', prevScroll);
-        win.__collapsibleTocScrollHandler = undefined;
-    }
-    const prevKeydown = win.__collapsibleTocKeydownHandler;
-    if (prevKeydown) {
-        document.removeEventListener('keydown', prevKeydown);
-        win.__collapsibleTocKeydownHandler = undefined;
-    }
-    const prevObserver = win.__collapsibleTocVisibilityObserver;
-    prevObserver?.disconnect?.();
-    win.__collapsibleTocVisibilityObserver = undefined;
-
-    const btn = document.getElementById('collapsible-toc-btn');
-    const panel = document.getElementById('collapsible-toc-panel');
-    const closeBtn = document.getElementById('collapsible-toc-close');
-    const wrapper = document.querySelector('.collapsible-toc-wrapper');
-
-    if (!btn || !panel || !wrapper) return;
-
-    // Avoid binding duplicate listeners when this initializer runs multiple times (e.g. swup page transitions)
-    const wrapperEl = wrapper as HTMLElement;
-    if (wrapperEl.dataset.collapsibleTocInited === 'true') return;
-    wrapperEl.dataset.collapsibleTocInited = 'true';
-
-    const togglePanel = (e?: Event) => {
-        e?.stopPropagation();
-        const isOpen = panel.classList.contains('open');
-        if (isOpen) {
-            closePanel();
-        } else {
-            openPanel();
-        }
-    };
-
-    let shouldShowBtn = false;
-    const getScrollTop = () => document.documentElement.scrollTop || document.body.scrollTop;
-    const getShowThreshold = () => win.innerHeight * (BANNER_HEIGHT / 100);
-    const applyBtnVisibility = () => {
-        // When panel is open, always keep trigger hidden
-        if (panel.classList.contains('open')) return;
-        btn.classList.toggle('hide', !shouldShowBtn);
-    };
-
-    const openPanel = () => {
-        panel.classList.add('open');
-        btn.classList.add('hide'); // Hide trigger button when panel is open
-
-        // Trigger TOC update after animation completes (with fallback)
-        const prefersReducedMotion = win.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-        let synced = false;
-        const done = () => {
-            if (synced) return;
-            synced = true;
-            syncTocScroll();
-        };
-
-        if (prefersReducedMotion) {
-            // No transitionend guarantee when motion is reduced; sync on next frames
-            requestAnimationFrame(() => requestAnimationFrame(done));
-            return;
-        }
-
-        const onEnd = (ev: TransitionEvent) => {
-            if (ev?.target !== panel) return;
-            if (ev?.propertyName && ev.propertyName !== 'transform') return;
-            panel.removeEventListener('transitionend', onEnd);
-            done();
-        };
-        panel.addEventListener('transitionend', onEnd);
-        // Fallback in case transitionend doesn't fire (e.g. interrupted)
-        setTimeout(() => {
-            panel.removeEventListener('transitionend', onEnd);
-            done();
-        }, 500);
-    };
-    
-    // Sync TOC scroll position using the Web Component's built-in logic
-    const syncTocScroll = () => {
-        const tocComponent = panel.querySelector('table-of-contents') as TableOfContentsElement | null;
-        const tocInner = panel.querySelector('.collapsible-toc-inner');
-        if (!tocComponent || !tocInner) return;
-        
-        // Re-run fallback and update to sync indicator and scroll
-        tocComponent.fallback?.();
-        tocComponent.update?.();
-        
-        // If no active items, reset scroll to top
-        const activeItems = tocComponent.querySelectorAll('.visible');
-        if (activeItems.length === 0) {
-            tocInner.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    };
-
-    const closePanel = () => {
-        panel.classList.remove('open');
-        applyBtnVisibility();
-    };
-
-    btn.addEventListener('click', togglePanel);
-    closeBtn?.addEventListener('click', closePanel);
-
-    // Close panel when a link is clicked
-    panel.addEventListener('click', (e) => {
-        const anchor = (e.target as HTMLElement).closest('a') as HTMLAnchorElement | null;
-        if (!anchor) return;
-
-        // On touch devices, the clicked link can keep focus and look like a "second active" state.
-        // Blur it so only the scroll-tracking indicator remains.
-        if (win.matchMedia?.('(hover: none)').matches) {
-            anchor.blur();
-        }
-
-        closePanel();
-    });
-
-    // ESC to close
-    const keydownHandler = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') closePanel();
-    };
-    win.__collapsibleTocKeydownHandler = keydownHandler;
-    document.addEventListener('keydown', keydownHandler);
-
-    // Handle trigger visibility (prefer IntersectionObserver; fallback to scroll)
-    const setupVisibilityWatcher = () => {
-        if ('IntersectionObserver' in window) {
-            const sentinelId = 'collapsible-toc-scroll-sentinel';
-            let sentinel = document.getElementById(sentinelId);
-            if (!sentinel) {
-                sentinel = document.createElement('div');
-                sentinel.id = sentinelId;
-                sentinel.setAttribute('aria-hidden', 'true');
-                sentinel.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;pointer-events:none;opacity:0;';
-                document.body.prepend(sentinel);
-            }
-
-            const createObserver = () => {
-                const thresholdPx = getShowThreshold();
-                const observer = new IntersectionObserver(
-                    (entries) => {
-                        const isNearTop = entries[0]?.isIntersecting ?? true;
-                        // Equivalent to Layout.astro BackToTop/TOC: scrollTop > bannerHeight (BANNER_HEIGHT vh)
-                        shouldShowBtn = !isNearTop;
-                        applyBtnVisibility();
-                    },
-                    {
-                        root: null,
-                        // Keep the top-sentinel "intersecting" until we've scrolled past ~bannerHeight.
-                        rootMargin: `${thresholdPx}px 0px 0px 0px`,
-                        threshold: 0,
-                    }
-                );
-                win.__collapsibleTocVisibilityObserver = observer;
-                observer.observe(sentinel!);
-
-                // Force immediate state sync (before and after Observer's first callback)
-                const syncState = () => {
-                    shouldShowBtn = getScrollTop() > thresholdPx;
-                    applyBtnVisibility();
-                };
-                syncState();
-                // Ensure state is correct after Observer's initial callback fires
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(syncState);
-                });
-            };
-
-            createObserver();
-
-            let resizeRaf = 0;
-            const resizeHandler = () => {
-                if (resizeRaf) cancelAnimationFrame(resizeRaf);
-                resizeRaf = requestAnimationFrame(() => {
-                    // Recreate observer with updated threshold
-                    const current = win.__collapsibleTocVisibilityObserver;
-                    current?.disconnect?.();
-                    createObserver();
-                });
-            };
-            win.__collapsibleTocResizeHandler = resizeHandler;
-            win.addEventListener('resize', resizeHandler, { passive: true });
-
-            return;
-        }
-
-        const handleScroll = () => {
-            const thresholdPx = getShowThreshold();
-            shouldShowBtn = getScrollTop() > thresholdPx;
-            applyBtnVisibility();
-        };
-
-        win.__collapsibleTocScrollHandler = handleScroll;
-        win.__collapsibleTocResizeHandler = handleScroll;
-        win.addEventListener('scroll', handleScroll, { passive: true });
-        win.addEventListener('resize', handleScroll, { passive: true });
-        handleScroll();
-    };
-
-    setupVisibilityWatcher();
-}
-
-// Initialize on load and after swup transitions
-initCollapsibleTOC();
-if (win.swup?.hooks) {
-    win.swup.hooks.on('page:view', initCollapsibleTOC);
-}
-</script>

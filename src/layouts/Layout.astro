@@ -416,6 +416,131 @@ function showBanner() {
 	banner.classList.remove('opacity-0', 'scale-105');
 }
 
+// Scroll-related elements - declared here so scrollFunction can be called in init()
+let backToTopBtn: HTMLElement | null = null;
+let toc: HTMLElement | null = null;
+let navbar: HTMLElement | null = null;
+
+function updateScrollElements() {
+	backToTopBtn = document.getElementById('back-to-top-btn');
+	toc = document.getElementById('toc-wrapper');
+	navbar = document.getElementById('navbar-wrapper');
+}
+
+function scrollFunction() {
+	let bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100)
+
+	if (backToTopBtn) {
+		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
+			backToTopBtn.classList.remove('hide')
+		} else {
+			backToTopBtn.classList.add('hide')
+		}
+	}
+
+	// CollapsibleTOC button visibility - use dynamic query to handle first load
+	const collapsibleTocBtn = document.getElementById('collapsible-toc-btn');
+	const collapsibleTocPanel = document.getElementById('collapsible-toc-panel');
+	
+	if (collapsibleTocBtn && collapsibleTocPanel) {
+		// Only show when scrolled past banner AND panel is not open
+		if ((document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) 
+			&& !collapsibleTocPanel.classList.contains('open')) {
+			collapsibleTocBtn.classList.remove('hide')
+		} else {
+			collapsibleTocBtn.classList.add('hide')
+		}
+	}
+
+	if (bannerEnabled && toc) {
+		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
+			toc.classList.remove('toc-hide')
+		} else {
+			toc.classList.add('toc-hide')
+		}
+	}
+
+	if (!bannerEnabled) return
+	if (navbar) {
+		const NAVBAR_HEIGHT = 72
+		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16			// The height the main panel overlaps the banner
+
+		let bannerHeight = BANNER_HEIGHT
+		if (document.body.classList.contains('is-home')) {
+			bannerHeight = BANNER_HEIGHT_HOME
+		}
+		let threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16
+		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
+			navbar.classList.add('navbar-hidden')
+		} else {
+			navbar.classList.remove('navbar-hidden')
+		}
+	}
+}
+window.onscroll = scrollFunction
+
+// Collapsible TOC controls (BackToTop style - global handlers)
+const toggleCollapsibleTOC = () => {
+	const btn = document.getElementById('collapsible-toc-btn');
+	const panel = document.getElementById('collapsible-toc-panel');
+	if (!btn || !panel) return;
+
+	const isOpening = !panel.classList.contains('open');
+	
+	if (isOpening) {
+		// First remove hidden, then add open for animation
+		panel.classList.remove('hidden');
+		// Force reflow to ensure transition works
+		panel.offsetHeight;
+		panel.classList.add('open');
+		btn.classList.add('hide');
+		setTimeout(() => {
+			const tocComponent = panel.querySelector('table-of-contents');
+			if (tocComponent && 'fallback' in tocComponent) (tocComponent as any).fallback?.();
+			if (tocComponent && 'update' in tocComponent) (tocComponent as any).update?.();
+		}, 350);
+	} else {
+		closeCollapsibleTOC();
+	}
+};
+
+const closeCollapsibleTOC = () => {
+	const panel = document.getElementById('collapsible-toc-panel');
+	if (!panel) return;
+	panel.classList.remove('open');
+	// Hide after animation completes
+	setTimeout(() => {
+		if (!panel.classList.contains('open')) {
+			panel.classList.add('hidden');
+		}
+	}, 300);
+	// Trigger scroll update to restore button visibility
+	window.dispatchEvent(new Event('scroll'));
+};
+
+// Expose to inline handlers
+(window as any).toggleCollapsibleTOC = toggleCollapsibleTOC;
+(window as any).closeCollapsibleTOC = closeCollapsibleTOC;
+
+// Close on link click / ESC
+if (!(window as any).__collapsibleTocBound) {
+	(window as any).__collapsibleTocBound = true;
+	document.addEventListener('click', e => {
+		const panel = document.getElementById('collapsible-toc-panel');
+		if (!panel || !panel.classList.contains('open')) return;
+		const target = e.target as HTMLElement | null;
+		if (target && target.closest && target.closest('#collapsible-toc-panel a')) {
+			closeCollapsibleTOC();
+		}
+	});
+
+	document.addEventListener('keydown', e => {
+		if (e.key === 'Escape') {
+			closeCollapsibleTOC();
+		}
+	});
+}
+
 function init() {
 	// disableAnimation()()		// TODO
 	loadTheme();
@@ -424,8 +549,29 @@ function init() {
 	showBanner();
 }
 
+function initScrollElements() {
+	// Initialize scroll-related elements and set initial state
+	// This must run after DOM is fully loaded (CollapsibleTOC is in slot content)
+	updateScrollElements();
+	scrollFunction();
+}
+
 /* Load settings when entering the site */
 init();
+
+// Defer scroll element initialization until DOM is fully loaded
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', initScrollElements);
+} else {
+	// DOM already loaded (e.g., cached page), use rAF to ensure rendering is complete
+	requestAnimationFrame(initScrollElements);
+}
+
+// Fallback: ensure scroll-dependent UI initializes once all resources are loaded
+window.addEventListener('load', () => {
+	updateScrollElements();
+	scrollFunction();
+});
 
 const setup = () => {
 	// TODO: temp solution to change the height of the banner
@@ -458,6 +604,13 @@ const setup = () => {
 		}
 	})
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
+		// Immediately hide CollapsibleTOC panel before page transition
+		const collapsibleTocPanel = document.getElementById('collapsible-toc-panel');
+		if (collapsibleTocPanel) {
+			collapsibleTocPanel.classList.remove('open');
+			collapsibleTocPanel.classList.add('hidden');
+		}
+
 		// Clean up previous KaTeX observer to prevent memory leaks
 		if (katexObserver) {
 			katexObserver.disconnect();
@@ -492,10 +645,31 @@ const setup = () => {
 		}
 	});
 
-	window.swup.hooks.on('content:replace', initCustomScrollbar)
-
+	window.swup.hooks.on('content:replace', () => {
+		initCustomScrollbar();
+		// Update element references after DOM replacement
+		updateScrollElements();
+	});
 
 	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
+		// Wait for CollapsibleTOC to render before calling scrollFunction
+		const initCollapsibleTocBtn = () => {
+			const btn = document.getElementById('collapsible-toc-btn');
+			if (btn) {
+				scrollFunction();
+			} else {
+				// Element not found, watch for it to appear
+				const observer = new MutationObserver(() => {
+					if (document.getElementById('collapsible-toc-btn')) {
+						observer.disconnect();
+						scrollFunction();
+					}
+				});
+				observer.observe(document.body, { childList: true, subtree: true });
+				setTimeout(() => observer.disconnect(), 2000);
+			}
+		};
+
 		// Use a small timeout to ensure the browser has finished painting after the scroll
 		setTimeout(() => {
 			// Remove the helper class to allow the content animations to play
@@ -507,12 +681,15 @@ const setup = () => {
 				heightExtend.classList.add('hidden')
 			}
 
-            // Show the TOC again
-            const toc = document.getElementById('toc-wrapper');
-            if (toc) {
-                toc.classList.remove('toc-not-ready')
-            }
-        }, 50); // A small buffer is enough
+			// Show the TOC again
+			const toc = document.getElementById('toc-wrapper');
+			if (toc) {
+				toc.classList.remove('toc-not-ready')
+			}
+
+			// Initialize CollapsibleTOC button with MutationObserver fallback
+			initCollapsibleTocBtn();
+		}, 50); // A small buffer is enough
 	});
 }
 if (window?.swup?.hooks) {
@@ -521,46 +698,7 @@ if (window?.swup?.hooks) {
 	document.addEventListener('swup:enable', setup)
 }
 
-let backToTopBtn = document.getElementById('back-to-top-btn');
-let toc = document.getElementById('toc-wrapper');
-let navbar = document.getElementById('navbar-wrapper')
-function scrollFunction() {
-	let bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100)
-
-	if (backToTopBtn) {
-		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
-			backToTopBtn.classList.remove('hide')
-		} else {
-			backToTopBtn.classList.add('hide')
-		}
-	}
-
-	if (bannerEnabled && toc) {
-		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
-			toc.classList.remove('toc-hide')
-		} else {
-			toc.classList.add('toc-hide')
-		}
-	}
-
-	if (!bannerEnabled) return
-	if (navbar) {
-		const NAVBAR_HEIGHT = 72
-		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16			// The height the main panel overlaps the banner
-
-		let bannerHeight = BANNER_HEIGHT
-		if (document.body.classList.contains('is-home')) {
-			bannerHeight = BANNER_HEIGHT_HOME
-		}
-		let threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16
-		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
-			navbar.classList.add('navbar-hidden')
-		} else {
-			navbar.classList.remove('navbar-hidden')
-		}
-	}
-}
-window.onscroll = scrollFunction
+// scrollFunction and scroll-related variables are now defined above init()
 
 window.onresize = () => {
 	// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
