@@ -99,6 +99,8 @@ const showBannerText = siteConfig.banner.text && isHomePage;
                         <Footer></Footer>
                     </div>
                 </div>
+                <!-- CollapsibleTOC must be inside swup-container to be replaced during navigation -->
+                {siteConfig.toc.enable && headings.length > 0 && <CollapsibleTOC headings={headings}></CollapsibleTOC>}
             </main>
 
             <div class="footer col-span-2 onload-animation block lg:hidden">
@@ -107,7 +109,6 @@ const showBannerText = siteConfig.banner.text && isHomePage;
         </div>
 
         <BackToTop></BackToTop>
-        {siteConfig.toc.enable && headings.length > 0 && <CollapsibleTOC headings={headings}></CollapsibleTOC>}
     </div>
 </div>
 
