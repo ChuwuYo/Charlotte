@@ -45,7 +45,7 @@ const closeIcon = "material-symbols:close-rounded";
 <style lang="stylus">
 .collapsible-toc-btn
     position: fixed
-    bottom: 30rem
+    bottom: 50vh
     right: 1.5rem
     z-index: 40
     cursor: pointer
@@ -240,9 +240,16 @@ function initCollapsibleTOC() {
                 (win as any).__collapsibleTocVisibilityObserver = observer;
                 observer.observe(sentinel!);
 
-                // Ensure state is correct immediately after recreating
-                shouldShowBtn = getScrollTop() > thresholdPx;
-                applyBtnVisibility();
+                // Force immediate state sync (before and after Observer's first callback)
+                const syncState = () => {
+                    shouldShowBtn = getScrollTop() > thresholdPx;
+                    applyBtnVisibility();
+                };
+                syncState();
+                // Ensure state is correct after Observer's initial callback fires
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(syncState);
+                });
             };
 
             createObserver();
