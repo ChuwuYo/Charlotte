@@ -54,7 +54,7 @@ const maxLevel = siteConfig.toc.depth;
                 }]}>{removeTailingHash(heading.text)}</div>
             </a>
     )}
-    <div id="active-indicator" style="opacity: 0" class:list={[{'hidden': headings.length == 0}, "-z-10 absolute bg-[var(--btn-plain-bg-hover)] left-0 right-0 rounded-xl transition-all " +
+    <div style="opacity: 0" class:list={[{'hidden': headings.length == 0}, "active-indicator -z-10 absolute bg-[var(--btn-plain-bg-hover)] left-0 right-0 rounded-xl transition-all " +
         "md:group-hover:bg-transparent border-2 border-[var(--btn-plain-bg-active)] md:group-hover:border-[var(--toc-btn-active)] border-dashed"]}></div>
 </table-of-contents>}
 
@@ -220,7 +220,7 @@ class TableOfContents extends HTMLElement {
             capture: true,
         });
 
-        this.activeIndicator = this.querySelector("#active-indicator");
+        this.activeIndicator = this.querySelector(".active-indicator");
 
         this.tocEntries = Array.from(
             this.querySelectorAll<HTMLAnchorElement>("a[href^='#']")

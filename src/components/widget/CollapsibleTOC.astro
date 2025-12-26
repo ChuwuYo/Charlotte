@@ -75,28 +75,28 @@ const closeIcon = "material-symbols:close-rounded";
 <script>
 import { BANNER_HEIGHT } from '@constants/constants';
 
-function initCollapsibleTOC() {
-    const win = window as unknown as Window;
+const win = globalThis as unknown as Window;
 
+function initCollapsibleTOC() {
     // Clean up global listeners from previous page views (swup keeps the same window)
-    const prevResize = (win as any).__collapsibleTocResizeHandler as ((e?: UIEvent) => void) | undefined;
+    const prevResize = win.__collapsibleTocResizeHandler;
     if (prevResize) {
         win.removeEventListener('resize', prevResize);
-        (win as any).__collapsibleTocResizeHandler = undefined;
+        win.__collapsibleTocResizeHandler = undefined;
     }
-    const prevScroll = (win as any).__collapsibleTocScrollHandler as ((e?: Event) => void) | undefined;
+    const prevScroll = win.__collapsibleTocScrollHandler;
     if (prevScroll) {
         win.removeEventListener('scroll', prevScroll);
-        (win as any).__collapsibleTocScrollHandler = undefined;
+        win.__collapsibleTocScrollHandler = undefined;
     }
-    const prevKeydown = (win as any).__collapsibleTocKeydownHandler as ((e: KeyboardEvent) => void) | undefined;
+    const prevKeydown = win.__collapsibleTocKeydownHandler;
     if (prevKeydown) {
         document.removeEventListener('keydown', prevKeydown);
-        (win as any).__collapsibleTocKeydownHandler = undefined;
+        win.__collapsibleTocKeydownHandler = undefined;
     }
-    const prevObserver = (win as any).__collapsibleTocVisibilityObserver as IntersectionObserver | undefined;
+    const prevObserver = win.__collapsibleTocVisibilityObserver;
     prevObserver?.disconnect?.();
-    (win as any).__collapsibleTocVisibilityObserver = undefined;
+    win.__collapsibleTocVisibilityObserver = undefined;
 
     const btn = document.getElementById('collapsible-toc-btn');
     const panel = document.getElementById('collapsible-toc-panel');
@@ -164,7 +164,7 @@ function initCollapsibleTOC() {
     
     // Sync TOC scroll position using the Web Component's built-in logic
     const syncTocScroll = () => {
-        const tocComponent = panel.querySelector('table-of-contents') as any;
+        const tocComponent = panel.querySelector('table-of-contents') as TableOfContentsElement | null;
         const tocInner = panel.querySelector('.collapsible-toc-inner');
         if (!tocComponent || !tocInner) return;
         
@@ -205,12 +205,12 @@ function initCollapsibleTOC() {
     const keydownHandler = (e: KeyboardEvent) => {
         if (e.key === 'Escape') closePanel();
     };
-    (win as any).__collapsibleTocKeydownHandler = keydownHandler;
+    win.__collapsibleTocKeydownHandler = keydownHandler;
     document.addEventListener('keydown', keydownHandler);
 
     // Handle trigger visibility (prefer IntersectionObserver; fallback to scroll)
     const setupVisibilityWatcher = () => {
-        if ('IntersectionObserver' in win) {
+        if ('IntersectionObserver' in window) {
             const sentinelId = 'collapsible-toc-scroll-sentinel';
             let sentinel = document.getElementById(sentinelId);
             if (!sentinel) {
@@ -237,7 +237,7 @@ function initCollapsibleTOC() {
                         threshold: 0,
                     }
                 );
-                (win as any).__collapsibleTocVisibilityObserver = observer;
+                win.__collapsibleTocVisibilityObserver = observer;
                 observer.observe(sentinel!);
 
                 // Force immediate state sync (before and after Observer's first callback)
@@ -259,12 +259,12 @@ function initCollapsibleTOC() {
                 if (resizeRaf) cancelAnimationFrame(resizeRaf);
                 resizeRaf = requestAnimationFrame(() => {
                     // Recreate observer with updated threshold
-                    const current = (win as any).__collapsibleTocVisibilityObserver as IntersectionObserver | undefined;
+                    const current = win.__collapsibleTocVisibilityObserver;
                     current?.disconnect?.();
                     createObserver();
                 });
             };
-            (win as any).__collapsibleTocResizeHandler = resizeHandler;
+            win.__collapsibleTocResizeHandler = resizeHandler;
             win.addEventListener('resize', resizeHandler, { passive: true });
 
             return;
@@ -276,8 +276,8 @@ function initCollapsibleTOC() {
             applyBtnVisibility();
         };
 
-        (win as any).__collapsibleTocScrollHandler = handleScroll;
-        (win as any).__collapsibleTocResizeHandler = handleScroll;
+        win.__collapsibleTocScrollHandler = handleScroll;
+        win.__collapsibleTocResizeHandler = handleScroll;
         win.addEventListener('scroll', handleScroll, { passive: true });
         win.addEventListener('resize', handleScroll, { passive: true });
         handleScroll();
@@ -288,7 +288,7 @@ function initCollapsibleTOC() {
 
 // Initialize on load and after swup transitions
 initCollapsibleTOC();
-if (window.swup?.hooks) {
-    window.swup.hooks.on('page:view', initCollapsibleTOC);
+if (win.swup?.hooks) {
+    win.swup.hooks.on('page:view', initCollapsibleTOC);
 }
 </script>
