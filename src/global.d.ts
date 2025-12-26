@@ -16,6 +16,10 @@ declare global {
 		__collapsibleTocScrollHandler?: (e?: Event) => void;
 		__collapsibleTocKeydownHandler?: (e: KeyboardEvent) => void;
 		__collapsibleTocVisibilityObserver?: IntersectionObserver;
+		// CollapsibleTOC 全局函数（供 HTML onclick 调用）
+		toggleCollapsibleTOC: () => void;
+		closeCollapsibleTOC: () => void;
+		__collapsibleTocBound?: boolean;
 	}
 
 	interface TableOfContentsElement extends HTMLElement {

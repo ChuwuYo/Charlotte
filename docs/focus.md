@@ -20,8 +20,8 @@
 7. https://github.com/ChuwuYo/Charlotte/commit/92e21619539b31cc71c05f2ec33d4de40e1a4a5d
 
 ### 响应式布局优化和 rem 单位统一
-1. https://github.com/ChuwuYo/Charlotte/commit/7e810bb20f7da8bdae5f5bdd93ba9126632cb2b4
-2. https://github.com/ChuwuYo/Charlotte/commit/2f41b5c44e623981cd48971f49ce04f9ad6c6e6c
+1. https://github.com/ChuwuYo/Charlotte/commit/dd206a6b221785f78b3e514294ccbeb53471f113
+2. https://github.com/ChuwuYo/Charlotte/commit/5dd41f11016ef65bdc339a13c673d5c4e765c292
 
 ### 折叠目录
 1. https://github.com/ChuwuYo/Charlotte/commit/8c67cb3c7fcadebeab6ec286856c7e32664a3440

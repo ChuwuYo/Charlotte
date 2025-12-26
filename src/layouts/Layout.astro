@@ -83,7 +83,7 @@ const bannerOffset =
 	- lg (laptop, 1024px+): 14px (slightly smaller for better fit)
 	- 2xl (large desktop, 1536px+): 13px (more compact)
 -->
-<html lang={siteLang} class="bg-[var(--page-bg)] transition text-[14px] md:text-[15px] lg:text-[14px] 2xl:text-[13px]"
+<html lang={siteLang} class="bg-[var(--page-bg)] transition text-[var(--font-size-base)] md:text-[var(--font-size-md)] lg:text-[var(--font-size-lg)] 2xl:text-[var(--font-size-2xl)]"
 	  data-overlayscrollbars-initialize
 >
 	<head>
@@ -153,7 +153,12 @@ const bannerOffset =
 			configHue,
 			'page-width': PAGE_WIDTH,
 		}}></style>  <!-- defines global css variables. This will be applied to <html> <body> and some other elements idk why -->
-
+		<style define:vars={{
+			'font-size-base': '14px',
+			'font-size-md': '15px',
+			'font-size-lg': '14px',
+			'font-size-2xl': '13px',
+		}}></style>
 
 		<slot name="head"></slot>
 
@@ -221,7 +226,8 @@ import {
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_HOME,
 	BANNER_HEIGHT_EXTEND,
-	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
+	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
+	NAVBAR_HEIGHT
 } from "../constants/constants";
 import { siteConfig } from '../config';
 
@@ -495,14 +501,17 @@ function scrollFunction() {
 
 	if (!bannerEnabled) return
 	if (navbar) {
-		const NAVBAR_HEIGHT = 72
-		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16			// The height the main panel overlaps the banner
+		// 动态获取根字体大小（随响应式断点变化：14px/15px/14px/13px）
+		const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+		// 将 rem 单位转换为 px
+		const navbarHeightPx = NAVBAR_HEIGHT * rootFontSize;
+		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * rootFontSize;
 
 		let bannerHeight = BANNER_HEIGHT
 		if (document.body.classList.contains('is-home')) {
 			bannerHeight = BANNER_HEIGHT_HOME
 		}
-		let threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16
+		let threshold = window.innerHeight * (bannerHeight / 100) - navbarHeightPx - MAIN_PANEL_EXCESS_HEIGHT - rootFontSize;
 		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
 			navbar.classList.add('navbar-hidden')
 		} else {
@@ -529,9 +538,9 @@ const toggleCollapsibleTOC = () => {
 		btn.classList.add('hide');
 		// 等待滑入动画完成（300ms transition + 50ms 缓冲）后同步 TOC 滚动位置
 		setTimeout(() => {
-			const tocComponent = panel.querySelector('table-of-contents');
-			if (tocComponent && 'fallback' in tocComponent) (tocComponent as any).fallback?.();
-			if (tocComponent && 'update' in tocComponent) (tocComponent as any).update?.();
+			const tocComponent = panel.querySelector('table-of-contents') as TableOfContentsElement | null;
+			tocComponent?.fallback?.();
+			tocComponent?.update?.();
 		}, 350);
 	} else {
 		closeCollapsibleTOC();
@@ -553,13 +562,13 @@ const closeCollapsibleTOC = () => {
 };
 
 // Expose to inline handlers
-(window as any).toggleCollapsibleTOC = toggleCollapsibleTOC;
-(window as any).closeCollapsibleTOC = closeCollapsibleTOC;
+window.toggleCollapsibleTOC = toggleCollapsibleTOC;
+window.closeCollapsibleTOC = closeCollapsibleTOC;
 
 // 全局事件监听：点击 TOC 链接 / 按 ESC 关闭面板
 // 使用 __collapsibleTocBound 标记防止重复绑定（Swup 不会重新加载 Layout 脚本）
-if (!(window as any).__collapsibleTocBound) {
-	(window as any).__collapsibleTocBound = true;
+if (!window.__collapsibleTocBound) {
+	window.__collapsibleTocBound = true;
 	// 点击 TOC 内链接时自动关闭面板（用户体验优化）
 	document.addEventListener('click', e => {
 		const panel = document.getElementById('collapsible-toc-panel');
@@ -604,12 +613,6 @@ if (document.readyState === 'loading') {
 	requestAnimationFrame(initScrollElements);
 }
 
-// Fallback: ensure scroll-dependent UI initializes once all resources are loaded
-window.addEventListener('load', () => {
-	updateScrollElements();
-	scrollFunction();
-});
-
 const setup = () => {
 	// TODO: temp solution to change the height of the banner
 /*
@@ -631,7 +634,10 @@ const setup = () => {
 		if (!bannerEnabled) {
 			return
 		}
-		let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - 72 - 16
+		const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+		const navbarHeightPx = NAVBAR_HEIGHT * rootFontSize;
+		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * rootFontSize;
+		let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - navbarHeightPx - MAIN_PANEL_EXCESS_HEIGHT - rootFontSize;
 		let navbar = document.getElementById('navbar-wrapper')
 		if (!navbar || !document.body.classList.contains('is-home')) {
 			return
