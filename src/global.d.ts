@@ -11,6 +11,16 @@ declare global {
 				}>;
 			}>;
 		};
+
+		__collapsibleTocResizeHandler?: (e?: UIEvent) => void;
+		__collapsibleTocScrollHandler?: (e?: Event) => void;
+		__collapsibleTocKeydownHandler?: (e: KeyboardEvent) => void;
+		__collapsibleTocVisibilityObserver?: IntersectionObserver;
+	}
+
+	interface TableOfContentsElement extends HTMLElement {
+		fallback?: () => void;
+		update?: () => void;
 	}
 }
 

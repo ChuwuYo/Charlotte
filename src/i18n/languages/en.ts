@@ -59,4 +59,5 @@ export const en: Translation = {
 
 	// 置顶相关翻译
 	[Key.pinned]: "Pinned",
+	[Key.tableOfContents]: "Table of Contents",
 };

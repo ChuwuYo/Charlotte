@@ -1,13 +1,14 @@
 ---
 import BackToTop from "@components/control/BackToTop.astro";
 import Footer from "@components/Footer.astro";
+import ImageWrapper from "@components/misc/ImageWrapper.astro";
 import Navbar from "@components/Navbar.astro";
 import BannerText from "@components/widget/BannerText.astro";
+import CollapsibleTOC from "@components/widget/CollapsibleTOC.astro";
 import SideBar from "@components/widget/SideBar.astro";
+import TOC from "@components/widget/TOC.astro";
 import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
-import ImageWrapper from "../components/misc/ImageWrapper.astro";
-import TOC from "../components/widget/TOC.astro";
 import { siteConfig } from "../config";
 import {
 	BANNER_HEIGHT,
@@ -106,6 +107,7 @@ const showBannerText = siteConfig.banner.text && isHomePage;
         </div>
 
         <BackToTop></BackToTop>
+        {siteConfig.toc.enable && headings.length > 0 && <CollapsibleTOC headings={headings}></CollapsibleTOC>}
     </div>
 </div>
 
@@ -113,7 +115,7 @@ const showBannerText = siteConfig.banner.text && isHomePage;
 <div class="absolute w-full z-0 hidden 2xl:block">
     <div class="relative max-w-[var(--page-width)] mx-auto">
         <!-- TOC component -->
-        {siteConfig.toc.enable && <div id="toc-wrapper" class:list={["hidden lg:block transition absolute top-0 -right-[var(--toc-width)] w-[var(--toc-width)] items-center",
+        {siteConfig.toc.enable && <div id="toc-wrapper" class:list={["transition absolute top-0 -right-[var(--toc-width)] w-[var(--toc-width)] items-center",
             {"toc-hide": siteConfig.banner.enable}]}
         >
             <div id="toc-inner-wrapper" class="fixed top-14 w-[var(--toc-width)] h-[calc(100vh_-_20rem)] overflow-y-scroll overflow-x-hidden hide-scrollbar">

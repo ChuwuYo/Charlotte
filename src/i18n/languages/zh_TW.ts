@@ -59,4 +59,5 @@ export const zh_TW: Translation = {
 
 	// 置顶相关翻译
 	[Key.pinned]: "置頂",
+	[Key.tableOfContents]: "目錄",
 };

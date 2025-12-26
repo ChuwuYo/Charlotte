@@ -55,6 +55,7 @@ enum I18nKey {
 	secondUnitSingular = "secondUnitSingular",
 
 	pinned = "pinned",
+	tableOfContents = "tableOfContents",
 }
 
 export default I18nKey;

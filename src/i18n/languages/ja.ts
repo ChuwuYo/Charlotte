@@ -58,4 +58,5 @@ export const ja: Translation = {
 
 	// 置顶相关翻译
 	[Key.pinned]: "ピン留め",
+	[Key.tableOfContents]: "目次",
 };
