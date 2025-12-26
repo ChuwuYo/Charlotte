@@ -35,7 +35,7 @@ const maxLevel = siteConfig.toc.depth;
 <table-of-contents class:list={[className, "group"]}>
     {headings.filter((heading) => heading.depth < minDepth + maxLevel).map((heading) =>
             <a href={`#${heading.slug}`} class="px-2 flex gap-2 items-center relative transition w-full min-h-9 rounded-xl
-        hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] md:py-2 py-3">
+        active:bg-[var(--btn-plain-bg-active)] md:py-2 py-3">
                 <div class:list={["transition w-5 h-5 shrink-0 rounded-lg text-xs flex items-center justify-center font-bold",
                     {
                         "bg-[var(--toc-badge-bg)] text-[var(--btn-content)]": heading.depth == minDepth,
@@ -57,6 +57,14 @@ const maxLevel = siteConfig.toc.depth;
     <div style="opacity: 0" class:list={[{'hidden': headings.length == 0}, "active-indicator -z-10 absolute bg-[var(--btn-plain-bg-hover)] left-0 right-0 rounded-xl transition-all " +
         "md:group-hover:bg-transparent border-2 border-[var(--btn-plain-bg-active)] md:group-hover:border-[var(--toc-btn-active)] border-dashed"]}></div>
 </table-of-contents>}
+
+<style>
+    @media (any-hover: hover) {
+        table-of-contents a:hover {
+            background-color: var(--btn-plain-bg-hover);
+        }
+    }
+</style>
 
 <script>
 class TableOfContents extends HTMLElement {
