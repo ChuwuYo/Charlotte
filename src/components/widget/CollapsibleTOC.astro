@@ -18,7 +18,7 @@ const closeIcon = "material-symbols:close-rounded";
 <div class="collapsible-toc-wrapper block 2xl:hidden">
     <!-- Trigger Button -->
     <div id="collapsible-toc-btn" class="collapsible-toc-btn hide flex items-center rounded-full overflow-hidden transition shadow-xl border border-black/10 dark:border-white/10 bg-[var(--card-bg)]" onclick="toggleCollapsibleTOC()">
-        <button aria-label="Table of Contents" class="h-12 w-12 md:h-[3.75rem] md:w-[3.75rem] flex items-center justify-center hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition">
+        <button aria-label="Table of Contents" class="h-12 w-12 md:h-[3.75rem] md:w-[3.75rem] flex items-center justify-center active:bg-[var(--btn-plain-bg-active)] transition">
             <Icon name={tocIcon} class="text-xl md:text-[1.75rem] text-[var(--primary)]"></Icon>
         </button>
     </div>
@@ -54,6 +54,10 @@ const closeIcon = "material-symbols:close-rounded";
         opacity: 0
         pointer-events: none
 
+@media (any-hover: hover)
+    :global(#collapsible-toc-btn button:hover)
+        background-color: var(--btn-plain-bg-hover)
+
 .collapsible-toc-panel
     width: min(18rem, 75vw)
     transform: translateX(calc(100% + 1rem))
@@ -69,10 +73,6 @@ const closeIcon = "material-symbols:close-rounded";
     -ms-overflow-style: none
     &::-webkit-scrollbar
         display: none
-
-@media not (any-hover: hover)
-    :global(#collapsible-toc-btn button:hover)
-        background-color: transparent
 
 </style>
 
