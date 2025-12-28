@@ -73,6 +73,37 @@ const bannerOffsetByPosition = {
 };
 const bannerOffset =
 	bannerOffsetByPosition[siteConfig.banner.position || "center"];
+
+// 外链 hover 预热（仅使用配置中的链接表；为空则不执行）
+const externalLinkWarmupConfig = siteConfig.performance?.externalLinkWarmup;
+const enableExternalLinkWarmup = externalLinkWarmupConfig?.enable !== false;
+const enableExternalLinkFetchWarmup =
+	externalLinkWarmupConfig?.enableFetch !== false;
+
+const warmupUrls: string[] = enableExternalLinkWarmup
+	? (externalLinkWarmupConfig?.urls ?? [])
+	: [];
+
+const hoverPrefetchOrigins: string[] = Array.from(
+	new Set(
+		warmupUrls
+			.map((linkUrl) => {
+				if (!/^https?:\/\//i.test(linkUrl)) return null;
+				try {
+					return new URL(linkUrl).origin;
+				} catch {
+					return null;
+				}
+			})
+			.filter((v): v is string => typeof v === "string"),
+	),
+);
+
+// 用于 head 中 dns-prefetch 的域名列表（由 origin 派生并去重）
+// 这里的 origin 来自 new URL(linkUrl).origin，已保证是合法 URL
+const hoverPrefetchHosts: string[] = Array.from(
+	new Set(hoverPrefetchOrigins.map((origin) => new URL(origin).host)),
+);
 ---
 
 <!DOCTYPE html>
@@ -120,6 +151,15 @@ const bannerOffset =
 			/>
 		))}
 
+		{enableExternalLinkWarmup ? (
+			<>
+				<!-- 外链预热：按配置生成 dns-prefetch（低成本 DNS 提示） -->
+				{hoverPrefetchHosts.map((host) => (
+					<link rel="dns-prefetch" href={`//${host}`} />
+				))}
+			</>
+		) : null}
+
 		<!-- Set the theme before the page is rendered to avoid a flash -->
 		<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, AUTO_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue}}>
 			// Load the theme from local storage
@@ -164,6 +204,22 @@ const bannerOffset =
 
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
 		<link rel="alternate" type="application/atom+xml" title={profileConfig.name} href={`${Astro.site}atom.xml`}/>
+
+		<script is:inline define:vars={{ hoverPrefetchOrigins, enableExternalLinkWarmup, enableExternalLinkFetchWarmup }}>
+		// 外链预热（由 src/utils/useExternalLinkWarmup.ts 实现）：
+		// - dns-prefetch：静态 <link>
+		// - preconnect：hover 时注入
+		// - fetch：hover 时预热（可通过配置开关关闭）
+		window.__externalLinkWarmupConfig = {
+			enable: enableExternalLinkWarmup,
+			enableFetch: enableExternalLinkFetchWarmup,
+			origins: hoverPrefetchOrigins,
+		};
+		</script>
+		<script type="module">
+			import { setupExternalLinkWarmup } from "../utils/useExternalLinkWarmup";
+			setupExternalLinkWarmup(window.__externalLinkWarmupConfig);
+		</script>
 
 	</head>
 	<body class=" min-h-screen transition " class:list={[{"is-home": isHomePage, "enable-banner": enableBanner}]}
@@ -303,7 +359,7 @@ const bannerEnabled = !!document.getElementById('banner-wrapper')
  * 
  * 4. usePhotoSwipe.ts (已基本独立，可进一步提取)
  * 
- * 5. Layout 保留：初始化流程、全局 UI 设置、类型定义
+ * 6. Layout 保留：初始化流程、全局 UI 设置、类型定义
  * ============================================================================
  */
 

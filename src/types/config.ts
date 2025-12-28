@@ -45,6 +45,14 @@ export type SiteConfig = {
 
 	favicon: Favicon[];
 	pinnedPost?: string | string[];
+
+	performance?: {
+		externalLinkWarmup?: {
+			enable?: boolean;
+			enableFetch?: boolean;
+			urls?: string[];
+		};
+	};
 };
 
 export type Favicon = {
