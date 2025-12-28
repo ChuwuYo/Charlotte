@@ -216,10 +216,6 @@ const hoverPrefetchHosts: string[] = Array.from(
 			origins: hoverPrefetchOrigins,
 		};
 		</script>
-		<script type="module">
-			import { setupExternalLinkWarmup } from "../utils/useExternalLinkWarmup";
-			setupExternalLinkWarmup(window.__externalLinkWarmupConfig);
-		</script>
 
 	</head>
 	<body class=" min-h-screen transition " class:list={[{"is-home": isHomePage, "enable-banner": enableBanner}]}
@@ -276,6 +272,7 @@ import {
 	// SizeObserverPlugin,
 	// ClickScrollPlugin
 } from 'overlayscrollbars';
+import { setupExternalLinkWarmup } from "../utils/useExternalLinkWarmup";
 import {getHue, getStoredTheme, setHue, setTheme} from "../utils/setting-utils";
 import {pathsEqual, url} from "../utils/url-utils";
 import {
@@ -647,6 +644,7 @@ function init() {
 	// disableAnimation()()		// TODO
 	loadTheme();
 	loadHue();
+	setupExternalLinkWarmup(window.__externalLinkWarmupConfig);
 	initCustomScrollbar();
 	showBanner();
 }
