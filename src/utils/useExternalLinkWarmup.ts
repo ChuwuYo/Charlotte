@@ -57,10 +57,9 @@ export function setupExternalLinkWarmup(config?: ExternalLinkWarmupConfig) {
 	document.addEventListener(
 		"pointerover",
 		(e) => {
-			const a =
-				e.target && (e.target as Element).closest
-					? (e.target as Element).closest("a")
-					: null;
+			const target = e.target;
+			if (!(target instanceof Element)) return;
+			const a = target.closest("a");
 			if (!a || !(a instanceof HTMLAnchorElement) || !a.href) return;
 
 			let linkUrl: URL;
