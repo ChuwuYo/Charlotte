@@ -106,6 +106,13 @@ export const siteConfig: SiteConfig = {
 		},
 	],
 	pinnedPost: ["xxx/yyy.md , zzz.md"], // 置顶文章的 slug 路径，如果为空则不置顶，按顺序排序多个置顶，逗号分隔
+	performance: {
+		externalLinkWarmup: {
+			enable: true, // 外链预热总开关（dns-prefetch / preconnect / fetch）
+			enableFetch: true, // 是否启用 hover 时 fetch 预热（隐私敏感可关闭）
+			urls: externalLinkWarmupUrls, // 外链预热链接表（完整 URL）from "./data/external-link-warmup"
+		},
+	},
 };
 ```
 
