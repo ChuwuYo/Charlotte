@@ -128,7 +128,8 @@ function createToolbar(
 	});
 
 	// 如果有 title，添加绝对定位的 title 元素
-	if (title && title.trim()) {
+	const trimmedTitle = title?.trim();
+	if (trimmedTitle) {
 		children.push({
 			type: "element",
 			tagName: "span",
@@ -138,7 +139,7 @@ function createToolbar(
 			children: [
 				{
 					type: "text",
-					value: title.trim(),
+					value: trimmedTitle,
 				},
 			],
 		});
