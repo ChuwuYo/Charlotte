@@ -6,7 +6,7 @@
 		"dev": "pnpm clean && astro dev",
 		"start": "pnpm build && pnpm preview",
 		"check": "astro check",
-		"build": "astro build && pagefind --site dist",
+		"build": "pnpm clean && astro build && pagefind --site dist",
 		"preview": "astro preview",
 		"astro": "astro",
 		"type-check": "tsc --noEmit --isolatedDeclarations",

@@ -20,7 +20,6 @@ export function setupExternalLinkWarmup(config?: ExternalLinkWarmupConfig) {
 	const hotOrigins = new Set(origins);
 	const warmedHrefs = new Set<string>();
 	const warmedOrigins = new Set<string>();
-	const head = document.head;
 	const fetchWarmupKeyPrefix = "external-fetch-warmup:";
 
 	function getFetchWarmupKey(href: string) {
@@ -28,6 +27,7 @@ export function setupExternalLinkWarmup(config?: ExternalLinkWarmupConfig) {
 	}
 
 	function ensurePreconnect(origin: string) {
+		const head = document.head;
 		if (!head) return;
 		const selector = `link[rel="preconnect"][href="${origin}"]`;
 		if (head.querySelector(selector)) return;
