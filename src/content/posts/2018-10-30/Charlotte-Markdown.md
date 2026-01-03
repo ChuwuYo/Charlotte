@@ -21,7 +21,7 @@ lang: ''
 
 ## 文章元数据
 
-```Markdown
+```markdown
 ---
 title: Charlotte-Markdown
 published: 2018-10-30

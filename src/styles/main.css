@@ -1,6 +1,13 @@
 @tailwind components;
 
 @layer components {
+    .expressive-code .frame {
+        @apply !shadow-none;
+    }
+    .expressive-code .title {
+        font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
     .card-base {
         @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition;
     }
