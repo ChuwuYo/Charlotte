@@ -4,9 +4,9 @@
 	"version": "0.0.3",
 	"scripts": {
 		"dev": "pnpm clean && astro dev",
-		"start": "pnpm build && pnpm preview",
+		"start": "pnpm clean && pnpm build && pnpm preview",
 		"check": "astro check",
-		"build": "astro build && pagefind --site dist",
+		"build": "pnpm clean && astro build && pagefind --site dist",
 		"preview": "astro preview",
 		"astro": "astro",
 		"type-check": "tsc --noEmit --isolatedDeclarations",
