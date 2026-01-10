@@ -76,5 +76,5 @@
 		"postcss-nesting": "^13.0.2",
 		"rimraf": "^6.1.2"
 	},
-	"packageManager": "pnpm@10.27.0"
+	"packageManager": "pnpm@10.28.0"
 }
