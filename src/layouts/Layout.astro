@@ -114,7 +114,7 @@ const hoverPrefetchHosts: string[] = Array.from(
 	- lg (laptop, 1024px+): 14px (slightly smaller for better fit)
 	- 2xl (large desktop, 1536px+): 13px (more compact)
 -->
-<html lang={siteLang} class="bg-[var(--page-bg)] transition text-[var(--font-size-base)] md:text-[var(--font-size-md)] lg:text-[var(--font-size-lg)] 2xl:text-[var(--font-size-2xl)]"
+<html lang={siteLang} class="bg-[var(--page-bg)] transition"
 	  data-overlayscrollbars-initialize
 >
 	<head>
@@ -141,7 +141,7 @@ const hoverPrefetchHosts: string[] = Array.from(
 		<meta name="twitter:title" content={pageTitle}>
 		<meta name="twitter:description" content={finalDescription}>
 
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="generator" content={Astro.generator} />
 		{favicons.map(favicon => (
 			<link rel="icon"
@@ -189,16 +189,34 @@ const hoverPrefetchHosts: string[] = Array.from(
 			offset = offset - offset % 4;
 			document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 		</script>
-		<style define:vars={{
+		<style is:global define:vars={{
 			configHue,
 			'page-width': PAGE_WIDTH,
-		}}></style>  <!-- defines global css variables. This will be applied to <html> <body> and some other elements idk why -->
-		<style define:vars={{
-			'font-size-base': '14px',
-			'font-size-md': '15px',
-			'font-size-lg': '14px',
-			'font-size-2xl': '13px',
-		}}></style>
+			'font-size-base': '87.5%',
+			'font-size-md': '93.75%',
+			'font-size-lg': '87.5%',
+			'font-size-2xl': '81.25%',
+		}}>
+			/* 百分比基于浏览器默认 16px：87.5%=14px, 93.75%=15px, 81.25%=13px */
+			html {
+				font-size: var(--font-size-base);
+			}
+			@media (min-width: 768px) {
+				html {
+					font-size: var(--font-size-md);
+				}
+			}
+			@media (min-width: 1024px) {
+				html {
+					font-size: var(--font-size-lg);
+				}
+			}
+			@media (min-width: 1536px) {
+				html {
+					font-size: var(--font-size-2xl);
+				}
+			}
+		</style>
 
 		<slot name="head"></slot>
 
