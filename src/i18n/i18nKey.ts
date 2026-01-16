@@ -26,6 +26,10 @@ enum I18nKey {
 	cardBackgroundWhite = "cardBackgroundWhite",
 	cardBackgroundThemed = "cardBackgroundThemed",
 
+	fontSizeScaling = "fontSizeScaling",
+	fontScalingLocked = "fontScalingLocked",
+	fontScalingResponsive = "fontScalingResponsive",
+
 	lightMode = "lightMode",
 	darkMode = "darkMode",
 	systemMode = "systemMode",

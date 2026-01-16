@@ -106,3 +106,27 @@ export function setCardBgType(type: number): void {
 		r.style.setProperty("--card-bg", "var(--card-bg-themed)");
 	}
 }
+
+// 字体缩放类型常量
+export const FONT_SCALING_TYPE = {
+	LOCKED: 0, // 锁定 (默认)
+	RESPONSIVE: 1, // 跟随浏览器
+} as const;
+
+export function getDefaultFontScalingType(): number {
+	return FONT_SCALING_TYPE.LOCKED;
+}
+
+export function getFontScalingType(): number {
+	const stored = localStorage.getItem("fontScalingType");
+	return stored ? Number.parseInt(stored, 10) : getDefaultFontScalingType();
+}
+
+export function setFontScalingType(type: number): void {
+	localStorage.setItem("fontScalingType", String(type));
+	if (type === FONT_SCALING_TYPE.RESPONSIVE) {
+		document.documentElement.classList.add("font-scale-dynamic");
+	} else {
+		document.documentElement.classList.remove("font-scale-dynamic");
+	}
+}

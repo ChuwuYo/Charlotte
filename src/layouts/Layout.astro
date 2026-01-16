@@ -188,16 +188,24 @@ const hoverPrefetchHosts: string[] = Array.from(
 			let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 			offset = offset - offset % 4;
 			document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
+
+			// 加载字体缩放策略
+			const fontScalingType = localStorage.getItem("fontScalingType");
+			// FONT_SCALING_TYPE.RESPONSIVE = 1
+			if (fontScalingType === "1") {
+				document.documentElement.classList.add("font-scale-dynamic");
+			} else {
+				document.documentElement.classList.remove("font-scale-dynamic");
+			}
 		</script>
 		<style is:global define:vars={{
 			configHue,
 			'page-width': PAGE_WIDTH,
-			'font-size-base': '87.5%',
-			'font-size-md': '93.75%',
-			'font-size-lg': '87.5%',
-			'font-size-2xl': '81.25%',
+			'font-size-base': '15px',
+			'font-size-md': '16px',
+			'font-size-lg': '15px',
+			'font-size-2xl': '14px',
 		}}>
-			/* 百分比基于浏览器默认 16px：87.5%=14px, 93.75%=15px, 81.25%=13px */
 			html {
 				font-size: var(--font-size-base);
 			}
@@ -215,6 +223,14 @@ const hoverPrefetchHosts: string[] = Array.from(
 				html {
 					font-size: var(--font-size-2xl);
 				}
+			}
+
+			/* 动态字体缩放模式：使用百分比值 */
+			html.font-scale-dynamic {
+				--font-size-base: 93.75% !important;
+				--font-size-md: 100% !important;
+				--font-size-lg: 93.75% !important;
+				--font-size-2xl: 87.5% !important;
 			}
 		</style>
 
@@ -382,7 +398,8 @@ const bannerEnabled = !!document.getElementById('banner-wrapper')
 const PANEL_CONFIG = [
 	{ id: "display-setting", ignores: ["display-setting", "display-settings-switch"] },
 	{ id: "nav-menu-panel", ignores: ["nav-menu-panel", "nav-menu-switch"] },
-	{ id: "search-panel", ignores: ["search-panel", "search-bar", "search-switch"] }
+	{ id: "search-panel", ignores: ["search-panel", "search-bar", "search-switch"] },
+	{ id: "font-settings-panel", ignores: ["font-settings-panel", "font-settings-switch"] }
 ];
 
 let clickHandlerInitialized = false;

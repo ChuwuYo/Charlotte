@@ -29,6 +29,10 @@ export const zh_CN: Translation = {
 	[Key.cardBackgroundWhite]: "纯白色",
 	[Key.cardBackgroundThemed]: "主题色",
 
+	[Key.fontSizeScaling]: "字号缩放策略",
+	[Key.fontScalingLocked]: "默认锁定",
+	[Key.fontScalingResponsive]: "跟随浏览器",
+
 	[Key.lightMode]: "亮色",
 	[Key.darkMode]: "暗色",
 	[Key.systemMode]: "跟随系统",
