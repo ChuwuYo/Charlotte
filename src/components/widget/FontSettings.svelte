@@ -18,7 +18,10 @@ $: options = [
 	},
 ];
 
-$: if (fontScalingType !== undefined) {
+$: if (
+	fontScalingType === FONT_SCALING_TYPE.LOCKED ||
+	fontScalingType === FONT_SCALING_TYPE.RESPONSIVE
+) {
 	setFontScalingType(fontScalingType);
 }
 </script>

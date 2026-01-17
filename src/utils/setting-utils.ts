@@ -119,7 +119,13 @@ export function getDefaultFontScalingType(): number {
 
 export function getFontScalingType(): number {
 	const stored = localStorage.getItem("fontScalingType");
-	return stored ? Number.parseInt(stored, 10) : getDefaultFontScalingType();
+	if (stored) {
+		const parsed = Number.parseInt(stored, 10);
+		if (!Number.isNaN(parsed)) {
+			return parsed;
+		}
+	}
+	return getDefaultFontScalingType();
 }
 
 export function setFontScalingType(type: number): void {

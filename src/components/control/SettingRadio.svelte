@@ -1,24 +1,13 @@
-<script lang="ts">
-export let options: { label: string; value: any }[] = [];
-export let value: any;
-export let name: string =
-	"setting-radio-" + Math.random().toString(36).substr(2, 9);
-
-function handleChange(v: any) {
-	value = v;
-}
+<script lang="ts" generics="T">
+export let options: { label: string; value: T }[] = [];
+export let value: T;
+export let name = `setting-radio-${Math.random().toString(36).slice(2, 11)}`;
 </script>
 
 <div class="radio-inputs mt-3">
 	{#each options as option}
 		<label class="radio">
-			<input 
-				type="radio" 
-				{name} 
-				value={option.value} 
-				checked={value === option.value} 
-				on:change={() => handleChange(option.value)}
-			>
+			<input type="radio" {name} value={option.value} bind:group={value} />
 			<span class="name">{option.label}</span>
 		</label>
 	{/each}

@@ -17,6 +17,7 @@ import {
 } from "../constants/constants";
 import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
+import { FONT_SCALING_TYPE } from "../utils/setting-utils";
 import { pathsEqual, url } from "../utils/url-utils";
 import "katex/dist/katex.css";
 
@@ -109,10 +110,10 @@ const hoverPrefetchHosts: string[] = Array.from(
 <!DOCTYPE html>
 <!-- 
 	Font size scaling for different screen sizes:
-	- default (mobile): 14px
-	- md (tablet, 768px+): 15px
-	- lg (laptop, 1024px+): 14px (slightly smaller for better fit)
-	- 2xl (large desktop, 1536px+): 13px (more compact)
+	- default (mobile): 15px
+	- md (tablet, 768px+): 16px
+	- lg (laptop, 1024px+): 15px
+	- 2xl (large desktop, 1536px+): 14px
 -->
 <html lang={siteLang} class="bg-[var(--page-bg)] transition"
 	  data-overlayscrollbars-initialize
@@ -161,7 +162,7 @@ const hoverPrefetchHosts: string[] = Array.from(
 		) : null}
 
 		<!-- Set the theme before the page is rendered to avoid a flash -->
-		<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, AUTO_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue}}>
+		<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, AUTO_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, FONT_SCALING_TYPE_RESPONSIVE: FONT_SCALING_TYPE.RESPONSIVE}}>
 			// Load the theme from local storage
 			const theme = localStorage.getItem('theme') || DEFAULT_THEME;
 			switch (theme) {
@@ -191,8 +192,7 @@ const hoverPrefetchHosts: string[] = Array.from(
 
 			// 加载字体缩放策略
 			const fontScalingType = localStorage.getItem("fontScalingType");
-			// FONT_SCALING_TYPE.RESPONSIVE = 1
-			if (fontScalingType === "1") {
+			if (fontScalingType === String(FONT_SCALING_TYPE_RESPONSIVE)) {
 				document.documentElement.classList.add("font-scale-dynamic");
 			} else {
 				document.documentElement.classList.remove("font-scale-dynamic");
@@ -589,7 +589,7 @@ function scrollFunction() {
 
 	if (!bannerEnabled) return
 	if (navbar) {
-		// 动态获取根字体大小（随响应式断点变化：14px/15px/14px/13px）
+		// 动态获取根字体大小
 		const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
 		// 将 rem 单位转换为 px
 		const navbarHeightPx = NAVBAR_HEIGHT * rootFontSize;
