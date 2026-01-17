@@ -28,3 +28,7 @@
 2. https://github.com/ChuwuYo/Charlotte/commit/f1bec72a2ae78995c22fcafec16499ebc08fa515
 3. https://github.com/ChuwuYo/Charlotte/commit/7c84b0c4e6d63cb8e31501b32dd7ea6074e5844d
 4. https://github.com/ChuwuYo/Charlotte/commit/18c9f6cea8770957093f729b40ce41f58e9d0590
+
+### 字体缩放策略
+1. https://github.com/ChuwuYo/Charlotte/commit/1802d2bb9ce776fd883e860c22a6506c209bbb17
+2. https://github.com/ChuwuYo/Charlotte/commit/33fb79950828779f13299983e441cb8b427113e3
