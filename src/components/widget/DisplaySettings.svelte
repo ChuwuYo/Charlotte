@@ -10,6 +10,7 @@ import {
 	setCardBgType,
 	setHue,
 } from "@utils/setting-utils";
+import SettingRadio from "../control/SettingRadio.svelte";
 
 let hue = getHue();
 const defaultHue = getDefaultHue();
@@ -17,12 +18,13 @@ const defaultHue = getDefaultHue();
 // 卡片背景色类型：纯白色或主题色影响
 let cardBgType = getCardBgType();
 
+$: cardBgOptions = [
+	{ label: i18n(I18nKey.cardBackgroundWhite), value: CARD_BG_TYPE.WHITE },
+	{ label: i18n(I18nKey.cardBackgroundThemed), value: CARD_BG_TYPE.THEMED },
+];
+
 function resetHue() {
 	hue = getDefaultHue();
-}
-
-function switchCardBgType(type: number) {
-	cardBgType = type;
 }
 
 $: if (hue || hue === 0) {
@@ -71,16 +73,7 @@ $: if (
     </div>
 
     <!-- 卡片背景色选择器 -->
-    <div class="radio-inputs mt-3">
-        <label class="radio">
-            <input type="radio" name="card-bg-type" value="0" checked={cardBgType === CARD_BG_TYPE.WHITE} on:change={() => switchCardBgType(CARD_BG_TYPE.WHITE)}>
-            <span class="name">{i18n(I18nKey.cardBackgroundWhite)}</span>
-        </label>
-        <label class="radio">
-            <input type="radio" name="card-bg-type" value="1" checked={cardBgType === CARD_BG_TYPE.THEMED} on:change={() => switchCardBgType(CARD_BG_TYPE.THEMED)}>
-            <span class="name">{i18n(I18nKey.cardBackgroundThemed)}</span>
-        </label>
-    </div>
+    <SettingRadio options={cardBgOptions} bind:value={cardBgType} />
 </div>
 
 
@@ -129,47 +122,4 @@ $: if (
             background rgba(255, 255, 255, 0.8)
           &:active
             background rgba(255, 255, 255, 0.6)
-
-    /* 卡片背景色选择器样式 */
-    .radio-inputs
-      position relative
-      display flex
-      flex-wrap wrap
-      border-radius var(--radius-large)
-      background-color var(--btn-regular-bg)
-      box-sizing border-box
-      padding 0.25rem
-      width 100%
-      font-size 14px
-      margin-top 0.75rem
-
-    .radio-inputs .radio
-      flex 1 1 0%
-      text-align center
-      min-width 0
-
-    .radio-inputs .radio input
-      display none
-
-    .radio-inputs .radio .name
-      display flex
-      cursor pointer
-      align-items center
-      justify-content center
-      border-radius calc(var(--radius-large) - 0.25rem)
-      border none
-      padding 0.5rem 0
-      color var(--btn-content)
-      transition all 0.15s ease-in-out
-      font-weight 400
-
-    .radio-inputs .radio input:checked + .name
-      background-color var(--primary)
-      color white
-      font-weight 500
-      position relative
-
-    .radio-inputs .radio:hover .name
-      background-color var(--btn-plain-bg-hover)
-
 </style>

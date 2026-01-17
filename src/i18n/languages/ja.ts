@@ -29,6 +29,10 @@ export const ja: Translation = {
 	[Key.cardBackgroundWhite]: "真っ白",
 	[Key.cardBackgroundThemed]: "テーマ風",
 
+	[Key.fontSizeScaling]: "フォント拡縮戦略",
+	[Key.fontScalingLocked]: "デフォルト固定",
+	[Key.fontScalingResponsive]: "ブラウザに追従",
+
 	[Key.lightMode]: "ライト",
 	[Key.darkMode]: "ダーク",
 	[Key.systemMode]: "システム",

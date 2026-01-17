@@ -29,6 +29,10 @@ export const zh_TW: Translation = {
 	[Key.cardBackgroundWhite]: "純白色",
 	[Key.cardBackgroundThemed]: "主題色",
 
+	[Key.fontSizeScaling]: "字型大小縮放策略",
+	[Key.fontScalingLocked]: "預設鎖定",
+	[Key.fontScalingResponsive]: "跟隨瀏覽器",
+
 	[Key.lightMode]: "亮色",
 	[Key.darkMode]: "暗色",
 	[Key.systemMode]: "跟隨系統",
