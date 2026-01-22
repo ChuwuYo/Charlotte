@@ -19,10 +19,10 @@ importers:
         version: 3.7.0
       '@astrojs/svelte':
         specifier: 7.2.2
-        version: 7.2.2(@types/node@24.10.9)(astro@5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1))(jiti@1.21.7)(stylus@0.64.0)(svelte@5.48.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
+        version: 7.2.2(@types/node@24.10.9)(astro@5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1))(jiti@1.21.7)(stylus@0.64.0)(svelte@5.48.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
       '@astrojs/tailwind':
         specifier: ^6.0.2
-        version: 6.0.2(astro@5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1))(tailwindcss@3.4.19(yaml@2.8.1))
+        version: 6.0.2(astro@5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1))(tailwindcss@3.4.19(yaml@2.8.1))
       '@expressive-code/core':
         specifier: ^0.41.3
         version: 0.41.6
@@ -60,11 +60,11 @@ importers:
         specifier: ^0.5.19
         version: 0.5.19(tailwindcss@3.4.19(yaml@2.8.1))
       astro:
-        specifier: 5.16.12
-        version: 5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
+        specifier: 5.16.13
+        version: 5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
       astro-expressive-code:
         specifier: ^0.41.3
-        version: 0.41.6(astro@5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.41.6(astro@5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1))
       astro-icon:
         specifier: ^1.1.5
         version: 1.1.5
@@ -1830,8 +1830,8 @@ packages:
   astro-icon@1.1.5:
     resolution: {integrity: sha512-CJYS5nWOw9jz4RpGWmzNQY7D0y2ZZacH7atL2K9DeJXJVaz7/5WrxeyIxO8KASk1jCM96Q4LjRx/F3R+InjJrw==}
 
-  astro@5.16.12:
-    resolution: {integrity: sha512-R2LH1GW4JexpSMWffbpzkeZDAwbdZwI5BclXEwi+vIUPxQI+7Y9ZogJ5u4ukdYFGrcrie/0z+Od4i3MlR0nELQ==}
+  astro@5.16.13:
+    resolution: {integrity: sha512-k8Zgb38wpMpJf2LSVO5mSUx2MyDTA6s11UHLPOjUStbdQow3ueREf2J0lKgXnedGtolMm0eGMbnLp1lxs4sKTw==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -4552,9 +4552,6 @@ packages:
   uc.micro@2.1.0:
     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
 
-  ufo@1.6.1:
-    resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
-
   ufo@1.6.3:
     resolution: {integrity: sha512-yDJTmhydvl5lJzBmy/hyOAA0d+aqCBuwl818haVdYCRrWV84o7YyeVm4QlVHStqNrrJSTb6jKuFAVqAFsr+K3Q==}
 
@@ -5087,10 +5084,10 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.25.76
 
-  '@astrojs/svelte@7.2.2(@types/node@24.10.9)(astro@5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1))(jiti@1.21.7)(stylus@0.64.0)(svelte@5.48.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)':
+  '@astrojs/svelte@7.2.2(@types/node@24.10.9)(astro@5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1))(jiti@1.21.7)(stylus@0.64.0)(svelte@5.48.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)':
     dependencies:
       '@sveltejs/vite-plugin-svelte': 5.1.1(svelte@5.48.0)(vite@6.4.1(@types/node@24.10.9)(jiti@1.21.7)(stylus@0.64.0)(terser@5.44.0)(yaml@2.8.1))
-      astro: 5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
       svelte: 5.48.0
       svelte2tsx: 0.7.45(svelte@5.48.0)(typescript@5.9.3)
       typescript: 5.9.3
@@ -5109,9 +5106,9 @@ snapshots:
       - tsx
       - yaml
 
-  '@astrojs/tailwind@6.0.2(astro@5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1))(tailwindcss@3.4.19(yaml@2.8.1))':
+  '@astrojs/tailwind@6.0.2(astro@5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1))(tailwindcss@3.4.19(yaml@2.8.1))':
     dependencies:
-      astro: 5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
       autoprefixer: 10.4.21(postcss@8.5.6)
       postcss: 8.5.6
       postcss-load-config: 4.0.2(postcss@8.5.6)
@@ -6823,9 +6820,9 @@ snapshots:
       get-intrinsic: 1.3.0
       is-array-buffer: 3.0.5
 
-  astro-expressive-code@0.41.6(astro@5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)):
+  astro-expressive-code@0.41.6(astro@5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)):
     dependencies:
-      astro: 5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
       rehype-expressive-code: 0.41.6
 
   astro-icon@1.1.5:
@@ -6837,7 +6834,7 @@ snapshots:
       - debug
       - supports-color
 
-  astro@5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1):
+  astro@5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1):
     dependencies:
       '@astrojs/compiler': 2.13.0
       '@astrojs/internal-helpers': 0.7.5
@@ -6941,7 +6938,7 @@ snapshots:
 
   astrojs-atom@1.0.208(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1):
     dependencies:
-      astro: 5.16.12(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.16.13(@types/node@24.10.9)(jiti@1.21.7)(rollup@2.79.2)(stylus@0.64.0)(terser@5.44.0)(typescript@5.9.3)(yaml@2.8.1)
       fast-xml-parser: 5.3.3
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -8935,7 +8932,7 @@ snapshots:
       acorn: 8.15.0
       pathe: 2.0.3
       pkg-types: 1.3.1
-      ufo: 1.6.1
+      ufo: 1.6.3
 
   morphdom@2.7.7: {}
 
@@ -9000,7 +8997,7 @@ snapshots:
     dependencies:
       destr: 2.0.5
       node-fetch-native: 1.6.7
-      ufo: 1.6.1
+      ufo: 1.6.3
 
   ohash@2.0.11: {}
 
@@ -10349,8 +10346,6 @@ snapshots:
   typescript@5.9.3: {}
 
   uc.micro@2.1.0: {}
-
-  ufo@1.6.1: {}
 
   ufo@1.6.3: {}
 
