@@ -283,17 +283,54 @@ const hoverPrefetchHosts: string[] = Array.from(
 	.enable-banner #banner {
 		@apply h-[var(--banner-height-home)] translate-y-[var(--bannerOffset)]
 	}
-	.enable-banner.is-home #main-grid {
+	/* .enable-banner.is-home #main-grid {
 		@apply translate-y-[var(--banner-height-extend)];
-	}
+	} */
 	.enable-banner #top-row {
-		@apply h-[calc(var(--banner-height-home)_-_4.5rem)] transition-all duration-300
+		@apply h-[calc(var(--banner-height-home)_-_4.5rem)]
 	}
 	.enable-banner.is-home #sidebar-sticky {
 		@apply top-[calc(1rem_-_var(--banner-height-extend))]
 	}
 	.navbar-hidden {
 		@apply opacity-0 -translate-y-16
+	}
+
+	/* Main Content Wrapper Positioning */
+	/* Default for non-banner pages or when banner is disabled */
+	.main-content-wrapper {
+		@apply top-[5.5rem] transition-all duration-300 ease-in-out;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		transition-property: transform;
+	}
+	/* When banner is enabled AND is home page */
+	.enable-banner.is-home .main-content-wrapper {
+		transform: translateY(calc(var(--banner-height-home) - 9rem));
+	}
+	/* When banner is enabled AND is NOT home page */
+	.enable-banner:not(.is-home) .main-content-wrapper {
+		transform: translateY(calc(var(--banner-height) - 9rem));
+	}
+
+	/* Base styles for transitions */
+	#banner-wrapper {
+		@apply transition-all duration-300 ease-in-out;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		transition-property: opacity, transform;
+		will-change: opacity, transform;
+	}
+	body.hide-banner-during-transition #banner-wrapper {
+		opacity: 0 !important;
+		transition: none !important;
+		pointer-events: none;
+	}
+
+	/* Banner spacer (top-row) sizing */
+	.enable-banner.is-home #top-row {
+		@apply h-[calc(var(--banner-height-home)_-_4.5rem)];
+	}
+	.enable-banner:not(.is-home) #top-row {
+		@apply h-[calc(var(--banner-height)_-_4.5rem)];
 	}
 }
 </style>
@@ -599,11 +636,19 @@ function scrollFunction() {
 		if (document.body.classList.contains('is-home')) {
 			bannerHeight = BANNER_HEIGHT_HOME
 		}
-		let threshold = window.innerHeight * (bannerHeight / 100) - navbarHeightPx - MAIN_PANEL_EXCESS_HEIGHT - rootFontSize;
-		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
-			navbar.classList.add('navbar-hidden')
+		
+		// 如果是非主页，不再根据 Banner 高度计算隐藏，而是始终显示
+		// 或者当 enable-banner 存在但不是 is-home 时，视 bannerHeight 为 0
+		if (!document.body.classList.contains('is-home') && document.body.classList.contains('enable-banner')) {
+			// 强制显示 Navbar
+			navbar.classList.remove('navbar-hidden');
 		} else {
-			navbar.classList.remove('navbar-hidden')
+			let threshold = window.innerHeight * (bannerHeight / 100) - navbarHeightPx - MAIN_PANEL_EXCESS_HEIGHT - rootFontSize;
+			if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
+				navbar.classList.add('navbar-hidden')
+			} else {
+				navbar.classList.remove('navbar-hidden')
+			}
 		}
 	}
 }
@@ -735,8 +780,32 @@ const setup = () => {
 			navbar.classList.add('navbar-hidden')
 		}
 	})
-	// Swup 钩子：visit:start - 页面切换开始（点击链接后，内容替换前）
+	// Swup Hook: visit:start - Page transition starts
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
+		const bodyElement = document.querySelector('body')
+		const isHomePage = pathsEqual(visit.to.url, url('/'))
+
+		if (bannerEnabled && bodyElement!.classList.contains('is-home') && !isHomePage && window.scrollY > 20) {
+			bodyElement!.classList.add('hide-banner-during-transition')
+		} else {
+			bodyElement!.classList.remove('hide-banner-during-transition')
+		}
+
+		window.scrollTo({ top: 0, behavior: 'auto' });
+
+		requestAnimationFrame(() => {
+			bodyElement!.classList.toggle('is-home', isHomePage);
+
+			const bannerTextOverlay = document.querySelector('.banner-text-overlay')
+			if (bannerTextOverlay) {
+				bannerTextOverlay.classList.toggle('hidden', !isHomePage);
+			}
+
+			if (!isHomePage) {
+				bodyElement!.classList.remove('hide-banner-during-transition')
+			}
+		});
+
 		// 立即关闭 CollapsibleTOC 面板，避免页面过渡期间的视觉问题
 		// 如果不这样做，面板会先滑动到正文区内（因为容器高度变化），再被 Swup 移除
 		const collapsibleTocPanel = document.getElementById('collapsible-toc-panel');
@@ -754,18 +823,6 @@ const setup = () => {
 		// Add a class to the body to hide new content via CSS until the scroll animation is finished
 		document.body.classList.add('is-transitioning');
 
-		// change banner height immediately when a link is clicked
-		const bodyElement = document.querySelector('body')
-		const isHomePage = pathsEqual(visit.to.url, url('/'))
-		
-		bodyElement!.classList.toggle('is-home', isHomePage);
-
-		// Control banner text visibility based on page
-		const bannerTextOverlay = document.querySelector('.banner-text-overlay')
-		if (bannerTextOverlay) {
-			bannerTextOverlay.classList.toggle('hidden', !isHomePage);
-		}
-
 		// increase the page height during page transition to prevent the scrolling animation from jumping
 		const heightExtend = document.getElementById('page-height-extend')
 		if (heightExtend) {
@@ -779,7 +836,19 @@ const setup = () => {
 		}
 	});
 
-	window.swup.hooks.on('content:replace', () => {
+	window.swup.hooks.on('content:replace', (visit: {to: {url: string}}) => {
+		// change banner height immediately when the content is replaced
+		// const bodyElement = document.querySelector('body')
+		// const isHomePage = pathsEqual(visit.to.url, url('/'))
+		
+		// bodyElement!.classList.toggle('is-home', isHomePage);
+
+		// Control banner text visibility based on page
+		// const bannerTextOverlay = document.querySelector('.banner-text-overlay')
+		// if (bannerTextOverlay) {
+		// 	bannerTextOverlay.classList.toggle('hidden', !isHomePage);
+		// }
+
 		initCustomScrollbar();
 		// Update element references after DOM replacement
 		updateScrollElements();
@@ -814,6 +883,7 @@ const setup = () => {
 		setTimeout(() => {
 			// Remove the helper class to allow the content animations to play
 			document.body.classList.remove('is-transitioning');
+			document.body.classList.remove('hide-banner-during-transition');
 
 			// Hide the temporary height element
 			const heightExtend = document.getElementById('page-height-extend')

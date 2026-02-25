@@ -38,10 +38,6 @@ const hasBannerCredit =
 	siteConfig.banner.enable && siteConfig.banner.credit.enable;
 const hasBannerLink = !!siteConfig.banner.credit.url;
 
-const mainPanelTop = siteConfig.banner.enable
-	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
-	: "5.5rem";
-
 const isHomePage = Astro.url.pathname === "/" || Astro.url.pathname === "";
 const showBannerText = siteConfig.banner.text && isHomePage;
 ---
@@ -50,15 +46,15 @@ const showBannerText = siteConfig.banner.text && isHomePage;
 
 <!-- Navbar -->
 <slot slot="head" name="head"></slot>
-<div id="top-row" class="z-50 pointer-events-none relative transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto" class:list={[""]}>
-    <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
+<div id="top-row" class="z-50 pointer-events-none relative max-w-[var(--page-width)] px-0 md:px-4 mx-auto">
+    <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)">
         <Navbar></Navbar>
     </div>
 </div>
 
 <!-- Banner -->
-{siteConfig.banner.enable && <div id="banner-wrapper" class={`absolute z-10 w-full transition duration-700 overflow-hidden`} style={`top: -${BANNER_HEIGHT_EXTEND}vh`}>
-    <ImageWrapper id="banner" alt="Banner of the blog" class:list={["object-cover h-full transition duration-700 opacity-0 scale-105"]} loading="eager" fetchpriority="high"
+{siteConfig.banner.enable && <div id="banner-wrapper" class={`absolute z-10 w-full overflow-hidden`} style={`top: -${BANNER_HEIGHT_EXTEND}vh`}>
+    <ImageWrapper id="banner" alt="Banner of the blog" class:list={["object-cover h-full opacity-0 scale-105 transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)"]} loading="eager" fetchpriority="high"
                   src={siteConfig.banner.src} position={siteConfig.banner.position}
     >
     </ImageWrapper>
@@ -68,11 +64,11 @@ const showBannerText = siteConfig.banner.text && isHomePage;
 </div>}
 
 <!-- Main content -->
-<div class="main-content-wrapper absolute w-full z-30 pointer-events-none" style={`top: ${mainPanelTop}`}>
+<div class="main-content-wrapper absolute w-full z-30 pointer-events-none">
     <!-- The pointer-events-none here prevent blocking the click event of the TOC -->
     <div class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto">
-        <div id="main-grid" class="transition duration-700 w-full left-0 right-0 grid grid-cols-[15rem_auto] grid-rows-[auto_1fr_auto] lg:grid-rows-[auto]
-    mx-auto gap-4 px-0 md:px-4"
+        <div id="main-grid" class="transition-swup-fade w-full left-0 right-0 grid grid-cols-[15rem_auto] grid-rows-[auto_1fr_auto] lg:grid-rows-[auto]
+    mx-auto gap-4 px-0 md:px-4 transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)"
         >
             <!-- Banner image credit -->
             {hasBannerCredit && <a href={siteConfig.banner.credit.url} id="banner-credit" target="_blank" rel="noopener" aria-label="Visit image source"
@@ -90,7 +86,7 @@ const showBannerText = siteConfig.banner.text && isHomePage;
 
             <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[15rem] onload-animation" headings={headings}></SideBar>
 
-            <main id="swup-container" class="transition-swup-fade col-span-2 lg:col-span-1 overflow-hidden">
+            <main id="swup-container" class="col-span-2 lg:col-span-1 overflow-hidden">
                 <div id="content-wrapper" class="onload-animation">
                     <!-- the overflow-hidden here prevent long text break the layout-->
                     <!-- make id different from windows.swup global property -->
