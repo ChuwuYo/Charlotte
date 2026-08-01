@@ -155,8 +155,6 @@ draft: false
 
 [MIT License](LICENSE)
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FChuwuYo%2FCharlotte.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FChuwuYo%2FCharlotte?ref=badge_large)
-
 ## 🙏 致谢
 
 感谢以下项目与项目开发者：
