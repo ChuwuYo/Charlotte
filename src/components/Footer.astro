@@ -83,8 +83,8 @@ window.addEventListener('beforeunload', () => {
     </div>
     <div class="transition text-50 text-sm text-center mb-2">
         &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. {i18n(I18nKey.allRightsReserved)}<br>
-        {i18n(I18nKey.poweredBy)}
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
+        {i18n(I18nKey.poweredBy)}{" "}
+        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &{" "}
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/ChuwuYo/Charlotte">Charlotte ver {version}</a>
     </div>
     <nav class="flex flex-wrap gap-2 justify-center items-center text-50 text-sm" aria-label="Subscriptions">

@@ -29,9 +29,7 @@ function applyPinnedOrdering(sorted: PostEntry[]): PostEntry[] {
 	const nonPinnedPosts: PostEntry[] = [];
 
 	// 创建一个 Map 以便通过 slug 快速查找已排序的文章
-	const postsMap = new Map(
-		sorted.map((post) => [post.slug.toLowerCase(), post]),
-	);
+	const postsMap = new Map(sorted.map((post) => [post.id.toLowerCase(), post]));
 
 	// 按配置中定义的顺序检索置顶文章
 	for (const slug of pinnedSlugs) {
@@ -46,7 +44,7 @@ function applyPinnedOrdering(sorted: PostEntry[]): PostEntry[] {
 	// Map 中剩余的文章是未置顶的，保留原顺序（按日期排序）
 	// 再次遍历原始排序数组
 	for (const post of sorted) {
-		if (postsMap.has(post.slug.toLowerCase())) {
+		if (postsMap.has(post.id.toLowerCase())) {
 			post.data.isPinned = false;
 			nonPinnedPosts.push(post);
 		}
@@ -79,11 +77,11 @@ export async function getSortedPosts(options?: { includePinned?: boolean }) {
 	}
 
 	for (let i = 1; i < sorted.length; i++) {
-		sorted[i].data.nextSlug = sorted[i - 1].slug;
+		sorted[i].data.nextSlug = sorted[i - 1].id;
 		sorted[i].data.nextTitle = sorted[i - 1].data.title;
 	}
 	for (let i = 0; i < sorted.length - 1; i++) {
-		sorted[i].data.prevSlug = sorted[i + 1].slug;
+		sorted[i].data.prevSlug = sorted[i + 1].id;
 		sorted[i].data.prevTitle = sorted[i + 1].data.title;
 	}
 
@@ -106,13 +104,13 @@ export async function getSortedPostsList(options?: {
 		const pinnedSlugs = getPinnedSlugs();
 		const pinnedSlugsSet = new Set(pinnedSlugs);
 		sortedFullPosts.forEach((post) => {
-			post.data.isPinned = pinnedSlugsSet.has(post.slug.toLowerCase());
+			post.data.isPinned = pinnedSlugsSet.has(post.id.toLowerCase());
 		});
 	}
 
 	// delete post.body
 	const sortedPostsList = sortedFullPosts.map((post) => ({
-		slug: post.slug,
+		slug: post.id,
 		data: post.data,
 	}));
 
