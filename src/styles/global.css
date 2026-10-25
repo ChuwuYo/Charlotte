@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+	--font-sans:
+		Roboto, sans-serif, ui-sans-serif, system-ui, sans-serif,
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Tailwind 3 默认边框色为 gray-200，v4 改为 currentColor，这里保持旧行为 */
+@layer base {
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentColor);
+	}
+	button:not(:disabled),
+	[role="button"]:not(:disabled) {
+		cursor: pointer;
+	}
+}
+
+@import "./main.utilities.css";
+@import "./main.css" layer(components);
+@import "./markdown.css";
+@import "./expressive-code.css" layer(components);
+@import "./scrollbar.css" layer(components);
+@import "./transition.css" layer(components);
+@import "./photoswipe.css" layer(components);

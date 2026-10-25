@@ -20,6 +20,9 @@ import type { Favicon } from "../types/config";
 import { FONT_SCALING_TYPE } from "../utils/setting-utils";
 import { pathsEqual, url } from "../utils/url-utils";
 import "katex/dist/katex.css";
+import "../styles/global.css";
+import "../styles/variables.styl";
+import "../styles/markdown-extend.styl";
 
 interface Props {
 	title?: string;
@@ -268,7 +271,7 @@ const hoverPrefetchHosts: string[] = Array.from(
 	'banner-height-home': `${BANNER_HEIGHT_HOME}vh`,
 	'banner-height': `${BANNER_HEIGHT}vh`,
 }}>
-@tailwind components;
+@reference "../styles/global.css";
 @layer components {
 	.enable-banner.is-home #banner-wrapper {
 		@apply h-[var(--banner-height-home)] translate-y-[var(--banner-height-extend)]

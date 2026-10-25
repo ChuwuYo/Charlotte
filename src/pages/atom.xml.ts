@@ -43,7 +43,7 @@ export async function GET() {
 
 			return {
 				title: post.data.title,
-				id: absoluteUrl(`/posts/${post.slug}/`),
+				id: absoluteUrl(`/posts/${post.id}/`),
 				updated: (post.data.updated || post.data.published).toISOString(),
 				published: post.data.published.toISOString(),
 				author: [
@@ -60,7 +60,7 @@ export async function GET() {
 				summary: post.data.description || "",
 				link: [
 					{
-						href: absoluteUrl(`/posts/${post.slug}/`),
+						href: absoluteUrl(`/posts/${post.id}/`),
 						rel: "alternate",
 					},
 				],

@@ -50,7 +50,7 @@ export async function GET(context: APIContext) {
 				title: post.data.title,
 				pubDate: post.data.published,
 				description: post.data.description || "",
-				link: url(`/posts/${post.slug}/`),
+				link: url(`/posts/${post.id}/`),
 				// 4. Sanitize the content *after* fixing URLs
 				content: sanitizeHtml(absoluteContent, {
 					allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
