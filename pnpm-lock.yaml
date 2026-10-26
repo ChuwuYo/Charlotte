@@ -158,8 +158,8 @@ importers:
         specifier: 2.4.6
         version: 2.4.6
       '@rollup/plugin-yaml':
-        specifier: ^4.1.2
-        version: 4.1.2(rollup@2.80.0)
+        specifier: ^5.0.0
+        version: 5.0.1(rollup@2.80.0)
       '@types/hast':
         specifier: ^3.0.5
         version: 3.0.5
@@ -1639,11 +1639,11 @@ packages:
     peerDependencies:
       rollup: ^1.20.0||^2.0.0
 
-  '@rollup/plugin-yaml@4.1.2':
-    resolution: {integrity: sha512-RpupciIeZMUqhgFE97ba0s98mOFS7CWzN3EJNhJkqSv9XLlWYtwVdtE6cDw6ASOF/sZVFS7kRJXftaqM2Vakdw==}
+  '@rollup/plugin-yaml@5.0.1':
+    resolution: {integrity: sha512-oslHUtWi3Zepyx0IiZ3BBwc4PI1B1PUbkpBom+0w91UHuY0EVUIrGkrHfwW1reHzVOsTtkGj5z/Dx7jhguzP2g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+      rollup: ^2.78.0||^3.0.0||^4.0.0
     peerDependenciesMeta:
       rollup:
         optional: true
@@ -6763,7 +6763,7 @@ snapshots:
       resolve: 1.22.13
       rollup: 2.80.0
 
-  '@rollup/plugin-yaml@4.1.2(rollup@2.80.0)':
+  '@rollup/plugin-yaml@5.0.1(rollup@2.80.0)':
     dependencies:
       '@rollup/pluginutils': 5.5.1(rollup@2.80.0)
       js-yaml: 4.3.2
