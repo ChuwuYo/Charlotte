@@ -7,18 +7,18 @@ interface Props {
 const { badge, url, label } = Astro.props;
 ---
 <a href={url} aria-label={label}>
-    <button
+    <span
         class:list={`
+            flex flex-col justify-center
             w-full
             md:h-10 h-12
             rounded-lg
             bg-none
             hover:bg-[var(--btn-plain-bg-hover)]
             active:bg-[var(--btn-plain-bg-active)]
-            transition-all
+            group
+            transition-ui
             pl-2
-            hover:pl-3
-            
             text-neutral-700
             hover:text-[var(--primary)]
             dark:text-neutral-300
@@ -27,17 +27,18 @@ const { badge, url, label } = Astro.props;
         }
     >
         <div class="flex items-center justify-between relative mr-2">
-            <div class="overflow-hidden text-left whitespace-nowrap text-ellipsis  ">
+            <!-- Label nudges right on hover (transform instead of padding) -->
+            <div class="overflow-hidden text-left whitespace-nowrap text-ellipsis transition-transform group-hover:translate-x-1">
                 <slot></slot>
             </div>
             { badge !== undefined && badge !== null && badge !== '' &&
-                <div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold
-                    text-[var(--btn-content)] dark:text-[var(--deep-text)]
-                    bg-[var(--btn-regular-bg)] dark:bg-[var(--primary)]
-                    flex items-center justify-center">
+                <div class="px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold
+ text-[var(--btn-content)] dark:text-[var(--deep-text)]
+ bg-[var(--btn-regular-bg)] dark:bg-[var(--primary)]
+ flex items-center justify-center">
                     { badge }
                 </div>
             }
         </div>
-    </button>
+    </span>
 </a>

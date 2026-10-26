@@ -58,8 +58,7 @@ if (isLocal) {
 	img = await file();
 }
 
-const imageClass =
-	"w-full h-full object-cover image-content opacity-0 transition-opacity duration-500";
+const imageClass = "w-full h-full object-cover image-content opacity-0";
 const imageStyle = `object-position: ${position}`;
 const onloadScript =
 	"this.style.opacity='1'; this.parentElement.querySelector('.loading-bar').style.opacity='0'; this.parentElement.querySelector('.error-icon').style.opacity='0';";
