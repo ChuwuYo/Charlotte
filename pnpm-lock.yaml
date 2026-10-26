@@ -60,6 +60,9 @@ importers:
       '@iconify/svelte':
         specifier: ^5.2.3
         version: 5.2.3(svelte@5.57.2)
+      '@iconify/utils':
+        specifier: ^3.1.7
+        version: 3.1.7
       '@swup/astro':
         specifier: ^1.8.0
         version: 1.8.0(rolldown@1.2.15)

@@ -17,20 +17,20 @@ const closeIcon = "material-symbols:close-rounded";
 
 <div class="collapsible-toc-wrapper block 2xl:hidden">
     <!-- Trigger Button -->
-    <div id="collapsible-toc-btn" class="collapsible-toc-btn hide flex items-center rounded-full overflow-hidden transition shadow-xl border border-black/10 dark:border-white/10 bg-[var(--card-bg)]" onclick="toggleCollapsibleTOC()">
-        <button aria-label="Table of Contents" class="h-12 w-12 md:h-[3.75rem] md:w-[3.75rem] flex items-center justify-center active:bg-[var(--btn-plain-bg-active)] transition">
+    <div id="collapsible-toc-btn" class="collapsible-toc-btn hide flex items-center rounded-full overflow-hidden transition-[opacity,transform] shadow-xl border border-black/10 dark:border-white/10 bg-[var(--card-bg)]">
+        <button aria-label={i18n(I18nKey.tableOfContents)} aria-controls="collapsible-toc-panel" aria-expanded="false" class="h-12 w-12 md:h-[3.75rem] md:w-[3.75rem] flex items-center justify-center active:bg-[var(--btn-plain-bg-active)] transition-ui">
             <Icon name={tocIcon} class="text-xl md:text-[1.75rem] text-[var(--primary)]"></Icon>
         </button>
     </div>
 
     <!-- TOC Panel - hidden by default, shown on button click -->
-    <div id="collapsible-toc-panel" class="collapsible-toc-panel hidden fixed top-20 bottom-28 right-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] rounded-2xl border-2 border-[var(--toc-panel-border)] z-50 flex flex-col">
+    <div id="collapsible-toc-panel" class="collapsible-toc-panel fixed top-20 bottom-28 right-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] rounded-2xl border-2 border-[var(--toc-panel-border)] z-50 flex-col">
         <div class="px-3 py-3 md:px-4 md:py-4 font-bold text-base md:text-lg text-neutral-900 dark:text-neutral-100 border-b border-[var(--toc-panel-border)]/30 flex items-center justify-between shrink-0">
             <div class="flex items-center gap-2">
                 <Icon name={tocIcon} class="text-base md:text-lg text-[var(--primary)]"></Icon>
                 <span>{i18n(I18nKey.tableOfContents)}</span>
             </div>
-            <button id="collapsible-toc-close" onclick="closeCollapsibleTOC()" class="btn-plain p-1.5 md:p-2 rounded-lg hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition">
+            <button id="collapsible-toc-close" aria-label="Close" class="btn-plain p-1.5 md:p-2 rounded-lg hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition-ui">
                 <Icon name={closeIcon} class="text-lg md:text-xl text-neutral-600 dark:text-neutral-400"></Icon>
             </button>
         </div>
@@ -42,37 +42,57 @@ const closeIcon = "material-symbols:close-rounded";
     </div>
 </div>
 
-<style lang="stylus">
-.collapsible-toc-btn
-    position: fixed
-    bottom: 50vh
-    right: 1.5rem
-    z-index: 40
-    cursor: pointer
-    &.hide
-        transform: translateX(5rem) scale(0.9)
-        opacity: 0
-        pointer-events: none
+<style>
+	.collapsible-toc-btn {
+		position: fixed;
+		bottom: 50vh;
+		right: 1.5rem;
+		z-index: 40;
+		cursor: pointer;
 
-@media (any-hover: hover)
-    :global(#collapsible-toc-btn button:hover)
-        background-color: var(--btn-plain-bg-hover)
+		&.hide {
+			transform: translateX(5rem) scale(0.9);
+			opacity: 0;
+			pointer-events: none;
+		}
+	}
 
-.collapsible-toc-panel
-    width: min(18rem, 75vw)
-    transform: translateX(calc(100% + 1rem))
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)
-    background: var(--card-bg)
-    opacity: 0.9
-    &.open
-        transform: translateX(0)
+	@media (any-hover: hover) {
+		:global(#collapsible-toc-btn button:hover) {
+			background-color: var(--btn-plain-bg-hover);
+		}
+	}
 
-.collapsible-toc-inner
-    position: relative /* Critical: makes offsetTop work correctly for TOC scroll tracking */
-    scrollbar-width: none
-    -ms-overflow-style: none
-    &::-webkit-scrollbar
-        display: none
+	/* Slides in from the right; display flips after the slide-out ends */
+	.collapsible-toc-panel {
+		display: none;
+		width: min(18rem, 75vw);
+		transform: translateX(calc(100% + 1rem));
+		transition:
+			transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+			display 0.3s allow-discrete;
+		background: var(--card-bg);
+		opacity: 0.9;
 
+		&.open {
+			display: flex;
+			transform: translateX(0);
+		}
+	}
+
+	@starting-style {
+		.collapsible-toc-panel.open {
+			transform: translateX(calc(100% + 1rem));
+		}
+	}
+
+	.collapsible-toc-inner {
+		/* offsetTop of TOC entries is measured against this box */
+		position: relative;
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
 </style>
-

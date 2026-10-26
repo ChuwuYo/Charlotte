@@ -29,10 +29,6 @@ export const en: Translation = {
 	[Key.cardBackgroundWhite]: "White",
 	[Key.cardBackgroundThemed]: "Themed",
 
-	[Key.fontSizeScaling]: "Font Size Scaling",
-	[Key.fontScalingLocked]: "Locked (Default)",
-	[Key.fontScalingResponsive]: "Follow Browser",
-
 	[Key.lightMode]: "Light",
 	[Key.darkMode]: "Dark",
 	[Key.systemMode]: "System",

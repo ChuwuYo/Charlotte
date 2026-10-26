@@ -4,13 +4,12 @@ export type ExternalLinkWarmupConfig = {
 	origins?: string[];
 };
 
-declare global {
-	interface Window {
-		__externalLinkWarmupConfig?: ExternalLinkWarmupConfig;
-	}
-}
-
-export function setupExternalLinkWarmup(config?: ExternalLinkWarmupConfig) {
+// Preconnect and warm configured external origins on hover
+export function initLinkWarmup() {
+	const raw = document.getElementById("config-carrier")?.dataset.warmup;
+	const config: ExternalLinkWarmupConfig | undefined = raw
+		? JSON.parse(raw)
+		: undefined;
 	const enable = config?.enable !== false;
 	const enableFetch = config?.enableFetch !== false;
 	const origins = Array.isArray(config?.origins) ? config.origins : [];
@@ -50,7 +49,7 @@ export function setupExternalLinkWarmup(config?: ExternalLinkWarmupConfig) {
 		try {
 			sessionStorage.setItem(getFetchWarmupKey(href), "1");
 		} catch {
-			// ignore (storage disabled / quota / privacy mode)
+			// storage unavailable
 		}
 	}
 

@@ -55,6 +55,12 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 		opacity: 1;
 	}
 
+	@media (prefers-reduced-motion: reduce) {
+		.typewriter-cursor {
+			animation: none;
+		}
+	}
+
 	@keyframes blink {
 		0%, 50% { opacity: 1; }
 		50.01%, 100% { opacity: 0; }
@@ -238,39 +244,8 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 			}
 		}
 
-		public destroy() {
-			if (this.timeoutId) {
-				clearTimeout(this.timeoutId);
-				this.timeoutId = null;
-			}
-		}
 	}
 
-	function initTypewriters() {
-		const elements = document.querySelectorAll<HTMLElement>('.typewriter-text');
-		elements.forEach(el => {
-			if (!(el as any).__typewriter) {
-				(el as any).__typewriter = new TypewriterEffect(el);
-			}
-		});
-	}
-
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', initTypewriters);
-	} else {
-		initTypewriters();
-	}
-
-	// 支持 Astro 页面切换（View Transitions）
-	document.addEventListener('astro:page-load', initTypewriters);
-
-	// 在页面切换前清理所有打字机实例
-	document.addEventListener('astro:before-swap', () => {
-		document.querySelectorAll<HTMLElement>('.typewriter-text').forEach(el => {
-			if ((el as any).__typewriter) {
-				(el as any).__typewriter.destroy();
-				delete (el as any).__typewriter;
-			}
-		});
-	});
+	for (const el of document.querySelectorAll<HTMLElement>(".typewriter-text"))
+		new TypewriterEffect(el);
 </script>
