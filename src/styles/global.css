@@ -1,17 +1,60 @@
-@import "tailwindcss";
+@layer theme, base, components, utilities;
 
+@import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Unlayered like before: these must keep beating Tailwind layers and Expressive Code styles */
+@import "katex/dist/katex.css";
+
+@import "./tokens.css" layer(base);
+@import "./main.utilities.css";
+@import "./main.css" layer(components);
+@import "./expressive-code.css" layer(components);
+@import "./photoswipe.css" layer(components);
+@import "./scrollbar.css" layer(base);
+@import "./transition.css";
+@import "./markdown.css";
+@import "./markdown-extend.css";
+@import "photoswipe/style.css";
+
+/* Same specificity as before (:is), so dark utilities still win over plain ones */
 @custom-variant dark (&:is(.dark *));
 
 @theme {
 	--font-sans:
 		Roboto, sans-serif, ui-sans-serif, system-ui, sans-serif,
 		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Tailwind 3 默认边框色为 gray-200，v4 改为 currentColor，这里保持旧行为 */
+/* Motion tokens */
+@theme static {
+	--duration-fast: 150ms;
+	--duration-page: 300ms;
+}
+
 @layer base {
+	/* Root size follows the browser setting: 15/16/15/14px at 16px default */
+	html {
+		font-size: 93.75%;
+	}
+	@media (width >= 48rem) {
+		html {
+			font-size: 100%;
+		}
+	}
+	@media (width >= 64rem) {
+		html {
+			font-size: 93.75%;
+		}
+	}
+	@media (width >= 96rem) {
+		html {
+			font-size: 87.5%;
+		}
+	}
+
+	/* Tailwind 3 border color default */
 	*,
 	::after,
 	::before,
@@ -19,16 +62,32 @@
 	::file-selector-button {
 		border-color: var(--color-gray-200, currentColor);
 	}
+
 	button:not(:disabled),
 	[role="button"]:not(:disabled) {
 		cursor: pointer;
 	}
+
+	::selection {
+		background-color: var(--selection-bg);
+	}
+
+	/* Same-page anchors scroll smoothly unless reduced motion */
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
+	}
+
+	:target,
+	.custom-md :is(h1, h2, h3, h4, h5, h6) {
+		scroll-margin-top: 1rem;
+	}
 }
 
-@import "./main.utilities.css";
-@import "./main.css" layer(components);
-@import "./markdown.css";
-@import "./expressive-code.css" layer(components);
-@import "./scrollbar.css" layer(components);
-@import "./transition.css" layer(components);
-@import "./photoswipe.css" layer(components);
+/* Kill switch for transitions while hue is dragged or theme switches */
+html[data-no-transition] *,
+html[data-no-transition] *::before,
+html[data-no-transition] *::after {
+	transition: none;
+}

@@ -1,58 +1,53 @@
-/* Page transition animations with Swup */
-html.is-changing .transition-swup-fade {
-    @apply transition-all duration-200
-}
-html.is-animating .transition-swup-fade {
-    @apply opacity-0 translate-y-4
-}
+/* Entrance on a fresh load; skipped on view transitions, history restores and reduced motion.
+   Backwards fill only, so no animation value lingers after the entrance. */
+@layer components {
+	@keyframes fade-in-up {
+		from {
+			transform: translateY(2rem);
+			opacity: 0;
+		}
+	}
 
-/* Fade-in animations for components */
-@keyframes fade-in-up {
-    0% {
-        transform: translateY(2rem);
-        opacity: 0;
-    }
-    100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
+	@keyframes banner-in {
+		from {
+			opacity: 0;
+			scale: 1.05;
+		}
+	}
 
-/* Main components */
-.onload-animation {
-    opacity: 0;
-    animation: 300ms fade-in-up;
-    animation-fill-mode: forwards;
-}
-#navbar {
-    animation-delay: 0ms
-}
-#sidebar {
-    animation-delay: 100ms
-}
-#swup-container {
-    outline: none;
-}
-#content-wrapper {
-    animation-delay: var(--content-delay);
-}
-.footer {
-    animation-delay: 250ms;
-}
-#banner-credit {
-    animation-delay: 400ms;
-}
+	/* Same containing block with or without the entrance */
+	.onload-animation {
+		transform: translateY(0);
+	}
 
-/* Post content */
-#post-container :nth-child(1) { animation-delay: calc(var(--content-delay) + 0ms) }
-#post-container :nth-child(2) { animation-delay: calc(var(--content-delay) + 50ms) }
-#post-container :nth-child(3) { animation-delay: calc(var(--content-delay) + 100ms) }
-#post-container :nth-child(4) { animation-delay: calc(var(--content-delay) + 175ms) }
-#post-container :nth-child(5) { animation-delay: calc(var(--content-delay) + 250ms) }
-#post-container :nth-child(6) { animation-delay: calc(var(--content-delay) + 325ms) }
+	@media (prefers-reduced-motion: no-preference) {
+		html:not([data-no-enter]) {
+			.onload-animation {
+				animation: 300ms backwards fade-in-up;
+			}
+			#banner {
+				animation: 700ms var(--ease-standard) backwards banner-in;
+			}
+		}
+	}
 
-/* Hide content during transition to prevent animation conflicts with scrolling */
-body.is-transitioning #content-wrapper {
-    opacity: 0;
+	#sidebar {
+		animation-delay: 100ms;
+	}
+	#content-wrapper {
+		animation-delay: var(--content-delay);
+	}
+	.footer {
+		animation-delay: 250ms;
+	}
+	#banner-credit {
+		animation-delay: 400ms;
+	}
+
+	#post-container :nth-child(1) { animation-delay: calc(var(--content-delay) + 0ms); }
+	#post-container :nth-child(2) { animation-delay: calc(var(--content-delay) + 50ms); }
+	#post-container :nth-child(3) { animation-delay: calc(var(--content-delay) + 100ms); }
+	#post-container :nth-child(4) { animation-delay: calc(var(--content-delay) + 175ms); }
+	#post-container :nth-child(5) { animation-delay: calc(var(--content-delay) + 250ms); }
+	#post-container :nth-child(6) { animation-delay: calc(var(--content-delay) + 325ms); }
 }
-
