@@ -3,8 +3,13 @@
 import { swapFunctions } from "astro:transitions/client";
 import { closePanels } from "./panels";
 
-// Swapped content regions, including the side TOC scroller
-const REGIONS = ["main", "main-after", "toc-inner-wrapper"];
+// Swapped content regions, including the side TOC scroller and the floating TOC
+const REGIONS = [
+	"main",
+	"main-after",
+	"toc-inner-wrapper",
+	"collapsible-toc-region",
+];
 // Root attributes owned by the client that the new document does not carry
 const KEEP_ATTRS = ["data-no-enter", "data-frame-move"];
 

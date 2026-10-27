@@ -155,7 +155,7 @@ draft: false
 
 纯静态站点，站内跳转由 Astro `<ClientRouter />`（`astro:transitions`）在客户端完成：
 
-- **页面切换**：导航栏、横幅、侧栏与页脚组成的框架常驻不动，`src/scripts/router.ts` 通过 `astro:before-swap` 的自定义 swap 只替换内容区（`#main`、`#main-after`、`#toc`）。旧内容先淡出，新内容淡入；分页按方向左右滑入；首页与其他页之间横幅高度随之平滑过渡。悬停或聚焦链接时预取页面（`prefetch`）。新页面回到顶部，前进/后退恢复滚动位置；开启“减少动态效果”时直接切换。
+- **页面切换**：导航栏、横幅、侧栏与页脚组成的框架常驻不动，`src/scripts/router.ts` 通过 `astro:before-swap` 的自定义 swap 只替换内容区（`#main`、`#main-after` 与两处目录）。旧内容先淡出，新内容淡入；分页按方向左右滑入；首页与其他页之间横幅高度随之平滑过渡。悬停或聚焦链接时预取页面（`prefetch`）。新页面回到顶部，前进/后退恢复滚动位置；开启“减少动态效果”时直接切换。
 - **首帧设置**：`src/components/HeadScript.astro` 在 `<head>` 中同步应用主题、色相与卡片背景；切换时这些设置会带到新页面，不会闪烁。
 - **布局**：所有页面共用 `src/layouts/BaseLayout.astro`。
 - **页面行为**：`src/scripts/` 下按功能拆分的小模块。框架相关的行为由 `main.ts` 初始化一次；内容相关的行为（折叠目录、KaTeX、灯箱）在每次 `astro:page-load` 时初始化，并在 `astro:before-swap` 时清理。

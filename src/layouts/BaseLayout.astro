@@ -137,7 +137,7 @@ const warmupConfig = {
 	<body class="min-h-screen">
 		<div id="config-carrier" hidden data-warmup={JSON.stringify(warmupConfig)}></div>
 
-		<!-- Frame (navbar, banner, sidebar, footer) stays across navigations; #main, #main-after and #toc are swapped -->
+		<!-- Frame (navbar, banner, sidebar, footer) stays across navigations; #main, #main-after and the TOCs are swapped -->
 
 		<!-- Scroll thresholds read by IntersectionObserver -->
 		<div id="sentinel-banner" class="scroll-sentinel" aria-hidden="true"></div>
@@ -183,7 +183,6 @@ const warmupConfig = {
 						<div id="content-wrapper" class="onload-animation">
 							<slot />
 						</div>
-						{siteConfig.toc.enable && headings.length > 0 && <CollapsibleTOC headings={headings} />}
 					</main>
 
 					<div id="main-after" class:list={["row-start-2 col-span-2 lg:col-span-1 lg:col-start-2 mb-4 lg:mb-0", { hidden: !hasAfter }]}>
@@ -196,6 +195,13 @@ const warmupConfig = {
 				</div>
 
 				<BackToTop />
+
+				<!-- Fixed TOC button and panel stay outside the moving grid -->
+				{siteConfig.toc.enable && (
+					<div id="collapsible-toc-region">
+						{headings.length > 0 && <CollapsibleTOC headings={headings} />}
+					</div>
+				)}
 			</div>
 		</div>
 
