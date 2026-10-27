@@ -41,6 +41,8 @@ export default defineConfig({
 		}),
 		expressiveCode({
 			themes: [expressiveCodeConfig.theme, expressiveCodeConfig.theme],
+			// No `all: revert` reset on code block elements
+			useStyleReset: false,
 			plugins: [
 				pluginCollapsibleSections(),
 				pluginLineNumbers(),
