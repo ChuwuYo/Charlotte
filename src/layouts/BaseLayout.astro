@@ -209,7 +209,7 @@ const warmupConfig = {
 		<div class="absolute w-full z-0 hidden 2xl:block">
 			<div class="relative max-w-(--page-width) mx-auto">
 				{siteConfig.toc.enable && (
-					<div id="toc-wrapper" class:list={["transition-opacity absolute top-0 -right-(--toc-width) w-(--toc-width) items-center", { "toc-hide": enableBanner }]}>
+					<div id="toc-wrapper" class:list={["transition-opacity absolute top-0 left-full items-center", { "toc-hide": enableBanner }]}>
 						<div id="toc-inner-wrapper" class="fixed top-14 w-(--toc-width) h-[calc(100vh_-_20rem)] overflow-y-scroll overflow-x-hidden hide-scrollbar">
 							<div id="toc" class="w-full h-full">
 								<div class="h-8 w-full"></div>

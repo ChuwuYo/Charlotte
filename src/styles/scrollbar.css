@@ -5,3 +5,8 @@ html,
 	scrollbar-width: thin;
 	scrollbar-color: var(--scrollbar-bg) transparent;
 }
+
+/* Space for the page scrollbar is kept, so pages that fit in the viewport do not shift sideways */
+html {
+	scrollbar-gutter: stable;
+}
