@@ -18,8 +18,16 @@
 
 ### 环境要求
 
-![Node.js >= 22](https://img.shields.io/badge/node.js-%3E%3D22-brightgreen) 
-![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue)
+![Node.js 24 LTS](https://img.shields.io/badge/node.js-24_LTS-brightgreen?logo=nodedotjs&logoColor=white)
+![pnpm 10](https://img.shields.io/badge/pnpm-10-blue?logo=pnpm&logoColor=white)
+
+### 技术栈
+
+![Astro 7](https://img.shields.io/badge/Astro-7-BC52EE?logo=astro&logoColor=white)
+![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+![Svelte 5](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte&logoColor=white)
+![TypeScript 5](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![Biome 2](https://img.shields.io/badge/Biome-2-60A5FA?logo=biome&logoColor=white)
 
 ### 常用命令
 
@@ -142,6 +150,17 @@ draft: false
 
 这里是文章正文...
 ```
+
+## 🏗️ 架构
+
+纯静态多页站点（MPA），不使用客户端路由：
+
+- **页面切换**：浏览器原生跨文档 View Transitions（`@view-transition`），不支持的浏览器直接整页跳转；滚动与前进/后退由浏览器原生处理。
+- **首帧设置**：`src/components/HeadScript.astro` 在 `<head>` 中同步应用主题、色相与卡片背景，并为每次切换设置临时的 `view-transition-name`。
+- **布局**：所有页面共用 `src/layouts/BaseLayout.astro`。
+- **页面行为**：`src/scripts/` 下按功能拆分的小模块，由 `main.ts` 在每个页面加载时初始化一次（灯箱等按需动态加载）。
+- **样式**：Tailwind CSS 4，入口为 `src/styles/global.css`，设计变量在 `tokens.css`；滚动条为原生滚动条。
+- **交互组件**：Svelte 5 岛（搜索、主题切换、显示设置、归档）。
 
 ## 📦 部署
 
