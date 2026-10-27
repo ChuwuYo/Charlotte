@@ -1,4 +1,4 @@
-// Page behaviors; runs once per document
+// Frame behaviors run once; page behaviors run for each page, including client-side navigations
 import { initBackToTop } from "./back-to-top";
 import { initCodeCopy } from "./code-copy";
 import { initCollapsibleToc } from "./collapsible-toc";
@@ -7,23 +7,50 @@ import { initKatex } from "./katex";
 import { initLinkWarmup } from "./link-warmup";
 import { initPagefind } from "./pagefind";
 import { initPanels } from "./panels";
+import { initRouter } from "./router";
 import { initScrollState } from "./scroll-state";
 import { initToc } from "./toc";
 import { initUptime } from "./uptime";
 import { initWidgetCollapse } from "./widget-collapse";
 
+initRouter();
 initPagefind();
 initScrollState();
 initToc();
-initCollapsibleToc();
 initBackToTop();
 initPanels();
 initDropdowns();
 initWidgetCollapse();
-initKatex();
 initCodeCopy();
 initUptime();
 initLinkWarmup();
-// PhotoSwipe only on pages with post images
-if (document.querySelector(".custom-md img, #post-cover img"))
-	import("./lightbox").then((m) => m.initLightbox());
+
+const seen = new WeakSet<Element>();
+let page: AbortController | undefined;
+let destroyLightbox: (() => void) | undefined;
+
+function initPage() {
+	const main = document.getElementById("main");
+	if (!main || seen.has(main)) return;
+	seen.add(main);
+	page = new AbortController();
+	initCollapsibleToc(page.signal);
+	initKatex();
+	// PhotoSwipe only on pages with post images
+	if (document.querySelector(".custom-md img, #post-cover img")) {
+		const { signal } = page;
+		import("./lightbox").then((m) => {
+			if (!signal.aborted) destroyLightbox = m.initLightbox();
+		});
+	}
+}
+
+function cleanupPage() {
+	page?.abort();
+	destroyLightbox?.();
+	destroyLightbox = undefined;
+}
+
+initPage();
+document.addEventListener("astro:page-load", initPage);
+document.addEventListener("astro:before-swap", cleanupPage);

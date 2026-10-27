@@ -13,7 +13,6 @@
 @import "./photoswipe.css" layer(components);
 @import "./scrollbar.css" layer(base);
 @import "./transition.css";
-@import "./view-transitions.css";
 @import "./markdown.css";
 @import "./markdown-extend.css";
 @import "photoswipe/style.css";
@@ -32,6 +31,7 @@
 @theme static {
 	--duration-fast: 150ms;
 	--duration-page: 300ms;
+	--duration-frame: 700ms;
 }
 
 @layer base {

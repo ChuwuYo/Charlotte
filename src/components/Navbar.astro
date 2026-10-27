@@ -22,9 +22,6 @@ const navbarOpacity = navBarConfig.opacity ?? 100;
 // 将百分比转换为 0-1 的小数值
 const opacityValue = Math.max(0, Math.min(100, navbarOpacity)) / 100;
 
-// 服务端检测文章页面
-const isPostPage = Astro.url.pathname.startsWith(url("/posts/"));
-
 // 检查是否在文章页面隐藏按钮
 const hideButtonsOnPostPage = navBarConfig.hideButtonsOnPostPage ?? false;
 
@@ -83,7 +80,7 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
                 </a>;
             })}
         </div>
-        <div class:list={["navbar-controls flex items-center", { "post-page-mode": isPostPage && hideButtonsOnPostPage }]}>
+        <div class="navbar-controls flex items-center" data-post-mode={hideButtonsOnPostPage ? "" : undefined}>
             <div class="search-container">
                 <Search icons={searchIcons} client:only="svelte"></Search>
             </div>
@@ -117,15 +114,15 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
     transition: transform 0.3s ease-out;
 }
 
-/* Post page: hide setting buttons, shift search */
-.navbar-controls.post-page-mode .buttons-container {
+/* Post page (html.is-post): hide setting buttons, shift search */
+:global(.is-post) .navbar-controls[data-post-mode] .buttons-container {
     opacity: 0;
     pointer-events: none;
     transform: translateX(0);
     transition: opacity 0.1s ease-out, transform 0.3s ease-out;
 }
 
-.navbar-controls.post-page-mode > .search-container {
+:global(.is-post) .navbar-controls[data-post-mode] > .search-container {
     transform: translateX(var(--buttons-offset, 6rem));
 }
 </style>

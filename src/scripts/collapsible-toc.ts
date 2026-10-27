@@ -1,6 +1,6 @@
-// Floating TOC button and slide-in panel on narrow screens
+// Floating TOC button and slide-in panel on narrow screens; document listeners end with the page
 
-export function initCollapsibleToc(): void {
+export function initCollapsibleToc(signal: AbortSignal): void {
 	const btn = document.getElementById("collapsible-toc-btn");
 	const panel = document.getElementById("collapsible-toc-panel");
 	if (!btn || !panel) return;
@@ -23,10 +23,14 @@ export function initCollapsibleToc(): void {
 		}
 	};
 
-	document.addEventListener("past-banner", (e) => {
-		pastBanner = (e as CustomEvent<boolean>).detail;
-		syncBtn();
-	});
+	document.addEventListener(
+		"past-banner",
+		(e) => {
+			pastBanner = (e as CustomEvent<boolean>).detail;
+			syncBtn();
+		},
+		{ signal },
+	);
 	syncBtn();
 
 	btn.addEventListener("click", () => setOpen(!isOpen()));
@@ -36,7 +40,11 @@ export function initCollapsibleToc(): void {
 	panel.addEventListener("click", (e) => {
 		if ((e.target as Element).closest("a")) setOpen(false);
 	});
-	document.addEventListener("keydown", (e) => {
-		if (e.key === "Escape" && isOpen()) setOpen(false);
-	});
+	document.addEventListener(
+		"keydown",
+		(e) => {
+			if (e.key === "Escape" && isOpen()) setOpen(false);
+		},
+		{ signal },
+	);
 }

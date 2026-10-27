@@ -1,9 +1,21 @@
-/* Entrance on a fresh load; skipped on view transitions, history restores and reduced motion.
-   Backwards fill only, so no animation value lingers after the entrance. */
+/* Entrance on a fresh load and for swapped content ([data-enter]); skipped on history
+   restores and reduced motion. Backwards fill only, so no animation value lingers. */
 @layer components {
 	@keyframes fade-in-up {
 		from {
 			transform: translateY(2rem);
+			opacity: 0;
+		}
+	}
+	@keyframes fade-in-left {
+		from {
+			transform: translateX(2rem);
+			opacity: 0;
+		}
+	}
+	@keyframes fade-in-right {
+		from {
+			transform: translateX(-2rem);
 			opacity: 0;
 		}
 	}
@@ -20,14 +32,50 @@
 		transform: translateY(0);
 	}
 
+	/* Swapped content starts without the first-load delay */
+	[data-enter] {
+		--content-delay: 0ms;
+	}
+
 	@media (prefers-reduced-motion: no-preference) {
-		html:not([data-no-enter]) {
-			.onload-animation {
-				animation: 300ms backwards fade-in-up;
-			}
-			#banner {
-				animation: 700ms var(--ease-standard) backwards banner-in;
-			}
+		html:not([data-no-enter]) .onload-animation,
+		[data-enter] .onload-animation {
+			animation: 300ms backwards fade-in-up;
+		}
+		html:not([data-no-enter]) #banner {
+			animation: 700ms var(--ease-standard) backwards banner-in;
+		}
+
+		/* List pages enter from the side they were paged towards */
+		html [data-enter="forwards"] .onload-animation {
+			animation-name: fade-in-left;
+		}
+		html [data-enter="backwards"] .onload-animation {
+			animation-name: fade-in-right;
+		}
+
+		/* Leaving content fades out before the swap; transform and opacity only */
+		html[data-leaving] :is(#main > *, #main-after, #toc) {
+			opacity: 0;
+			transition: opacity var(--duration-fast) var(--ease-standard);
+		}
+		html[data-leaving] :is(#content-wrapper, #main-after) {
+			translate: 0 1rem;
+			transition-property: opacity, translate;
+		}
+		html[data-leaving="forwards"] :is(#content-wrapper, #main-after) {
+			translate: -2rem 0;
+		}
+		html[data-leaving="backwards"] :is(#content-wrapper, #main-after) {
+			translate: 2rem 0;
+		}
+
+		/* Banner follows the home/inner offset while navigating */
+		html[data-frame-move] :is(#banner-wrapper, #banner, .banner-text-overlay) {
+			transition:
+				translate var(--duration-frame) var(--ease-standard),
+				opacity var(--duration-frame) var(--ease-standard),
+				visibility var(--duration-frame);
 		}
 	}
 

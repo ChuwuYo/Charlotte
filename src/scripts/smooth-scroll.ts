@@ -9,17 +9,22 @@ const reducedMotion = () =>
 
 const easeOutCubic = (t: number) => 1 - (1 - t) ** 3;
 
+let done: (() => void) | undefined;
+
 function stop() {
 	cancelAnimationFrame(frame);
 	frame = 0;
 	for (const type of CANCEL_EVENTS) removeEventListener(type, stop);
+	done?.();
+	done = undefined;
 }
 
-export function fastScrollTo(top: number, maxDistance = 1200): void {
+// Resolves when the scroll ends or user input cancels it
+export function fastScrollTo(top: number, maxDistance = 1200): Promise<void> {
 	stop();
 	if (reducedMotion()) {
 		window.scrollTo({ top, behavior: "instant" });
-		return;
+		return Promise.resolve();
 	}
 	let from = window.scrollY;
 	if (Math.abs(top - from) > maxDistance) {
@@ -42,4 +47,7 @@ export function fastScrollTo(top: number, maxDistance = 1200): void {
 		else stop();
 	};
 	frame = requestAnimationFrame(step);
+	return new Promise((resolve) => {
+		done = resolve;
+	});
 }

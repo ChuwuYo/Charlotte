@@ -1,13 +1,15 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import { siteConfig } from "@/config";
 import { BANNER_HEIGHT_EXTEND } from "../constants/constants";
 
 const defaultTheme = siteConfig.defaultTheme;
-const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 ---
 
-<!-- Classic blocking script: settings before first paint, view transition hooks -->
-<script is:inline define:vars={{ defaultTheme, BANNER_HEIGHT_EXTEND, base }}>
+<ClientRouter />
+
+<!-- Classic blocking script: settings before first paint -->
+<script is:inline define:vars={{ defaultTheme, BANNER_HEIGHT_EXTEND }}>
 	const root = document.documentElement;
 
 	// Theme, hue and card background from storage
@@ -39,72 +41,4 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 	// No entrance replay when restoring from history
 	const navEntry = performance.getEntriesByType("navigation")[0];
 	if (navEntry && navEntry.type === "back_forward") root.dataset.noEnter = "";
-
-	// Path relative to the site base, e.g. "", "2/", "posts/x/"
-	const rel = (path) => (path.startsWith(base) ? path.slice(base.length) : null);
-	const pageIndex = (path) => {
-		const r = rel(path);
-		if (r === "") return 1;
-		return Number(((r || "").match(/^(\d+)\/$/) || [])[1]) || 0;
-	};
-	const isPost = (path) => (rel(path) || "").startsWith("posts/");
-
-	// Types for this navigation: traverse, forwards/backwards between list pages
-	function vtTypes(from, to, navType) {
-		const types = [];
-		if (navType === "traverse") types.push("traverse");
-		const a = pageIndex(from);
-		const b = pageIndex(to);
-		if (a && b && a !== b) types.push(b > a ? "forwards" : "backwards");
-		return types;
-	}
-
-	// Name an element for one transition, then clear it
-	function nameOnce(el, name, done) {
-		if (!el) return;
-		el.style.viewTransitionName = name;
-		done.finally(() => {
-			el.style.viewTransitionName = "";
-		});
-	}
-
-	const cardTitle = (path) =>
-		[...document.querySelectorAll("[data-vt-title]")].find(
-			(a) => a.pathname === path,
-		);
-	const postTitle = () => document.querySelector("[data-vt-post-title]");
-	// Named only during a transition: a permanent name would make #main a
-	// stacking context and trap fixed overlays (mobile TOC) under the footer.
-	// Banner and navbar morph only while the banner is on screen.
-	function nameChrome(done) {
-		nameOnce(document.getElementById("main"), "main", done);
-		if (scrollY > innerHeight * 0.35) return;
-		nameOnce(document.getElementById("navbar-wrapper"), "navbar", done);
-		nameOnce(document.getElementById("banner-wrapper"), "banner", done);
-	}
-
-	addEventListener("pageswap", (e) => {
-		if (!e.viewTransition || !e.activation) return;
-		const from = location.pathname;
-		const to = new URL(e.activation.entry.url).pathname;
-		for (const t of vtTypes(from, to, e.activation.navigationType))
-			e.viewTransition.types.add(t);
-		nameChrome(e.viewTransition.finished);
-		if (isPost(to)) nameOnce(cardTitle(to), "post-title", e.viewTransition.finished);
-		else if (isPost(from)) nameOnce(postTitle(), "post-title", e.viewTransition.finished);
-	});
-
-	addEventListener("pagereveal", (e) => {
-		applySettings();
-		if (!e.viewTransition) return;
-		root.dataset.noEnter = "";
-		const act = window.navigation && navigation.activation;
-		if (!act || !act.from) return;
-		const from = new URL(act.from.url).pathname;
-		const to = location.pathname;
-		for (const t of vtTypes(from, to, act.navigationType)) e.viewTransition.types.add(t);
-		nameChrome(e.viewTransition.finished);
-		if (isPost(to)) nameOnce(postTitle(), "post-title", e.viewTransition.ready);
-		else if (isPost(from)) nameOnce(cardTitle(from), "post-title", e.viewTransition.ready);
-	});
 </script>

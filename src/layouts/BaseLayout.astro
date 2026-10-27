@@ -39,10 +39,11 @@ const { title, description, setOGTypeArticle, headings = [] } = Astro.props;
 const lang = Astro.props.lang || siteConfig.lang;
 
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+const isPostPage = Astro.url.pathname.startsWith(url("/posts/"));
 const enableBanner = siteConfig.banner.enable;
 const hasBannerCredit = enableBanner && siteConfig.banner.credit.enable;
 const hasBannerLink = !!siteConfig.banner.credit.url;
-const showBannerText = !!siteConfig.banner.text && isHomePage;
+const hasBannerText = !!siteConfig.banner.text;
 const hasAfter = Astro.slots.has("after");
 
 const pageTitle = title
@@ -59,9 +60,9 @@ const bannerOffset = {
 	bottom: "0",
 }[siteConfig.banner.position || "center"];
 
-// Main panel overlaps the banner bottom; home adds the extended banner
+// Main panel overlaps the banner bottom; html.is-home adds the extended banner in CSS
 const mainPanelTop = enableBanner
-	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem${isHomePage ? " + var(--banner-height-extend)" : ""})`
+	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
 	: "5.5rem";
 
 // dns-prefetch hosts from the warmup list
@@ -92,8 +93,9 @@ const warmupConfig = {
 <!doctype html>
 <html
 	lang={siteLang}
-	class:list={["bg-(--page-bg)", { "is-home": isHomePage, "enable-banner": enableBanner }]}
+	class:list={["bg-(--page-bg)", { "is-home": isHomePage, "is-post": isPostPage, "enable-banner": enableBanner }]}
 	data-theme={expressiveCodeConfig.theme}
+	transition:animate="none"
 	style={`--hue: ${siteConfig.themeColor.hue}; --page-width: ${PAGE_WIDTH}; --banner-offset: ${bannerOffset}; --banner-height: ${BANNER_HEIGHT}vh; --banner-height-home: ${BANNER_HEIGHT_HOME}vh;`}
 >
 	<head>
@@ -135,6 +137,8 @@ const warmupConfig = {
 	<body class="min-h-screen">
 		<div id="config-carrier" hidden data-warmup={JSON.stringify(warmupConfig)}></div>
 
+		<!-- Frame (navbar, banner, sidebar, footer) stays across navigations; #main, #main-after and #toc are swapped -->
+
 		<!-- Scroll thresholds read by IntersectionObserver -->
 		<div id="sentinel-banner" class="scroll-sentinel" aria-hidden="true"></div>
 		<div id="sentinel-navbar" class="scroll-sentinel" aria-hidden="true"></div>
@@ -150,7 +154,7 @@ const warmupConfig = {
 		{enableBanner && (
 			<div id="banner-wrapper" class="absolute z-10 w-full overflow-hidden" style={`top: -${BANNER_HEIGHT_EXTEND}vh`}>
 				<ImageWrapper id="banner" alt="Banner of the blog" class="object-cover h-full" loading="eager" fetchpriority="high" src={siteConfig.banner.src} position={siteConfig.banner.position} />
-				{showBannerText && (
+				{hasBannerText && (
 					<div class="banner-text-overlay absolute top-0 left-0 w-full h-full flex items-center justify-center">
 						<BannerText />
 					</div>
@@ -159,7 +163,7 @@ const warmupConfig = {
 		)}
 
 		<!-- Main content -->
-		<div class="main-content-wrapper absolute w-full z-30 pointer-events-none" style={`top: ${mainPanelTop}`}>
+		<div class="main-content-wrapper absolute w-full z-30 pointer-events-none" style={`--main-panel-top: ${mainPanelTop}`}>
 			<div class="relative max-w-(--page-width) mx-auto pointer-events-auto">
 				<!-- Sidebar and main share row 1 so the sticky sidebar ends with the content -->
 				<div id="main-grid" class="w-full left-0 right-0 grid grid-cols-[15rem_auto] gap-x-4 mx-auto px-0 md:px-4">
@@ -182,11 +186,9 @@ const warmupConfig = {
 						{siteConfig.toc.enable && headings.length > 0 && <CollapsibleTOC headings={headings} />}
 					</main>
 
-					{hasAfter && (
-						<div class="row-start-2 col-span-2 lg:col-span-1 lg:col-start-2 mb-4 lg:mb-0">
-							<slot name="after" />
-						</div>
-					)}
+					<div id="main-after" class:list={["row-start-2 col-span-2 lg:col-span-1 lg:col-start-2 mb-4 lg:mb-0", { hidden: !hasAfter }]}>
+						<slot name="after" />
+					</div>
 
 					<div class="footer row-start-4 col-span-2 lg:row-start-3 lg:col-span-1 lg:col-start-2 onload-animation max-lg:mt-4">
 						<Footer />
@@ -234,6 +236,16 @@ const warmupConfig = {
 		}
 		.enable-banner.is-home #banner {
 			translate: none;
+		}
+		.main-content-wrapper {
+			top: var(--main-panel-top);
+		}
+		.enable-banner.is-home .main-content-wrapper {
+			top: calc(var(--main-panel-top) + var(--banner-height-extend));
+		}
+		.enable-banner:not(.is-home) .banner-text-overlay {
+			visibility: hidden;
+			opacity: 0;
 		}
 		.enable-banner #top-row {
 			height: calc(var(--banner-height-home) - 4.5rem);

@@ -25,6 +25,10 @@ function close({ id, toggle }: (typeof PANELS)[number]) {
 		document.getElementById(toggle)?.setAttribute("aria-expanded", "false");
 }
 
+export function closePanels(): void {
+	for (const panel of PANELS) close(panel);
+}
+
 export function initPanels(): void {
 	for (const { id, toggle } of PANELS) {
 		if (!toggle) continue;
@@ -48,13 +52,12 @@ export function initPanels(): void {
 	});
 
 	document.addEventListener("keydown", (e) => {
-		if (e.key !== "Escape") return;
-		for (const panel of PANELS) close(panel);
+		if (e.key === "Escape") closePanels();
 	});
 
 	// Post page mode: search slides over the hidden buttons
 	const controls = document.querySelector<HTMLElement>(
-		".navbar-controls.post-page-mode",
+		".navbar-controls[data-post-mode]",
 	);
 	const buttons = controls?.querySelector<HTMLElement>(".buttons-container");
 	if (controls && buttons) {
