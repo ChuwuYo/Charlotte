@@ -35,26 +35,6 @@
 }
 
 @layer base {
-	/* Root size follows the browser setting: 15/16/15/14px at 16px default */
-	html {
-		font-size: 93.75%;
-	}
-	@media (width >= 48rem) {
-		html {
-			font-size: 100%;
-		}
-	}
-	@media (width >= 64rem) {
-		html {
-			font-size: 93.75%;
-		}
-	}
-	@media (width >= 96rem) {
-		html {
-			font-size: 87.5%;
-		}
-	}
-
 	/* Tailwind 3 border color default */
 	*,
 	::after,
