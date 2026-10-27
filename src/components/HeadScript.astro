@@ -38,6 +38,13 @@ const defaultTheme = siteConfig.defaultTheme;
 	setBannerExtend();
 	addEventListener("resize", setBannerExtend);
 
+	// Overlay page scrollbar only with a mouse and no touchscreen; some phones report a fine, hovering pointer
+	if (
+		matchMedia("(hover: hover) and (pointer: fine)").matches &&
+		navigator.maxTouchPoints === 0
+	)
+		root.dataset.overlayScrollbar = "";
+
 	// No entrance replay when restoring from history
 	const navEntry = performance.getEntriesByType("navigation")[0];
 	if (navEntry && navEntry.type === "back_forward") root.dataset.noEnter = "";

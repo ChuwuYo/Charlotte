@@ -7,10 +7,9 @@ const TRACK_INSET_REM = 0.25;
 export function initPageScrollbar(): void {
 	const bar = document.getElementById("page-scrollbar");
 	const thumb = bar?.querySelector<HTMLElement>(".page-scrollbar-thumb");
-	if (!bar || !thumb) return;
-	if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-
 	const root = document.documentElement;
+	if (!bar || !thumb || !root.hasAttribute("data-overlay-scrollbar")) return;
+
 	const scrollDriven = CSS.supports("animation-timeline: scroll()");
 	let travel = 0;
 	let range = 0;

@@ -11,7 +11,11 @@ const REGIONS = [
 	"collapsible-toc-region",
 ];
 // Root attributes owned by the client that the new document does not carry
-const KEEP_ATTRS = ["data-no-enter", "data-frame-move"];
+const KEEP_ATTRS = [
+	"data-no-enter",
+	"data-frame-move",
+	"data-overlay-scrollbar",
+];
 
 const root = document.documentElement;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
