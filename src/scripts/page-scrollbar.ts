@@ -16,11 +16,12 @@ export function initPageScrollbar(): void {
 	let range = 0;
 	let hideTimer = 0;
 	let frame = 0;
+	let pending = 0;
 
 	const measure = () => {
 		range = root.scrollHeight - root.clientHeight;
-		bar.toggleAttribute("data-idle", range <= 0);
-		if (range <= 0) return;
+		bar.toggleAttribute("data-idle", range < 1);
+		if (range < 1) return;
 		const rem = Number.parseFloat(getComputedStyle(root).fontSize);
 		const trackH = root.clientHeight - TRACK_INSET_REM * 2 * rem;
 		const min = MIN_THUMB_REM * rem;
@@ -34,9 +35,18 @@ export function initPageScrollbar(): void {
 		position();
 	};
 
+	// One measure per frame for any number of triggers
+	const schedule = () => {
+		if (pending) return;
+		pending = requestAnimationFrame(() => {
+			pending = 0;
+			measure();
+		});
+	};
+
 	// Fallback when scroll-driven animations are unsupported
 	const position = () => {
-		if (scrollDriven || range <= 0) return;
+		if (scrollDriven || range < 1) return;
 		thumb.style.translate = `0 ${(root.scrollTop / range) * travel}px`;
 	};
 
@@ -53,26 +63,39 @@ export function initPageScrollbar(): void {
 		"scroll",
 		() => {
 			show();
-			if (frame) return;
+			if (scrollDriven || frame) return;
 			frame = requestAnimationFrame(() => {
 				frame = 0;
-				if (root.scrollHeight - root.clientHeight !== range) measure();
-				else position();
+				position();
 			});
 		},
 		{ passive: true },
 	);
 	document.addEventListener("pointermove", show, { passive: true });
-	addEventListener("resize", measure, { passive: true });
-	const grid = document.getElementById("main-grid");
-	const observer = new ResizeObserver(measure);
-	observer.observe(document.body);
-	if (grid) observer.observe(grid);
-	document.addEventListener("astro:page-load", measure);
+	addEventListener("resize", schedule, { passive: true });
+
+	// Content sits in absolutely positioned layers, so body keeps the viewport height; watch the layers
+	const observer = new ResizeObserver(schedule);
+	for (const el of document.body.children) observer.observe(el);
+
+	// Transformed boxes count toward the scroll extent, so entrance and frame animations change it without resizing anything
+	const settle = () => {
+		schedule();
+		requestAnimationFrame(() => {
+			for (const anim of document.getAnimations()) {
+				if (anim.timeline !== document.timeline) continue;
+				const end = anim.effect?.getComputedTiming().endTime;
+				if (typeof end === "number" && Number.isFinite(end))
+					anim.finished.then(schedule, schedule);
+			}
+		});
+	};
+	document.addEventListener("astro:after-swap", settle);
+	document.addEventListener("astro:page-load", settle);
 
 	// Drag the thumb; a click on the track pages toward the pointer like a native bar
 	bar.addEventListener("pointerdown", (e) => {
-		if (e.button !== 0 || range <= 0) return;
+		if (e.button !== 0 || range < 1) return;
 		e.preventDefault();
 		if (e.target !== thumb) {
 			const below = e.clientY > thumb.getBoundingClientRect().bottom;
@@ -99,5 +122,5 @@ export function initPageScrollbar(): void {
 		bar.addEventListener("pointercancel", end);
 	});
 
-	measure();
+	settle();
 }
