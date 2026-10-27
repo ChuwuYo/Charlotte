@@ -6,7 +6,99 @@ html,
 	scrollbar-color: var(--scrollbar-bg) transparent;
 }
 
-/* Space for the page scrollbar is kept, so pages that fit in the viewport do not shift sideways */
-html {
-	scrollbar-gutter: stable;
+/* Page scrollbar: the root still scrolls natively; with a mouse its bar is replaced by an overlay thumb that takes no width */
+.page-scrollbar {
+	display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	html {
+		scrollbar-width: none;
+	}
+	html::-webkit-scrollbar {
+		display: none;
+	}
+
+	.page-scrollbar {
+		display: block;
+		position: fixed;
+		inset-block: 0;
+		inset-inline-end: 0;
+		z-index: 100;
+		width: 1rem;
+		padding: 0.25rem;
+		&[data-idle] {
+			display: none;
+		}
+	}
+}
+
+.page-scrollbar-track {
+	position: relative;
+	height: 100%;
+}
+
+.page-scrollbar-thumb {
+	position: absolute;
+	inset-inline-end: 0;
+	width: 0.25rem;
+	height: var(--thumb-size, 0);
+	border-radius: 0.25rem;
+	background-color: var(--scrollbar-bg);
+	opacity: 0;
+	will-change: translate;
+	.page-scrollbar[data-visible] &,
+	.page-scrollbar:hover & {
+		opacity: 1;
+	}
+	.page-scrollbar:hover & {
+		width: 0.5rem;
+		background-color: var(--scrollbar-bg-hover);
+	}
+	.page-scrollbar[data-dragging] & {
+		width: 0.5rem;
+		opacity: 1;
+		background-color: var(--scrollbar-bg-active);
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.page-scrollbar-thumb {
+		transition:
+			opacity 150ms,
+			width 150ms var(--ease-standard);
+	}
+}
+
+/* Position follows the root scroll on the compositor where supported; otherwise the script sets it */
+@supports (animation-timeline: scroll()) {
+	.page-scrollbar-thumb {
+		/* Longhands: the minifier would fold a shorthand plus timeline into an invalid shorthand */
+		animation-name: page-scrollbar-thumb;
+		animation-timing-function: linear;
+		animation-fill-mode: both;
+		animation-timeline: scroll(root block);
+	}
+}
+
+@keyframes page-scrollbar-thumb {
+	from {
+		translate: 0 0;
+	}
+	to {
+		translate: 0 var(--thumb-travel, 0);
+	}
+}
+
+@media (forced-colors: active) {
+	.page-scrollbar-thumb {
+		forced-color-adjust: none;
+		background-color: CanvasText;
+	}
+}
+
+@media print {
+	.page-scrollbar {
+		display: none;
+	}
 }
