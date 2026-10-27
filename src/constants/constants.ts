@@ -15,6 +15,3 @@ export const MAIN_PANEL_OVERLAPS_BANNER_HEIGHT = 3.5;
 
 // Navbar height: rem (matches h-[4.5rem] in Navbar.astro)
 export const NAVBAR_HEIGHT = 4.5;
-
-// Page width: rem
-export const PAGE_WIDTH = "clamp(64rem, 70vw, 78rem)";

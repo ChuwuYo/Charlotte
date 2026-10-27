@@ -22,7 +22,7 @@ const authorColor = getColorOrDefault(color?.author);
 ---
 
 {(title || (subtitle && subtitle.length > 0)) && (
-    <div class="banner-text-container text-center pointer-events-none select-none w-full max-w-[var(--page-width)] mx-auto px-6 sm:px-8 md:px-10 mb-8 md:mb-0">
+    <div class="banner-text-container text-center pointer-events-none select-none w-full max-w-page mx-auto px-6 sm:px-8 md:px-10 mb-8 md:mb-0">
         {title && (
             <h1 class="banner-title text-3xl sm:text-4xl md:text-5xl font-bold mb-8 tracking-wider break-words" style={titleColor ? `color: light-dark(${titleColor.light}, ${titleColor.dark})` : undefined}>{title}</h1>
         )}
@@ -48,7 +48,7 @@ const authorColor = getColorOrDefault(color?.author);
                 <!-- 作者显示区域（动态显示） -->
                 <div class="absolute -bottom-8 sm:-bottom-10 left-0 right-0 flex justify-center">
                     <div 
-                        class="typewriter-author text-xs sm:text-sm md:text-base font-light tracking-wide opacity-0 transition-opacity duration-1000 max-w-[90vw] px-2 whitespace-nowrap"
+                        class="typewriter-author text-sm md:text-base font-light tracking-wide opacity-0 transition-opacity duration-1000 max-w-[90vw] px-2 whitespace-nowrap"
                         style={authorColor ? `color: light-dark(${authorColor.light}, ${authorColor.dark})` : undefined}
                         data-authors={JSON.stringify(subtitleData)}
                     ></div>
@@ -164,7 +164,7 @@ if (document.querySelector(".banner-text-container")) new BannerTextController()
 
     @keyframes float {
         0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
+        50% { transform: translateY(-0.5rem); }
     }
 
     /* 主标题增强可读性 */

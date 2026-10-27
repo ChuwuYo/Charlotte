@@ -1,4 +1,11 @@
 .custom-md {
+    font-size: var(--text-prose);
+
+    /* Line length for running text; code, tables and media keep the full width */
+    :where(p, li) {
+        max-inline-size: var(--spacing-measure);
+    }
+
     h1 {
         @apply text-3xl;
     }

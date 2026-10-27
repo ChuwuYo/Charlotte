@@ -111,7 +111,7 @@ onMount(async () => {
                 >
                     <div class="flex flex-row justify-start items-center h-full">
                         <!-- date -->
-                        <div class="w-[15%] md:w-[10%] text-sm text-right text-50">
+                        <div class="w-[15%] md:w-[10%] text-meta text-right text-50">
                             {formatDate(post.data.published)}
                         </div>
 
@@ -129,7 +129,7 @@ onMount(async () => {
 
                         <!-- post title -->
                         <div
-                                class="w-[70%] md:max-w-[65%] md:w-[65%] text-left font-bold
+                                class="w-[70%] md:max-w-[65%] md:w-[65%] text-left text-ui font-bold
                      group-hover:translate-x-1 transition-ui group-hover:text-[var(--primary)]
                      text-75 pr-8 whitespace-nowrap text-ellipsis overflow-hidden"
                         >
@@ -138,7 +138,7 @@ onMount(async () => {
 
                         <!-- tag list -->
                         <div
-                                class="hidden md:block md:w-[15%] text-left text-sm
+                                class="hidden md:block md:w-[15%] text-left text-meta
  whitespace-nowrap text-ellipsis overflow-hidden text-30"
                         >
                             {formatTag(post.data.tags)}

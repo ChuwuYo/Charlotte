@@ -22,7 +22,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
         aria-haspopup="true"
         aria-expanded="false"
         aria-controls={dropdownId}
-        class="relative btn-plain scale-animation rounded-lg md:h-11 h-12 font-bold pl-5 pr-4 active:scale-95 flex items-center gap-1 min-w-[2.75rem]"
+        class="relative btn-plain scale-animation rounded-lg md:h-11 h-12 text-ui font-bold pl-5 pr-4 active:scale-95 flex items-center gap-1 min-w-[2.75rem]"
         data-dropdown-trigger
     >
         {title}
@@ -47,7 +47,7 @@ const dropdownId = `dropdown-${title.toLowerCase()}`;
                 >
                     <span class="mr-3">{item.name}</span>
                     {item.external && (
-                        <Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.875rem] -translate-y-[1px] ml-auto text-black/[0.2] dark:text-white/[0.2]" />
+                        <Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.875rem] -translate-y-px ml-auto text-black/[0.2] dark:text-white/[0.2]" />
                     )}
                 </a>
             ))}

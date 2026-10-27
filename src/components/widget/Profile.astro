@@ -19,9 +19,9 @@ const config = profileConfig;
         <ImageWrapper src={config.avatar || ""} alt="Profile of the Author" class="mx-auto lg:w-full h-full lg:mt-0" loading="eager" fetchpriority="high"></ImageWrapper>
     </a>
     <div class="px-2">
-        <div class="font-bold text-xl text-center mb-1 dark:text-neutral-50">{config.name}</div>
+        <div class="font-bold text-2xl text-center mb-1 dark:text-neutral-50">{config.name}</div>
         <div class="h-1 w-5 bg-[var(--primary)] mx-auto rounded-full mb-2"></div>
-        <div class="text-center text-neutral-400 mb-2.5">{config.bio}</div>
+        <div class="text-center text-ui text-neutral-400 mb-2.5">{config.bio}</div>
         <div class="flex flex-wrap gap-2 justify-center mb-1">
             {config.links.length > 1 && config.links.map(item =>
                     <a rel="me" aria-label={item.name} href={item.url} target="_blank" class="btn-regular rounded-lg md:h-10 md:w-10 h-12 w-12 active:scale-90">

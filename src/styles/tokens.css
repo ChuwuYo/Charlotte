@@ -61,7 +61,7 @@
   --toc-btn-active: oklch(0.9 0.015 var(--hue));
   --toc-panel-border: oklch(0.7 0.14 var(--hue));
   /* Space beside the page; read on the fixed TOC, where 100% is the viewport width */
-  --toc-width: calc((100% - var(--page-width)) / 2 - 1rem);
+  --toc-width: calc((100% - var(--container-page)) / 2 - 1rem);
   --toc-item-active: oklch(0.7 0.13 var(--hue));
   --btn-regular-dark-bg: oklch(0.45 0.01 var(--hue));
   --btn-regular-dark-bg-hover: oklch(0.5 0.01 var(--hue));

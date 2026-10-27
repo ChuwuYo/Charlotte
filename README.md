@@ -159,7 +159,7 @@ draft: false
 - **首帧设置**：`src/components/HeadScript.astro` 在 `<head>` 中同步应用主题、色相与卡片背景；切换时这些设置会带到新页面，不会闪烁。
 - **布局**：所有页面共用 `src/layouts/BaseLayout.astro`。
 - **页面行为**：`src/scripts/` 下按功能拆分的小模块。框架相关的行为由 `main.ts` 初始化一次；内容相关的行为（折叠目录、KaTeX、灯箱）在每次 `astro:page-load` 时初始化，并在 `astro:before-swap` 时清理。
-- **样式**：Tailwind CSS 4，入口为 `src/styles/global.css`，设计变量在 `tokens.css`；页面仍由浏览器原生滚动；使用鼠标时，页面滚动条换成不占宽度的悬浮滑块（`src/scripts/page-scrollbar.ts`），长短页面不会左右偏移，也不会在右侧留出空白条。
+- **样式**：Tailwind CSS 4，入口为 `src/styles/global.css`，颜色等设计变量在 `tokens.css`，字号、页宽、侧栏宽等尺寸变量在 `global.css` 的 `@theme` 中；页面仍由浏览器原生滚动；使用鼠标时，页面滚动条换成不占宽度的悬浮滑块（`src/scripts/page-scrollbar.ts`），长短页面不会左右偏移，也不会在右侧留出空白条。
 - **交互组件**：Svelte 5 岛（搜索、主题切换、显示设置、归档）。
 
 ## 📦 部署

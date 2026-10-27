@@ -21,7 +21,6 @@ import {
 	BANNER_HEIGHT_EXTEND,
 	BANNER_HEIGHT_HOME,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
-	PAGE_WIDTH,
 } from "../constants/constants";
 import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
@@ -96,7 +95,7 @@ const warmupConfig = {
 	class:list={["bg-(--page-bg)", { "is-home": isHomePage, "is-post": isPostPage, "enable-banner": enableBanner }]}
 	data-theme={expressiveCodeConfig.theme}
 	transition:animate="none"
-	style={`--hue: ${siteConfig.themeColor.hue}; --page-width: ${PAGE_WIDTH}; --banner-offset: ${bannerOffset}; --banner-height: ${BANNER_HEIGHT}vh; --banner-height-home: ${BANNER_HEIGHT_HOME}vh;`}
+	style={`--hue: ${siteConfig.themeColor.hue}; --banner-offset: ${bannerOffset}; --banner-height: ${BANNER_HEIGHT}vh; --banner-height-home: ${BANNER_HEIGHT_HOME}vh;`}
 >
 	<head>
 		<title>{pageTitle}</title>
@@ -144,7 +143,7 @@ const warmupConfig = {
 		<div id="sentinel-navbar" class="scroll-sentinel" aria-hidden="true"></div>
 
 		<!-- Navbar -->
-		<div id="top-row" class="z-50 pointer-events-none relative max-w-(--page-width) px-0 md:px-4 mx-auto">
+		<div id="top-row" class="z-50 pointer-events-none relative max-w-page px-0 md:px-4 mx-auto">
 			<div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-[opacity,translate]">
 				<Navbar />
 			</div>
@@ -164,20 +163,20 @@ const warmupConfig = {
 
 		<!-- Main content -->
 		<div class="main-content-wrapper absolute w-full z-30 pointer-events-none" style={`--main-panel-top: ${mainPanelTop}`}>
-			<div class="relative max-w-(--page-width) mx-auto pointer-events-auto">
+			<div class="relative max-w-page mx-auto pointer-events-auto">
 				<!-- Sidebar and main share row 1 so the sticky sidebar ends with the content -->
-				<div id="main-grid" class="w-full left-0 right-0 grid grid-cols-[15rem_auto] gap-x-4 mx-auto px-0 md:px-4">
+				<div id="main-grid" class="w-full left-0 right-0 grid grid-cols-[var(--spacing-sidebar)_auto] gap-x-4 mx-auto px-0 md:px-4">
 					{hasBannerCredit && (
 						<a href={siteConfig.banner.credit.url} id="banner-credit" target="_blank" rel="noopener" aria-label="Visit image source"
 							class:list={["group onload-animation transition-ui absolute flex justify-center items-center rounded-full px-3 right-4 -top-[3.25rem] bg-black/60 hover:bg-black/70 h-9", { "hover:pr-9 active:bg-black/80": hasBannerLink }]}>
 							<Icon class="text-white/75 text-[1.25rem] mr-1" name="material-symbols:copyright-outline-rounded" />
-							<div class="text-white/75 text-xs">{siteConfig.banner.credit.text}</div>
+							<div class="text-white/75 text-sm">{siteConfig.banner.credit.text}</div>
 							<Icon class:list={["transition-opacity absolute text-[oklch(0.75_0.14_var(--hue))] right-4 text-[0.75rem] opacity-0", { "group-hover:opacity-100": hasBannerLink }]} name="fa6-solid:arrow-up-right-from-square" />
 						</a>
 					)}
 
 					<!-- lg: size containment keeps the sidebar out of row sizing, so the footer follows the content; ::after keeps its bottom gap -->
-					<SideBar class="mb-4 row-start-3 col-span-2 lg:row-start-1 lg:col-span-1 lg:max-w-60 lg:[contain:size] lg:after:block lg:after:h-4 onload-animation" headings={headings} />
+					<SideBar class="mb-4 row-start-3 col-span-2 lg:row-start-1 lg:col-span-1 lg:max-w-sidebar lg:[contain:size] lg:after:block lg:after:h-4 onload-animation" headings={headings} />
 
 					<main id="main" class:list={["row-start-1 col-span-2 lg:col-span-1 overflow-hidden", { "mb-4 lg:mb-0": !hasAfter }]}>
 						<div id="content-wrapper" class="onload-animation">
@@ -206,8 +205,8 @@ const warmupConfig = {
 		</div>
 
 		<!-- Fixed TOC beside the content on wide screens -->
-		<div class="absolute w-full z-0 hidden 2xl:block">
-			<div class="relative max-w-(--page-width) mx-auto">
+		<div class="absolute w-full z-0 hidden toc:block">
+			<div class="relative max-w-page mx-auto">
 				{siteConfig.toc.enable && (
 					<div id="toc-wrapper" class:list={["transition-opacity absolute top-0 left-full items-center", { "toc-hide": enableBanner }]}>
 						<div id="toc-inner-wrapper" class="fixed top-14 w-(--toc-width) h-[calc(100vh_-_20rem)] overflow-y-scroll overflow-x-hidden hide-scrollbar">

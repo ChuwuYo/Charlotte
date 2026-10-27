@@ -137,7 +137,7 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
             <div class="transition-ui text-90 inline-flex font-bold group-hover:text-[var(--primary)]">
                 {item.meta.title}<Icon icon={icons["fa6-solid:chevron-right"]} class="text-[0.75rem] translate-x-1 my-auto text-[var(--primary)]"></Icon>
             </div>
-            <div class="text-sm text-50">
+            <div class="text-meta text-50">
                 {@html item.excerpt}
             </div>
         </a>
@@ -161,7 +161,7 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
   }
   .search-panel {
-    max-height: calc(100vh - 100px);
+    max-height: calc(100vh - 6.25rem);
     overflow-y: auto;
   }
 </style>

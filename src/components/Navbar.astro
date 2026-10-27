@@ -49,7 +49,7 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
     <div class="absolute h-8 left-0 right-0 -top-8 bg-[var(--card-bg)] pointer-events-none" style={`opacity: ${opacityValue};`}></div>
     <div class:list={[
         className,
-        "card-base navbar-with-opacity !overflow-visible max-w-[var(--page-width)] !rounded-t-none mx-auto flex items-center justify-between px-4"]}
+        "card-base navbar-with-opacity !overflow-visible max-w-page !rounded-t-none mx-auto flex items-center justify-between px-4"]}
          style="height: var(--navbar-height);">
         <a href={url('/')} class="btn-plain scale-animation rounded-lg h-[3.25rem] px-5 font-bold active:scale-95">
             <div class="flex flex-row text-[var(--primary)] items-center text-md">
@@ -71,11 +71,11 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
                     return <NavDropdown title={l.name} items={l.children!} />;
                 }
                 return <a aria-label={l.name} href={l.external ? l.url : url(l.url)} target={l.external ? "_blank" : null}
-                          class="btn-plain scale-animation rounded-lg md:h-11 h-12 font-bold px-5 active:scale-95"
+                          class="btn-plain scale-animation rounded-lg md:h-11 h-12 text-ui font-bold px-5 active:scale-95"
                 >
                     <div class="flex items-center">
                         {l.name}
-                        {l.external && <Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.875rem] -translate-y-[1px] ml-1 text-black/[0.2] dark:text-white/[0.2]"></Icon>}
+                        {l.external && <Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.875rem] -translate-y-px ml-1 text-black/[0.2] dark:text-white/[0.2]"></Icon>}
                     </div>
                 </a>;
             })}

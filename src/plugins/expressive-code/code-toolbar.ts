@@ -177,7 +177,7 @@ export function pluginCodeToolbar() {
 				position: relative;
 			}
 			.code-toolbar-lang {
-				font-size: 0.75rem;
+				font-size: 0.875rem;
 				font-weight: 600;
 				text-transform: uppercase;
 				letter-spacing: 0.025em;
@@ -249,9 +249,9 @@ export function pluginCodeToolbar() {
 			.code-toolbar-copy.success .copy-icon { opacity: 0; transform: scale(0.8); }
 			.code-toolbar-copy.success .success-icon { opacity: 1; transform: scale(1); }
 			.frame.is-terminal .code-toolbar { background: var(--codeblock-topbar-bg); }
-			@media (max-width: 640px) {
+			@media (width < 40rem) {
 				.code-toolbar { padding: 0.375rem 0.5rem; }
-				.code-toolbar-lang { font-size: 0.6875rem; padding: 0.0625rem 0.375rem; }
+				.code-toolbar-lang { padding: 0.0625rem 0.375rem; }
 				.code-toolbar-copy { width: 1.5rem; height: 1.5rem; }
 				.copy-icon-wrapper { width: 0.875rem; height: 0.875rem; }
 			}

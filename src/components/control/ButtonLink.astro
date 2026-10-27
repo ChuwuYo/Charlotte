@@ -19,6 +19,7 @@ const { badge, url, label } = Astro.props;
             group
             transition-ui
             pl-2
+            text-ui
             text-neutral-700
             hover:text-[var(--primary)]
             dark:text-neutral-300
@@ -32,7 +33,7 @@ const { badge, url, label } = Astro.props;
                 <slot></slot>
             </div>
             { badge !== undefined && badge !== null && badge !== '' &&
-                <div class="px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold
+                <div class="px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-meta font-bold
  text-[var(--btn-content)] dark:text-[var(--deep-text)]
  bg-[var(--btn-regular-bg)] dark:bg-[var(--primary)]
  flex items-center justify-center">
