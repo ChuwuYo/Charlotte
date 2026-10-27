@@ -105,11 +105,20 @@ export const siteConfig: SiteConfig = {
 		depth: 2, // 目录中显示的最大标题深度，范围 1-3
 	},
 	layout: {
-		// 页面宽度 = clamp(min, 视口宽度 × viewport%, max)；固定目录在两侧各有至少 15rem 时显示
+		// 字号，单位 rem（1rem = 浏览器默认字号，Chrome「中」为 16px）
+		fontSize: {
+			meta: 0.6875, // 日期、分类、标签、计数
+			ui: 0.8125, // 侧栏条目、摘要、导航链接
+			prose: 0.8125, // 文章正文
+			cardTitle: 1.5, // 文章卡片标题
+			widgetTitle: 0.9375, // 侧栏组件标题
+		},
+		sidebarWidth: 13.125, // 侧栏宽度，单位 rem
+		// 页面宽度 = clamp(min, 视口宽度 × viewport%, max)；固定目录在两侧各有至少 11.25rem 时显示
 		pageWidth: {
-			min: 64, // 最小宽度，单位 rem
+			min: 48, // 最小宽度，单位 rem
 			viewport: 70, // 占视口宽度的百分比
-			max: 84, // 最大宽度，单位 rem；视口超过 max / viewport% 后页面不再变宽
+			max: 63, // 最大宽度，单位 rem；视口超过 max / viewport% 后页面不再变宽
 		},
 	},
 	startDate: "2025-09-29T12:30:00", // 网站运行时间起始日期
@@ -132,9 +141,13 @@ export const siteConfig: SiteConfig = {
 };
 ```
 
-### 配置页面宽度
+### 配置尺寸与页面宽度
 
-`siteConfig.layout.pageWidth` 控制页面（导航栏、横幅文字、侧栏与正文所在区域）的宽度，三项均可省略，默认 `{ min: 64, viewport: 70, max: 84 }`，即 `clamp(64rem, 70vw, 84rem)`：视口约 1463–1920px 时页面占 70%，更窄时保持 64rem（窗口不足 64rem 时铺满），更宽时停在 84rem。右侧固定目录的显示断点按此配置在构建时算出（页面两侧各留出 15rem 目录 + 1rem 间距，默认约 1707px），更窄时改用浮动目录按钮。正文行长另有 40ic（约 40 个汉字）上限，页面变宽不会让正文行变长。
+`siteConfig.layout` 中的尺寸在构建时写到 `<html>` 的 `style` 上，覆盖 `src/styles/global.css` `@theme` 中的同名变量（`--text-meta`、`--text-ui`、`--text-prose`、`--text-card-title`、`--text-widget-title`、`--spacing-sidebar`、`--container-page`），Tailwind 工具类（`text-meta`、`w-sidebar`、`max-w-page` 等）照常读取这些变量。各项均可省略，单位 rem，根字号保持浏览器默认（100%），读者调整浏览器字号或缩放时整站一起变化；行高按字号比例计算，改字号不用改行高。
+
+- `fontSize`：`meta` 日期/分类/标签/计数，`ui` 侧栏条目/摘要/导航链接，`prose` 文章正文，`cardTitle` 文章卡片标题，`widgetTitle` 侧栏组件标题。默认值约等于旧版尺寸在 Chrome 字号「小」（12px）下的效果。
+- `sidebarWidth`：侧栏宽度，默认 13.125rem。
+- `pageWidth`：页面（导航栏、横幅文字、侧栏与正文所在区域）宽度，默认 `{ min: 48, viewport: 70, max: 63 }`，即 `clamp(48rem, 70vw, 63rem)`：视口约 1097–1440px 时页面占 70%，更窄时保持 48rem（窗口不足时铺满），更宽时停在 63rem。右侧固定目录的显示断点按此配置在构建时算出（页面两侧各留出 11.25rem 目录 + 1rem 间距，默认约 1307px），更窄时改用浮动目录按钮。正文行长另有 40ic（约 40 个汉字）上限。
 
 ### 配置Banner高度
 

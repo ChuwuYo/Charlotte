@@ -42,11 +42,20 @@ export type SiteConfig = {
 		depth: 1 | 2 | 3;
 	};
 	layout?: {
+		// Font sizes, rem
+		fontSize?: {
+			meta?: number; // dates, categories, tags, counts; default 0.6875
+			ui?: number; // sidebar items, excerpts, nav links; default 0.8125
+			prose?: number; // article body; default 0.8125
+			cardTitle?: number; // post card titles; default 1.5
+			widgetTitle?: number; // sidebar widget titles; default 0.9375
+		};
+		sidebarWidth?: number; // rem, default 13.125
 		// Page width = clamp(min, viewport% of the window, max)
 		pageWidth?: {
-			min?: number; // rem, default 64
+			min?: number; // rem, default 48
 			viewport?: number; // percent of the window width, default 70
-			max?: number; // rem, default 84
+			max?: number; // rem, default 63
 		};
 	};
 	startDate: string;

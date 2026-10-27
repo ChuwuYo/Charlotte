@@ -26,19 +26,22 @@
 		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	--ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 
-	/* Type: rem so sizes follow the reader's browser font size */
-	--text-meta: 0.9375rem; /* 15px: dates, categories, tags, counts */
-	--text-meta--line-height: 1.375rem;
-	--text-ui: 1.0625rem; /* 17px: sidebar items, excerpts, nav links */
-	--text-ui--line-height: 1.625rem;
-	--text-prose: 1.0625rem; /* 17px: article body */
-	--text-card-title: 2rem; /* 32px: post card titles */
-	--text-card-title--line-height: 2.5rem;
+	/* Type: rem so sizes follow the reader's browser font size; line heights are ratios so they follow the size */
+	/* Defaults; BaseLayout sets the sizes on <html> from siteConfig.layout.fontSize */
+	--text-meta: 0.6875rem; /* 11px: dates, categories, tags, counts */
+	--text-meta--line-height: calc(22 / 15);
+	--text-ui: 0.8125rem; /* 13px: sidebar items, excerpts, nav links */
+	--text-ui--line-height: calc(26 / 17);
+	--text-prose: 0.8125rem; /* 13px: article body */
+	--text-card-title: 1.5rem; /* 24px: post card titles */
+	--text-card-title--line-height: 1.25;
+	--text-widget-title: 0.9375rem; /* 15px: sidebar widget titles */
+	--text-widget-title--line-height: 1.4;
 
 	/* Layout */
-	/* Default page width; BaseLayout sets it on <html> from siteConfig.layout.pageWidth */
-	--container-page: clamp(64rem, 70vw, 84rem);
-	--spacing-sidebar: 17.5rem;
+	/* Defaults; BaseLayout sets them on <html> from siteConfig.layout.pageWidth / sidebarWidth */
+	--container-page: clamp(48rem, 70vw, 63rem);
+	--spacing-sidebar: 13.125rem;
 	/* Running text stops at about 40 CJK / 70 Latin characters per line */
 	--spacing-measure: 40ic;
 }

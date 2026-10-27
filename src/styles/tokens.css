@@ -1,7 +1,7 @@
 /* Color and size tokens; colors follow --hue and .dark. */
 :root {
-  --radius-large: 1rem;
-  --radius-medium: 0.5rem;
+  --radius-large: 0.75rem;
+  --radius-medium: 0.375rem;
   --content-delay: 150ms;
 }
 :root {
