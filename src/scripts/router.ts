@@ -49,12 +49,18 @@ function markFrameMove(duration: number) {
 }
 
 // Frame parts that move with the page; the sticky sidebar is measured inside the grid
-const FRAME = ["top-row", "banner-wrapper", "main-grid"];
+const FRAME = ["banner-wrapper", "main-grid"];
 const STICKY = "sidebar-sticky";
+const NAVBAR = "navbar-wrapper";
 const top = (id: string) =>
 	document.getElementById(id)?.getBoundingClientRect().top;
-const measure = () =>
-	Object.fromEntries([...FRAME, STICKY].map((id) => [id, top(id)]));
+// A hidden navbar is left out: it only fades back in
+const measure = () => {
+	const ids = [...FRAME, STICKY];
+	if (!document.getElementById(NAVBAR)?.classList.contains("navbar-hidden"))
+		ids.push(NAVBAR);
+	return Object.fromEntries(ids.map((id) => [id, top(id)]));
+};
 
 // FLIP: frame parts start at their old screen position and slide into place;
 // at most `travel` of the scroll change is animated
@@ -87,6 +93,11 @@ function moveFrame(
 	for (const id of FRAME) slide(id, offset(id));
 	// A stuck sidebar keeps its screen position
 	if (travel) slide(STICKY, offset(STICKY) - skip - offset("main-grid"));
+	// A stuck navbar stays put; one scrolled away moves like the frame
+	const from = before[NAVBAR];
+	const to = after[NAVBAR];
+	if (from !== undefined && to !== undefined)
+		slide(NAVBAR, Math.max(-travel, Math.min(travel, from - to)));
 }
 
 // client:only islands render nothing until hydrated; keep the old content height so the frame below does not jump
