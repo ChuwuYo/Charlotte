@@ -15,7 +15,7 @@ const tocIcon = "material-symbols:list-alt-outline";
 const closeIcon = "material-symbols:close-rounded";
 ---
 
-<div class="collapsible-toc-wrapper block toc:hidden">
+<div class="collapsible-toc-wrapper toc-narrow-only">
     <!-- Trigger Button -->
     <div id="collapsible-toc-btn" class="collapsible-toc-btn hide flex items-center rounded-full overflow-hidden transition-[opacity,transform] shadow-xl border border-black/10 dark:border-white/10 bg-[var(--card-bg)]">
         <button aria-label={i18n(I18nKey.tableOfContents)} aria-controls="collapsible-toc-panel" aria-expanded="false" class="h-12 w-12 md:h-[3.75rem] md:w-[3.75rem] flex items-center justify-center active:bg-[var(--btn-plain-bg-active)] transition-ui">

@@ -46,6 +46,14 @@ export const siteConfig: SiteConfig = {
 		enable: true, // 在文章右侧显示目录
 		depth: 2, // 目录中显示的最大标题深度，范围 1-3
 	},
+	layout: {
+		// 页面宽度 = clamp(min, 视口宽度 × viewport%, max)；固定目录在两侧各有至少 15rem 时显示
+		pageWidth: {
+			min: 64, // 最小宽度，单位 rem
+			viewport: 70, // 占视口宽度的百分比
+			max: 84, // 最大宽度，单位 rem；视口超过 max / viewport% 后页面不再变宽
+		},
+	},
 	startDate: "2025-09-29T12:30:00", // 网站运行时间起始日期
 	favicon: [
 		// 留空此数组以使用默认网站图标

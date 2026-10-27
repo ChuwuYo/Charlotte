@@ -104,6 +104,14 @@ export const siteConfig: SiteConfig = {
 		enable: true, // 在文章右侧显示目录
 		depth: 2, // 目录中显示的最大标题深度，范围 1-3
 	},
+	layout: {
+		// 页面宽度 = clamp(min, 视口宽度 × viewport%, max)；固定目录在两侧各有至少 15rem 时显示
+		pageWidth: {
+			min: 64, // 最小宽度，单位 rem
+			viewport: 70, // 占视口宽度的百分比
+			max: 84, // 最大宽度，单位 rem；视口超过 max / viewport% 后页面不再变宽
+		},
+	},
 	startDate: "2025-09-29T12:30:00", // 网站运行时间起始日期
 	favicon: [
 		// 留空此数组以使用默认网站图标
@@ -123,6 +131,10 @@ export const siteConfig: SiteConfig = {
 	},
 };
 ```
+
+### 配置页面宽度
+
+`siteConfig.layout.pageWidth` 控制页面（导航栏、横幅文字、侧栏与正文所在区域）的宽度，三项均可省略，默认 `{ min: 64, viewport: 70, max: 84 }`，即 `clamp(64rem, 70vw, 84rem)`：视口约 1463–1920px 时页面占 70%，更窄时保持 64rem（窗口不足 64rem 时铺满），更宽时停在 84rem。右侧固定目录的显示断点按此配置在构建时算出（页面两侧各留出 15rem 目录 + 1rem 间距，默认约 1707px），更窄时改用浮动目录按钮。正文行长另有 40ic（约 40 个汉字）上限，页面变宽不会让正文行变长。
 
 ### 配置Banner高度
 

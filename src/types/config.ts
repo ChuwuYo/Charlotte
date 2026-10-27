@@ -41,6 +41,14 @@ export type SiteConfig = {
 		enable: boolean;
 		depth: 1 | 2 | 3;
 	};
+	layout?: {
+		// Page width = clamp(min, viewport% of the window, max)
+		pageWidth?: {
+			min?: number; // rem, default 64
+			viewport?: number; // percent of the window width, default 70
+			max?: number; // rem, default 84
+		};
+	};
 	startDate: string;
 
 	favicon: Favicon[];

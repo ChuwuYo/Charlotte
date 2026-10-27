@@ -36,10 +36,9 @@
 	--text-card-title--line-height: 2.5rem;
 
 	/* Layout */
-	--container-page: 70rem;
+	/* Default page width; BaseLayout sets it on <html> from siteConfig.layout.pageWidth */
+	--container-page: clamp(64rem, 70vw, 84rem);
 	--spacing-sidebar: 17.5rem;
-	/* Fixed TOC shows when it gets at least 15rem: page + 2 × (15rem + 1rem gap) */
-	--breakpoint-toc: 102rem;
 	/* Running text stops at about 40 CJK / 70 Latin characters per line */
 	--spacing-measure: 40ic;
 }

@@ -24,6 +24,7 @@ import {
 } from "../constants/constants";
 import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
+import { PAGE_WIDTH, TOC_MEDIA_CSS } from "../utils/layout-utils";
 import { pathsEqual, url } from "../utils/url-utils";
 
 interface Props {
@@ -95,11 +96,12 @@ const warmupConfig = {
 	class:list={["bg-(--page-bg)", { "is-home": isHomePage, "is-post": isPostPage, "enable-banner": enableBanner }]}
 	data-theme={expressiveCodeConfig.theme}
 	transition:animate="none"
-	style={`--hue: ${siteConfig.themeColor.hue}; --banner-offset: ${bannerOffset}; --banner-height: ${BANNER_HEIGHT}vh; --banner-height-home: ${BANNER_HEIGHT_HOME}vh;`}
+	style={`--hue: ${siteConfig.themeColor.hue}; --banner-offset: ${bannerOffset}; --banner-height: ${BANNER_HEIGHT}vh; --banner-height-home: ${BANNER_HEIGHT_HOME}vh; --container-page: ${PAGE_WIDTH};`}
 >
 	<head>
 		<title>{pageTitle}</title>
 		<meta charset="UTF-8" />
+		<style is:inline set:html={TOC_MEDIA_CSS}></style>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="keywords" content={siteConfig.keywords} />
 		<meta name="description" content={finalDescription} />
@@ -205,7 +207,7 @@ const warmupConfig = {
 		</div>
 
 		<!-- Fixed TOC beside the content on wide screens -->
-		<div class="absolute w-full z-0 hidden toc:block">
+		<div class="toc-wide-only absolute w-full z-0">
 			<div class="relative max-w-page mx-auto">
 				{siteConfig.toc.enable && (
 					<div id="toc-wrapper" class:list={["transition-opacity absolute top-0 left-full items-center", { "toc-hide": enableBanner }]}>
