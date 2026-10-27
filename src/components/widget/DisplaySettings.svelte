@@ -18,6 +18,8 @@ let { icons }: { icons: IconMap } = $props();
 
 const defaultHue = getDefaultHue();
 let hue = $state(getHue());
+// Last committed hue; the reset button follows it, not the value mid-drag
+let savedHue = $state(hue);
 let cardBgType = $state(getCardBgType());
 
 const cardBgOptions = [
@@ -37,10 +39,15 @@ function endDrag() {
 	delete root.dataset.noTransition;
 }
 
+function commitHue() {
+	saveHue(hue);
+	savedHue = hue;
+}
+
 function resetHue() {
 	hue = defaultHue;
 	applyHue(hue);
-	saveHue(hue);
+	commitHue();
 }
 </script>
 
@@ -52,7 +59,7 @@ function resetHue() {
         >
             {i18n(I18nKey.themeColor)}
             <button aria-label="Reset to Default" class="btn-regular w-7 h-7 rounded-md active:scale-90"
-                    class:opacity-0={hue === defaultHue} class:pointer-events-none={hue === defaultHue} onclick={resetHue}>
+                    class:opacity-0={savedHue === defaultHue} class:pointer-events-none={savedHue === defaultHue} onclick={resetHue}>
                 <div class="text-[var(--btn-content)]">
                     <Icon icon={icons["fa6-solid:arrow-rotate-left"]} class="text-[0.875rem]"></Icon>
                 </div>
@@ -70,7 +77,7 @@ function resetHue() {
                class="slider w-full" id="colorSlider"
                bind:value={hue}
                oninput={() => applyHue(hue)}
-               onchange={() => saveHue(hue)}
+               onchange={commitHue}
                onpointerdown={startDrag}>
     </div>
 
