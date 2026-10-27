@@ -39,7 +39,7 @@
 
 	@media (prefers-reduced-motion: no-preference) {
 		html:not([data-no-enter]) .onload-animation,
-		[data-enter] .onload-animation {
+		[data-enter] :is(.onload-animation, #toc) {
 			animation: 300ms backwards fade-in-up;
 		}
 		html:not([data-no-enter]) #banner {
@@ -55,7 +55,7 @@
 		}
 
 		/* Leaving content fades out before the swap; transform and opacity only */
-		html[data-leaving] :is(#main > *, #main-after, #toc) {
+		html[data-leaving] :is(#content-wrapper, .collapsible-toc-wrapper, #main-after, #toc) {
 			opacity: 0;
 			transition: opacity var(--duration-fast) var(--ease-standard);
 		}
@@ -70,8 +70,8 @@
 			translate: 2rem 0;
 		}
 
-		/* Banner follows the home/inner offset while navigating */
-		html[data-frame-move] :is(#banner-wrapper, #banner, .banner-text-overlay) {
+		/* Banner image and text follow the home/inner offset while navigating */
+		html[data-frame-move] :is(#banner, .banner-text-overlay) {
 			transition:
 				translate var(--duration-frame) var(--ease-standard),
 				opacity var(--duration-frame) var(--ease-standard),

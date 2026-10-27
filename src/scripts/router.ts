@@ -2,11 +2,11 @@
 
 import { swapFunctions } from "astro:transitions/client";
 import { closePanels } from "./panels";
-import { fastScrollTo } from "./smooth-scroll";
 
-const REGIONS = ["main", "main-after", "toc"];
+// Swapped content regions, including the side TOC scroller
+const REGIONS = ["main", "main-after", "toc-inner-wrapper"];
 // Root attributes owned by the client that the new document does not carry
-const KEEP_ATTRS = ["data-past-banner", "data-no-enter", "data-frame-move"];
+const KEEP_ATTRS = ["data-no-enter", "data-frame-move"];
 
 const root = document.documentElement;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
@@ -38,8 +38,6 @@ const reducedMotion = () =>
 	matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 let frameTimer = 0;
-const wrapper = () =>
-	document.querySelector<HTMLElement>(".main-content-wrapper");
 
 // Banner transitions run while the attribute is set (copied onto the new root)
 function markFrameMove(duration: number) {
@@ -50,16 +48,45 @@ function markFrameMove(duration: number) {
 	}, duration);
 }
 
-// Slide the grid from its old offset to the new page's offset, in step with the banner
-function slideGrid(before: number, duration: number) {
-	const delta = before - (wrapper()?.offsetTop ?? before);
-	if (!delta) return;
-	document
-		.getElementById("main-grid")
-		?.animate([{ translate: `0 ${delta}px` }, { translate: "0 0" }], {
-			duration,
-			easing: getComputedStyle(root).getPropertyValue("--ease-standard"),
-		});
+// Frame parts that move with the page; the sticky sidebar is measured inside the grid
+const FRAME = ["top-row", "banner-wrapper", "main-grid"];
+const STICKY = "sidebar-sticky";
+const top = (id: string) =>
+	document.getElementById(id)?.getBoundingClientRect().top;
+const measure = () =>
+	Object.fromEntries([...FRAME, STICKY].map((id) => [id, top(id)]));
+
+// FLIP: frame parts start at their old screen position and slide into place;
+// at most `travel` of the scroll change is animated
+function moveFrame(
+	before: Record<string, number | undefined>,
+	scrolled: number,
+	travel: number,
+	duration: number,
+) {
+	const after = measure();
+	const easing = getComputedStyle(root).getPropertyValue("--ease-standard");
+	const skip = scrolled - Math.max(-travel, Math.min(travel, scrolled));
+	const offset = (id: string) => {
+		const a = before[id];
+		const b = after[id];
+		return a === undefined || b === undefined ? 0 : a - b + skip;
+	};
+	// Keyframes add to the element's own translate
+	const slide = (id: string, by: number) => {
+		const el = document.getElementById(id);
+		if (!el || Math.abs(by) < 0.5) return;
+		const own = getComputedStyle(el).translate;
+		const [x, y] = own === "none" ? ["0px", "0px"] : [...own.split(" "), "0px"];
+		const base = Number.parseFloat(y);
+		el.animate(
+			[{ translate: `${x} ${base + by}px` }, { translate: `${x} ${base}px` }],
+			{ duration, easing },
+		);
+	};
+	for (const id of FRAME) slide(id, offset(id));
+	// A stuck sidebar keeps its screen position
+	if (travel) slide(STICKY, offset(STICKY) - skip - offset("main-grid"));
 }
 
 // client:only islands render nothing until hydrated; keep the old content height so the frame below does not jump
@@ -77,7 +104,7 @@ function holdHeight(main: HTMLElement, height: number, islands: Element[]) {
 	requestAnimationFrame(check);
 }
 
-function swapRegions(doc: Document, enter: string, frameFrom?: number) {
+function swapRegions(doc: Document, enter: string) {
 	swapFunctions.deselectScripts(doc);
 	swapFunctions.swapRootAttributes(doc);
 	swapFunctions.swapHeadElements(doc);
@@ -101,7 +128,6 @@ function swapRegions(doc: Document, enter: string, frameFrom?: number) {
 	restoreFocus();
 	const main = document.getElementById("main");
 	if (main && islands.length) holdHeight(main, height, islands);
-	if (frameFrom !== undefined) slideGrid(frameFrom, ms("--duration-frame"));
 }
 
 // Load island modules of the next page so they hydrate right after the swap
@@ -122,36 +148,83 @@ function preloadIslands(doc: Document | undefined) {
 	);
 }
 
+// Preload stylesheets linked in the body (Expressive Code), as the router does for head ones
+function preloadStyles(doc: Document | undefined) {
+	if (!doc || doc === document) return;
+	const hrefs = [...doc.body.querySelectorAll("link[rel=stylesheet]")]
+		.map((link) => link.getAttribute("href"))
+		.filter(
+			(href): href is string =>
+				!!href &&
+				!document.querySelector(`link[rel=stylesheet][href="${href}"]`),
+		);
+	return Promise.all(
+		hrefs.map(
+			(href) =>
+				new Promise((resolve) => {
+					const link = document.createElement("link");
+					link.rel = "preload";
+					link.as = "style";
+					link.href = href;
+					link.addEventListener("load", resolve);
+					link.addEventListener("error", resolve);
+					document.head.append(link);
+				}),
+		),
+	);
+}
+
+// Scroll travel animated on push: the frame's on-screen extent, at least one viewport
+function travelFor(scrolled: number) {
+	const ids = ["top-row", "banner-wrapper"];
+	if (matchMedia("(width >= 64rem)").matches) ids.push("sidebar");
+	const bottom = Math.max(
+		...ids.map(
+			(id) => document.getElementById(id)?.getBoundingClientRect().bottom ?? 0,
+		),
+	);
+	return Math.min(scrolled, Math.max(innerHeight, bottom + scrolled));
+}
+
 export function initRouter(): void {
 	let enter = "";
-	let saved = { scrollX: 0, scrollY: 0 };
+	let target = { scrollX: 0, scrollY: 0 };
 	let traverse = false;
+	let flip:
+		| {
+				before: ReturnType<typeof measure>;
+				from: number;
+				travel: number;
+				duration: number;
+		  }
+		| undefined;
 
 	document.addEventListener("astro:before-preparation", (e) => {
 		closePanels();
 		enter = direction(e.from, e.to);
-		saved = { scrollX, scrollY };
+		// Scroll position of the target history entry
+		traverse = e.navigationType === "traverse";
+		const state = traverse ? history.state : undefined;
+		target = { scrollX: state?.scrollX ?? 0, scrollY: state?.scrollY ?? 0 };
 		const motion = !reducedMotion();
 		if (motion) root.dataset.leaving = enter;
-		const scroll =
-			motion && e.navigationType !== "traverse" && !e.to.hash && scrollY > 0
-				? fastScrollTo(0)
-				: undefined;
 		const leave = motion ? wait(ms("--duration-fast")) : undefined;
 		const load = e.loader;
 		e.loader = async () => {
 			await Promise.all([
-				load().then(() => preloadIslands(e.newDocument)),
+				load().then(() =>
+					Promise.all([
+						preloadIslands(e.newDocument),
+						preloadStyles(e.newDocument),
+					]),
+				),
 				leave,
-				scroll,
 			]);
 		};
 	});
 
 	document.addEventListener("astro:before-swap", (e) => {
-		traverse = e.navigationType === "traverse";
-		// The scroll to top above must not overwrite the position saved for back
-		if (!traverse) history.replaceState({ ...history.state, ...saved }, "");
+		flip = undefined;
 		const next = e.newDocument.documentElement;
 		next.classList.toggle("dark", root.classList.contains("dark"));
 		next.setAttribute("style", root.getAttribute("style") ?? "");
@@ -162,26 +235,34 @@ export function initRouter(): void {
 				!document.getElementById(id) === !e.newDocument.getElementById(id),
 		);
 		if (!sameFrame || !document.getElementById("main")) return;
-		// The frame moves after the swap, when only it is on screen, and only when landing near the top
-		const targetY = traverse ? (history.state?.scrollY ?? 0) : 0;
-		const moveFrame =
-			!reducedMotion() && !e.to.hash && targetY < innerHeight / 2;
-		const frameFrom = moveFrame ? wrapper()?.offsetTop : undefined;
-		if (moveFrame) {
-			markFrameMove(ms("--duration-frame"));
+		// History restores land instantly; the frame only moves when landing near the top
+		if (!reducedMotion() && !e.to.hash && target.scrollY < innerHeight / 2) {
+			// The banner resizes between home and other pages; scroll-only moves are quicker
+			const banner =
+				root.classList.contains("is-home") !==
+				next.classList.contains("is-home");
+			flip = {
+				before: measure(),
+				from: scrollY,
+				travel: traverse ? 0 : travelFor(scrollY),
+				duration: ms(banner ? "--duration-frame" : "--duration-page"),
+			};
+			markFrameMove(flip.duration);
 			next.setAttribute("data-frame-move", "");
 		}
-		e.swap = () => swapRegions(e.newDocument, enter, frameFrom);
+		e.swap = () => swapRegions(e.newDocument, enter);
 	});
 
-	// History restores land instantly; html scroll-behavior is smooth for anchors
 	document.addEventListener("astro:after-swap", () => {
-		if (!traverse) return;
-		const state = history.state ?? {};
-		window.scrollTo({
-			left: state.scrollX ?? 0,
-			top: state.scrollY ?? 0,
-			behavior: "instant",
-		});
+		// html scroll-behavior is smooth for anchors; restores must be instant
+		if (traverse)
+			window.scrollTo({
+				left: target.scrollX,
+				top: target.scrollY,
+				behavior: "instant",
+			});
+		if (flip)
+			moveFrame(flip.before, flip.from - scrollY, flip.travel, flip.duration);
+		flip = undefined;
 	});
 }

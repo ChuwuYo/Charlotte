@@ -69,6 +69,8 @@ function initNavDropdown(box: HTMLElement): void {
 	document.addEventListener("click", (e) => {
 		if (!box.contains(e.target as Node)) set(false);
 	});
+	// Close on every navigation, including history
+	document.addEventListener("astro:before-preparation", () => set(false));
 }
 
 function initMobileDropdown(box: HTMLElement, all: HTMLElement[]): void {

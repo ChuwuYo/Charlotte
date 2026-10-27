@@ -1,10 +1,17 @@
-// Scroll-driven UI states from sentinels, no scroll listeners or layout reads
+// Scroll-driven UI states from sentinels, no scroll listeners
 
+// A 1px sentinel is passed once it is above the viewport
+const above = (rect: DOMRectReadOnly) => rect.bottom < 0;
+
+// Crossings come from the observer; after a swap the new page is read once
 function onPassed(sentinel: Element | null, cb: (passed: boolean) => void) {
 	if (!sentinel) return;
-	new IntersectionObserver(([entry]) => {
-		cb(!entry.isIntersecting && entry.boundingClientRect.top < 0);
-	}).observe(sentinel);
+	new IntersectionObserver(([entry]) =>
+		cb(above(entry.boundingClientRect)),
+	).observe(sentinel);
+	document.addEventListener("astro:after-swap", () =>
+		cb(above(sentinel.getBoundingClientRect())),
+	);
 }
 
 export function initScrollState(): void {
