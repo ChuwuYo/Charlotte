@@ -33,10 +33,10 @@ let {
 		border-radius: var(--radius-large);
 		background-color: var(--btn-regular-bg);
 		box-sizing: border-box;
-		padding: 0.25rem;
+		padding: var(--spacing);
 		width: 100%;
-		font-size: 0.875rem;
-		margin-top: 0.75rem;
+		font-size: var(--text-sm);
+		margin-top: calc(var(--spacing) * 3);
 	}
 	.radio-inputs .radio {
 		flex: 1 1 0%;
@@ -60,9 +60,9 @@ let {
 		cursor: pointer;
 		align-items: center;
 		justify-content: center;
-		border-radius: calc(var(--radius-large) - 0.25rem);
+		border-radius: calc(var(--radius-large) - var(--spacing));
 		border: none;
-		padding: 0.5rem 0;
+		padding: calc(var(--spacing) * 2) 0;
 		color: var(--btn-content);
 		transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
 		font-weight: 400;

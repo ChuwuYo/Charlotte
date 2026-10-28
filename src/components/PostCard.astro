@@ -45,18 +45,19 @@ const coverWidth = "30%";
 
 const { remarkPluginFrontmatter } = await render(entry);
 ---
-<div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", className]} style={style}>
-    <div class:list={["pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", {"w-full md:w-[calc(100%_-_3.25rem_-_0.75rem)]": !hasCover, "w-full md:w-[calc(100%_-_var(--coverWidth)_-_0.75rem)]": hasCover}]}>
+<!-- md+ with a cover: text | 16:9 cover | gap; the card is at least as tall as the cover -->
+<div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", { "md:grid md:grid-cols-[minmax(0,1fr)_var(--coverWidth)_calc(var(--spacing)*3)]": hasCover }, className]} style={style}>
+    <div class:list={["w-full pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", { "md:w-[calc(100%-var(--spacing)*16)]": !hasCover }]}>
         <a href={url} data-astro-prefetch="viewport"
            class="transition-ui group w-full block font-bold mb-3 text-card-title text-90
  hover:text-[var(--primary)] dark:hover:text-[var(--primary)]
  active:text-[var(--title-active)] dark:active:text-[var(--title-active)]
  before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
- before:absolute before:top-[2.375rem] before:left-[1.125rem] before:hidden md:before:block
+ before:absolute before:top-9.5 before:left-4.5 before:hidden md:before:block
  ">
             {title}
-            <Icon class="inline text-[2rem] text-[var(--primary)] md:hidden translate-y-0.5 absolute" name="material-symbols:chevron-right-rounded" ></Icon>
-            <Icon class="text-[var(--primary)] text-[2rem] transition-ui hidden md:inline absolute translate-y-0.5 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0" name="material-symbols:chevron-right-rounded"></Icon>
+            <Icon class="inline icon-8 text-[var(--primary)] md:hidden translate-y-0.5 absolute" name="material-symbols:chevron-right-rounded" ></Icon>
+            <Icon class="text-[var(--primary)] icon-8 transition-ui hidden md:inline absolute translate-y-0.5 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0" name="material-symbols:chevron-right-rounded"></Icon>
         </a>
 
         <!-- metadata -->
@@ -92,13 +93,13 @@ const { remarkPluginFrontmatter } = await render(entry);
     {hasCover && <a href={url} data-astro-prefetch="viewport" aria-label={title}
                     class:list={["group",
                         "max-h-[20vh] md:max-h-none mx-4 mt-4 -mb-2 md:mb-0 md:mx-0 md:mt-0",
-                        "md:w-[var(--coverWidth)] relative md:absolute md:top-3 md:bottom-3 md:right-3 rounded-xl overflow-hidden active:scale-95"
+                        "relative md:w-full md:aspect-video md:my-3 md:self-center rounded-xl overflow-hidden active:scale-95"
                     ]} >
         <!-- 从左到右滑动的遮罩效果 -->
         <div class="absolute pointer-events-none z-10 w-full h-full bg-black/20 transition-transform duration-300 ease-out -translate-x-full group-hover:translate-x-0"></div>
         <div class="absolute pointer-events-none z-20 w-full h-full flex items-center justify-center ">
             <Icon name="material-symbols:chevron-right-rounded"
-                  class="transition-ui opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 text-white text-5xl">
+                  class="transition-ui opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 text-white icon-12">
             </Icon>
         </div>
         <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} alt="Cover of the Post" loading="eager" fetchpriority="high"
@@ -107,12 +108,12 @@ const { remarkPluginFrontmatter } = await render(entry);
     </a>}
 
     {!hasCover &&
-        <a href={url} data-astro-prefetch="viewport" aria-label={title} class="!hidden md:!flex btn-regular w-[3.25rem]
+        <a href={url} data-astro-prefetch="viewport" aria-label={title} class="!hidden md:!flex btn-regular w-13
          absolute right-3 top-3 bottom-3 rounded-xl bg-[var(--enter-btn-bg)]
          hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] active:scale-95
         ">
             <Icon name="material-symbols:chevron-right-rounded"
-                  class="text-[var(--primary)] text-4xl mx-auto">
+                  class="text-[var(--primary)] icon-9 mx-auto">
             </Icon>
         </a>
     }

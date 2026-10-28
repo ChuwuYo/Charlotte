@@ -1,5 +1,5 @@
 #toc-inner-wrapper {
-	mask-image: linear-gradient(to bottom, transparent 0%, black 2rem, black calc(100% - 2rem), transparent 100%);
+	mask-image: linear-gradient(to bottom, transparent 0%, black calc(var(--spacing) * 8), black calc(100% - var(--spacing) * 8), transparent 100%);
 }
 
 /* Image fade-in and cover zoom */

@@ -1,8 +1,10 @@
 import { siteConfig } from "@/config";
 
-// Fixed TOC: shown once it gets this width (rem) plus a 1rem gap on each side of the page
-const TOC_MIN_WIDTH = 11.25;
-const TOC_GAP = 1;
+const spacing = siteConfig.layout?.spacing ?? 0.1875;
+
+// Fixed TOC: shown once it gets this width plus a gap on each side of the page (rem; gap matches --toc-width)
+const TOC_MIN_WIDTH = 60 * spacing;
+const TOC_GAP = 4 * spacing;
 
 const {
 	min = 48,
@@ -11,16 +13,16 @@ const {
 } = siteConfig.layout?.pageWidth ?? {};
 
 const {
-	meta = 0.6875,
-	ui = 0.8125,
-	prose = 0.8125,
+	meta = 0.703125,
+	ui = 0.796875,
+	prose = 0.796875,
 	cardTitle = 1.5,
 	widgetTitle = 0.9375,
 } = siteConfig.layout?.fontSize ?? {};
 const sidebarWidth = siteConfig.layout?.sidebarWidth ?? 13.125;
 
 // Inline style for <html>: overrides the size tokens in global.css @theme
-export const SIZE_VARS = `--text-meta: ${meta}rem; --text-ui: ${ui}rem; --text-prose: ${prose}rem; --text-card-title: ${cardTitle}rem; --text-widget-title: ${widgetTitle}rem; --spacing-sidebar: ${sidebarWidth}rem; --container-page: clamp(${min}rem, ${viewport}vw, ${max}rem);`;
+export const SIZE_VARS = `--spacing: ${spacing}rem; --text-meta: ${meta}rem; --text-ui: ${ui}rem; --text-prose: ${prose}rem; --text-card-title: ${cardTitle}rem; --text-widget-title: ${widgetTitle}rem; --spacing-sidebar: ${sidebarWidth}rem; --container-page: clamp(${min}rem, ${viewport}vw, ${max}rem);`;
 
 // Smallest viewport width (rem) where W - clamp(min, v·W, max) leaves room for both TOC columns
 const need = 2 * (TOC_MIN_WIDTH + TOC_GAP);

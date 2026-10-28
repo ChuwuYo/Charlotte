@@ -3,19 +3,19 @@
 @layer components {
 	@keyframes fade-in-up {
 		from {
-			transform: translateY(2rem);
+			transform: translateY(calc(var(--spacing) * 8));
 			opacity: 0;
 		}
 	}
 	@keyframes fade-in-left {
 		from {
-			transform: translateX(2rem);
+			transform: translateX(calc(var(--spacing) * 8));
 			opacity: 0;
 		}
 	}
 	@keyframes fade-in-right {
 		from {
-			transform: translateX(-2rem);
+			transform: translateX(calc(var(--spacing) * -8));
 			opacity: 0;
 		}
 	}
@@ -60,14 +60,14 @@
 			transition: opacity var(--duration-fast) var(--ease-standard);
 		}
 		html[data-leaving] :is(#content-wrapper, #main-after) {
-			translate: 0 1rem;
+			translate: 0 calc(var(--spacing) * 4);
 			transition-property: opacity, translate;
 		}
 		html[data-leaving="forwards"] :is(#content-wrapper, #main-after) {
-			translate: -2rem 0;
+			translate: calc(var(--spacing) * -8) 0;
 		}
 		html[data-leaving="backwards"] :is(#content-wrapper, #main-after) {
-			translate: 2rem 0;
+			translate: calc(var(--spacing) * 8) 0;
 		}
 
 		/* Banner image and text follow the home/inner offset while navigating */

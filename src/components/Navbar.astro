@@ -1,7 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
 import { navBarConfig, siteConfig } from "../config";
-import { NAVBAR_HEIGHT } from "../constants/constants";
 import { LinkPresets } from "../constants/link-presets";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
@@ -45,20 +44,19 @@ const searchIcons = iconData([
 ]);
 const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
 ---
-<div id="navbar" class="z-50 onload-animation" style={`--navbar-opacity: ${opacityValue}; --navbar-height: ${NAVBAR_HEIGHT}rem;`}>
+<div id="navbar" class="z-50 onload-animation" style={`--navbar-opacity: ${opacityValue};`}>
     <div class="absolute h-8 left-0 right-0 -top-8 bg-[var(--card-bg)] pointer-events-none" style={`opacity: ${opacityValue};`}></div>
     <div class:list={[
         className,
-        "card-base navbar-with-opacity !overflow-visible max-w-page !rounded-t-none mx-auto flex items-center justify-between px-4"]}
-         style="height: var(--navbar-height);">
-        <a href={url('/')} class="btn-plain scale-animation rounded-lg h-[3.25rem] px-5 font-bold active:scale-95">
+        "card-base navbar-with-opacity !overflow-visible max-w-page h-navbar !rounded-t-none mx-auto flex items-center justify-between px-4"]}>
+        <a href={url('/')} class="btn-plain scale-animation rounded-lg h-13 px-5 font-bold active:scale-95">
             <div class="flex flex-row text-[var(--primary)] items-center text-md">
                 {siteConfig.favicon[0]?.src ? (
                     <div class="w-8 h-8 mr-2 mb-1 rounded-full overflow-hidden border border-[var(--primary)]">
                         <ImageWrapper src={siteConfig.favicon[0].src} alt={`${siteConfig.title} ${i18n(I18nKey.home)}`} class="w-full h-full" loading="eager" />
                     </div>
                 ) : (
-                    <Icon name="material-symbols:home-outline-rounded" class="text-[1.75rem] mb-1 mr-2" aria-label={i18n(I18nKey.home)} />
+                    <Icon name="material-symbols:home-outline-rounded" class="icon-7 mb-1 mr-2" aria-label={i18n(I18nKey.home)} />
                 )}
                 {siteConfig.title}
             </div>
@@ -75,7 +73,7 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
                 >
                     <div class="flex items-center">
                         {l.name}
-                        {l.external && <Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.875rem] -translate-y-px ml-1 text-black/[0.2] dark:text-white/[0.2]"></Icon>}
+                        {l.external && <Icon name="fa6-solid:arrow-up-right-from-square" class="icon-3.5 -translate-y-px ml-1 text-black/[0.2] dark:text-white/[0.2]"></Icon>}
                     </div>
                 </a>;
             })}
@@ -87,13 +85,13 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
             <div class="buttons-container flex">
                 {!siteConfig.themeColor.fixed && (
                         <button aria-label="Display Settings" class="btn-plain scale-animation rounded-lg md:h-11 md:w-11 h-12 w-12 active:scale-90" id="display-settings-switch" aria-controls="display-setting" aria-expanded="false">
-                            <Icon name="material-symbols:palette-outline" class="text-[1.25rem]"></Icon>
+                            <Icon name="material-symbols:palette-outline" class="icon-5"></Icon>
                         </button>
                 )}
                 <LightDarkSwitch icons={themeIcons} client:only="svelte"></LightDarkSwitch>
             </div>
             <button aria-label="Menu" class="btn-plain scale-animation rounded-lg md:w-11 md:h-11 w-12 h-12 active:scale-90 md:!hidden" id="nav-menu-switch" aria-controls="nav-menu-panel" aria-expanded="false">
-                <Icon name="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
+                <Icon name="material-symbols:menu-rounded" class="icon-5"></Icon>
             </button>
         </div>
         <NavMenuPanel links={links}></NavMenuPanel>
@@ -123,6 +121,6 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
 }
 
 :global(.is-post) .navbar-controls[data-post-mode] > .search-container {
-    transform: translateX(var(--buttons-offset, 6rem));
+    transform: translateX(var(--buttons-offset, calc(var(--spacing) * 24)));
 }
 </style>

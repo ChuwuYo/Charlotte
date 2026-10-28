@@ -65,8 +65,8 @@ const bannerOffset = {
 
 // Main panel overlaps the banner bottom; html.is-home adds the extended banner in CSS
 const mainPanelTop = enableBanner
-	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
-	: "5.5rem";
+	? `calc(${BANNER_HEIGHT}vh - var(--spacing) * ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT})`
+	: "calc(var(--spacing) * 22)";
 
 // dns-prefetch hosts from the warmup list
 const warmup = siteConfig.performance?.externalLinkWarmup;
@@ -173,10 +173,10 @@ const warmupConfig = {
 				<div id="main-grid" class="w-full left-0 right-0 grid grid-cols-[var(--spacing-sidebar)_auto] gap-x-4 mx-auto px-0 md:px-4">
 					{hasBannerCredit && (
 						<a href={siteConfig.banner.credit.url} id="banner-credit" target="_blank" rel="noopener" aria-label="Visit image source"
-							class:list={["group onload-animation transition-ui absolute flex justify-center items-center rounded-full px-3 right-4 -top-[3.25rem] bg-black/60 hover:bg-black/70 h-9", { "hover:pr-9 active:bg-black/80": hasBannerLink }]}>
-							<Icon class="text-white/75 text-[1.25rem] mr-1" name="material-symbols:copyright-outline-rounded" />
+							class:list={["group onload-animation transition-ui absolute flex justify-center items-center rounded-full px-3 right-4 -top-13 bg-black/60 hover:bg-black/70 h-9", { "hover:pr-9 active:bg-black/80": hasBannerLink }]}>
+							<Icon class="text-white/75 icon-5 mr-1" name="material-symbols:copyright-outline-rounded" />
 							<div class="text-white/75 text-sm">{siteConfig.banner.credit.text}</div>
-							<Icon class:list={["transition-opacity absolute text-[oklch(0.75_0.14_var(--hue))] right-4 text-[0.75rem] opacity-0", { "group-hover:opacity-100": hasBannerLink }]} name="fa6-solid:arrow-up-right-from-square" />
+							<Icon class:list={["transition-opacity absolute text-[oklch(0.75_0.14_var(--hue))] right-4 icon-3 opacity-0", { "group-hover:opacity-100": hasBannerLink }]} name="fa6-solid:arrow-up-right-from-square" />
 						</a>
 					)}
 
@@ -214,7 +214,7 @@ const warmupConfig = {
 			<div class="relative max-w-page mx-auto">
 				{siteConfig.toc.enable && (
 					<div id="toc-wrapper" class:list={["transition-opacity absolute top-0 left-full items-center", { "toc-hide": enableBanner }]}>
-						<div id="toc-inner-wrapper" class="fixed top-14 w-(--toc-width) h-[calc(100vh_-_20rem)] overflow-y-scroll overflow-x-hidden hide-scrollbar">
+						<div id="toc-inner-wrapper" class="fixed top-14 w-(--toc-width) h-[calc(100vh-var(--spacing)*80)] overflow-y-scroll overflow-x-hidden hide-scrollbar">
 							<div id="toc" class="w-full h-full">
 								<div class="h-8 w-full"></div>
 								<TOC headings={headings} />
@@ -263,11 +263,11 @@ const warmupConfig = {
 			opacity: 0;
 		}
 		.enable-banner #top-row {
-			height: calc(var(--banner-height-home) - 4.5rem);
+			height: calc(var(--banner-height-home) - var(--spacing-navbar));
 		}
 		.navbar-hidden {
 			opacity: 0;
-			translate: 0 -4rem;
+			translate: 0 calc(var(--spacing) * -16);
 		}
 
 		/* Thresholds: past the banner, and where the navbar hides */
@@ -282,11 +282,12 @@ const warmupConfig = {
 		#sentinel-banner {
 			top: var(--banner-height);
 		}
+		/* Banner bottom minus the navbar, the panel overlap (14) and the gap above the panel (4) */
 		#sentinel-navbar {
-			top: calc(var(--banner-height) - 4.5rem - 3.5rem - 1rem);
+			top: calc(var(--banner-height) - var(--spacing-navbar) - var(--spacing) * 18);
 		}
 		.is-home #sentinel-navbar {
-			top: calc(var(--banner-height-home) - 4.5rem - 3.5rem - 1rem);
+			top: calc(var(--banner-height-home) - var(--spacing-navbar) - var(--spacing) * 18);
 		}
 	}
 </style>

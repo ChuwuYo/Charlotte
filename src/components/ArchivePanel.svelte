@@ -88,7 +88,7 @@ onMount(async () => {
 <div class="card-base px-8 py-6">
     {#each groups as group}
         <div>
-            <div class="flex flex-row w-full items-center h-[3.75rem]">
+            <div class="flex flex-row w-full items-center h-15">
                 <div class="w-[15%] md:w-[10%] text-2xl font-bold text-right text-75">
                     {group.year}
                 </div>

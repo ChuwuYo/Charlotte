@@ -6,8 +6,10 @@
         max-inline-size: var(--spacing-measure);
     }
 
+    /* Headings scale with the body; h1 is 30/17 of it */
     h1 {
-        @apply text-3xl;
+        font-size: calc(30em / 17);
+        line-height: 1.2;
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -103,6 +105,7 @@
     blockquote {
         @apply not-italic border-transparent relative;
         font-weight: inherit;
+        border-inline-start-width: var(--spacing);
 
         &:before {
             @apply content-[''] absolute -left-1 block bg-(--btn-regular-bg) h-full w-1 rounded-full;
@@ -121,4 +124,10 @@
         margin: 1em 0;
     }
     
+}
+
+/* Terminal dots: fixed rem in Expressive Code, sized with --spacing here */
+.custom-md .expressive-code .frame.is-terminal .header::before {
+    width: calc(var(--spacing) * 8.4);
+    height: calc(var(--spacing) * 2.24);
 }

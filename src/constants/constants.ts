@@ -10,8 +10,5 @@ export const BANNER_HEIGHT = 35;
 export const BANNER_HEIGHT_EXTEND = 35;
 export const BANNER_HEIGHT_HOME = BANNER_HEIGHT + BANNER_HEIGHT_EXTEND;
 
-// The height the main panel overlaps the banner, unit: rem
-export const MAIN_PANEL_OVERLAPS_BANNER_HEIGHT = 3.5;
-
-// Navbar height: rem (matches h-[4.5rem] in Navbar.astro)
-export const NAVBAR_HEIGHT = 4.5;
+// The height the main panel overlaps the banner, unit: --spacing
+export const MAIN_PANEL_OVERLAPS_BANNER_HEIGHT = 14;

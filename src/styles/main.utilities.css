@@ -115,7 +115,7 @@
 
 @utility link-underline {
 	@apply transition-ui underline decoration-2 decoration-dashed decoration-(--link-underline)
-		hover:decoration-(--link-hover) active:decoration-(--link-active) underline-offset-[0.25rem];
+		hover:decoration-(--link-hover) active:decoration-(--link-active) underline-offset-(--spacing);
 }
 
 @utility toc-hide {
@@ -169,4 +169,9 @@
 
 @utility navbar-with-opacity {
 	background-color: color-mix(in srgb, var(--card-bg) calc(var(--navbar-opacity) * 100%), transparent);
+}
+
+/* Icon size in --spacing units; icons are 1em tall and keep their own width ratio */
+@utility icon-* {
+	font-size: calc(var(--spacing) * --value(number));
 }

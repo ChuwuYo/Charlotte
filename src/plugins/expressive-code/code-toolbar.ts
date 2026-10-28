@@ -169,7 +169,7 @@ export function pluginCodeToolbar() {
 			.code-toolbar {
 				display: flex;
 				align-items: center;
-				padding: 0.5rem 0.75rem;
+				padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
 				background: var(--codeblock-topbar-bg);
 				font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 				user-select: none;
@@ -177,15 +177,15 @@ export function pluginCodeToolbar() {
 				position: relative;
 			}
 			.code-toolbar-lang {
-				font-size: 0.875rem;
+				font-size: var(--text-sm);
 				font-weight: 600;
 				text-transform: uppercase;
 				letter-spacing: 0.025em;
 				color: var(--codeblock-toolbar-element-color);
-				padding: 0.25rem 0.625rem;
+				padding: var(--spacing) calc(var(--spacing) * 2.5);
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 20%, transparent);
-				border-radius: 0.5rem;
-				line-height: 1.25rem;
+				border-radius: var(--radius-lg);
+				line-height: calc(var(--spacing) * 5);
 				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
 				transition: all 0.2s ease;
 				border: 1px solid color-mix(in srgb, var(--codeblock-toolbar-element-bg) 30%, transparent);
@@ -201,24 +201,24 @@ export function pluginCodeToolbar() {
 				left: 50%;
 				top: 50%;
 				transform: translate(-50%, -50%);
-				font-size: 0.875rem;
+				font-size: var(--text-sm);
 				font-weight: 500;
 				color: var(--codeblock-toolbar-element-color);
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
-				max-width: calc(100% - 14rem);
+				max-width: calc(100% - var(--spacing) * 56);
 				pointer-events: none;
 			}
 			.code-toolbar-copy {
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				width: 1.75rem;
-				height: 1.75rem;
+				width: calc(var(--spacing) * 7);
+				height: calc(var(--spacing) * 7);
 				padding: 0;
 				border: 1px solid color-mix(in srgb, var(--codeblock-toolbar-element-bg) 30%, transparent);
-				border-radius: 0.5rem;
+				border-radius: var(--radius-lg);
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 20%, transparent);
 				color: var(--codeblock-toolbar-element-color);
 				cursor: pointer;
@@ -242,7 +242,7 @@ export function pluginCodeToolbar() {
 				background: color-mix(in srgb, oklch(0.6 0.12 var(--hue)) 40%, transparent);
 				color: oklch(0.85 0.12 var(--hue));
 			}
-			.copy-icon-wrapper { position: relative; width: 1rem; height: 1rem; }
+			.copy-icon-wrapper { position: relative; width: calc(var(--spacing) * 4); height: calc(var(--spacing) * 4); }
 			.toolbar-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: currentColor; transition: opacity 0.15s ease, transform 0.15s ease; }
 			.copy-icon { opacity: 1; transform: scale(1); }
 			.success-icon { opacity: 0; transform: scale(0.8); }
@@ -250,10 +250,10 @@ export function pluginCodeToolbar() {
 			.code-toolbar-copy.success .success-icon { opacity: 1; transform: scale(1); }
 			.frame.is-terminal .code-toolbar { background: var(--codeblock-topbar-bg); }
 			@media (width < 40rem) {
-				.code-toolbar { padding: 0.375rem 0.5rem; }
-				.code-toolbar-lang { padding: 0.0625rem 0.375rem; }
-				.code-toolbar-copy { width: 1.5rem; height: 1.5rem; }
-				.copy-icon-wrapper { width: 0.875rem; height: 0.875rem; }
+				.code-toolbar { padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2); }
+				.code-toolbar-lang { padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 1.5); }
+				.code-toolbar-copy { width: calc(var(--spacing) * 6); height: calc(var(--spacing) * 6); }
+				.copy-icon-wrapper { width: calc(var(--spacing) * 3.5); height: calc(var(--spacing) * 3.5); }
 			}
 			@media print { .code-toolbar-copy { display: none; } }
 			@media (prefers-reduced-motion: reduce) { .code-toolbar-copy, .toolbar-icon { transition: none; } }

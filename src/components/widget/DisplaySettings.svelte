@@ -55,13 +55,13 @@ function resetHue() {
     <div class="flex flex-row gap-2 mb-3 items-center justify-between">
         <div class="flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 relative ml-3
             before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
-            before:absolute before:-left-3 before:top-[0.33rem]"
+            before:absolute before:-left-3 before:top-1.25"
         >
             {i18n(I18nKey.themeColor)}
             <button aria-label="Reset to Default" class="btn-regular w-7 h-7 rounded-md active:scale-90"
                     class:opacity-0={savedHue === defaultHue} class:pointer-events-none={savedHue === defaultHue} onclick={resetHue}>
                 <div class="text-[var(--btn-content)]">
-                    <Icon icon={icons["fa6-solid:arrow-rotate-left"]} class="text-[0.875rem]"></Icon>
+                    <Icon icon={icons["fa6-solid:arrow-rotate-left"]} class="icon-3.5"></Icon>
                 </div>
             </button>
         </div>
@@ -83,7 +83,7 @@ function resetHue() {
 
     <div class="flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 relative ml-3 mt-4
         before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
-        before:absolute before:-left-3 before:top-[0.33rem]">
+        before:absolute before:-left-3 before:top-1.25">
         {i18n(I18nKey.cardBackgroundColor)}
     </div>
 
@@ -93,14 +93,14 @@ function resetHue() {
 <style>
     #display-setting input[type="range"] {
         appearance: none;
-        height: 1.5rem;
+        height: calc(var(--spacing) * 6);
         background-image: var(--color-selection-bar);
     }
     #display-setting input[type="range"]::-webkit-slider-thumb {
         appearance: none;
-        height: 1rem;
-        width: 0.5rem;
-        border-radius: 0.125rem;
+        height: calc(var(--spacing) * 4);
+        width: calc(var(--spacing) * 2);
+        border-radius: var(--radius-xs);
         background: rgba(255, 255, 255, 0.7);
         box-shadow: none;
     }
@@ -112,9 +112,9 @@ function resetHue() {
     }
     #display-setting input[type="range"]::-moz-range-thumb {
         appearance: none;
-        height: 1rem;
-        width: 0.5rem;
-        border-radius: 0.125rem;
+        height: calc(var(--spacing) * 4);
+        width: calc(var(--spacing) * 2);
+        border-radius: var(--radius-xs);
         border-width: 0;
         background: rgba(255, 255, 255, 0.7);
         box-shadow: none;

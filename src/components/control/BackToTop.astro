@@ -5,7 +5,7 @@ import { Icon } from "astro-icon/components";
 <!-- There can't be a filter on parent element, or it will break `fixed` -->
 <div class="back-to-top-wrapper hidden lg:block">
     <div id="back-to-top-btn" class="back-to-top-btn hide flex items-center rounded-2xl overflow-hidden transition-[opacity,transform]">
-        <button aria-label="Back to Top" class="btn-card h-[3.75rem] w-[3.75rem]">
+        <button aria-label="Back to Top" class="btn-card h-15 w-15">
             <Icon name="material-symbols:keyboard-arrow-up-rounded" class="mx-auto"></Icon>
         </button>
     </div>
@@ -13,8 +13,8 @@ import { Icon } from "astro-icon/components";
 
 <style>
 	.back-to-top-wrapper {
-		width: 3.75rem;
-		height: 3.75rem;
+		width: calc(var(--spacing) * 15);
+		height: calc(var(--spacing) * 15);
 		position: absolute;
 		right: 0;
 		top: 0;
@@ -23,23 +23,23 @@ import { Icon } from "astro-icon/components";
 
 	.back-to-top-btn {
 		color: var(--primary);
-		font-size: 2.25rem;
+		font-size: var(--text-4xl);
 		font-weight: bold;
 		border: none;
 		position: fixed;
-		bottom: max(2rem, 3vh);
+		bottom: max(var(--spacing) * 8, 3vh);
 		opacity: 1;
 		cursor: pointer;
-		transform: translateX(5rem);
+		transform: translateX(calc(var(--spacing) * 20));
 		pointer-events: auto;
 
 		&.hide {
-			transform: translateX(5rem) scale(0.9);
+			transform: translateX(calc(var(--spacing) * 20)) scale(0.9);
 			opacity: 0;
 			pointer-events: none;
 		}
 		&:active {
-			transform: translateX(5rem) scale(0.9);
+			transform: translateX(calc(var(--spacing) * 20)) scale(0.9);
 		}
 	}
 </style>

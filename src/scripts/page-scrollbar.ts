@@ -1,14 +1,13 @@
 // Overlay thumb for the page scrollbar: sized from the root scroller, shown while scrolling or moving the pointer, draggable
 const HIDE_DELAY = 500;
-const MIN_THUMB_REM = 2.5;
-// Matches the bar's padding in scrollbar.css
-const TRACK_INSET_REM = 0.25;
 
 export function initPageScrollbar(): void {
 	const bar = document.getElementById("page-scrollbar");
+	const track = bar?.querySelector<HTMLElement>(".page-scrollbar-track");
 	const thumb = bar?.querySelector<HTMLElement>(".page-scrollbar-thumb");
 	const root = document.documentElement;
-	if (!bar || !thumb || !root.hasAttribute("data-overlay-scrollbar")) return;
+	if (!bar || !track || !thumb || !root.hasAttribute("data-overlay-scrollbar"))
+		return;
 
 	const scrollDriven = CSS.supports("animation-timeline: scroll()");
 	let travel = 0;
@@ -21,9 +20,9 @@ export function initPageScrollbar(): void {
 		range = root.scrollHeight - root.clientHeight;
 		bar.toggleAttribute("data-idle", range < 1);
 		if (range < 1) return;
-		const rem = Number.parseFloat(getComputedStyle(root).fontSize);
-		const trackH = root.clientHeight - TRACK_INSET_REM * 2 * rem;
-		const min = MIN_THUMB_REM * rem;
+		// Track inset and minimum thumb length come from scrollbar.css
+		const trackH = track.clientHeight;
+		const min = Number.parseFloat(getComputedStyle(thumb).minHeight) || 0;
 		const size = Math.max(
 			min,
 			(trackH * root.clientHeight) / root.scrollHeight,

@@ -23,8 +23,8 @@ html[data-overlay-scrollbar] {
 		inset-block: 0;
 		inset-inline-end: 0;
 		z-index: 100;
-		width: 1rem;
-		padding: 0.25rem;
+		width: calc(var(--spacing) * 4);
+		padding: var(--spacing);
 		&[data-idle] {
 			display: none;
 		}
@@ -39,9 +39,10 @@ html[data-overlay-scrollbar] {
 .page-scrollbar-thumb {
 	position: absolute;
 	inset-inline-end: 0;
-	width: 0.25rem;
+	width: var(--spacing);
+	min-height: calc(var(--spacing) * 10);
 	height: var(--thumb-size, 0);
-	border-radius: 0.25rem;
+	border-radius: var(--radius-sm);
 	background-color: var(--scrollbar-bg);
 	opacity: 0;
 	will-change: translate;
@@ -50,11 +51,11 @@ html[data-overlay-scrollbar] {
 		opacity: 1;
 	}
 	.page-scrollbar:hover & {
-		width: 0.5rem;
+		width: calc(var(--spacing) * 2);
 		background-color: var(--scrollbar-bg-hover);
 	}
 	.page-scrollbar[data-dragging] & {
-		width: 0.5rem;
+		width: calc(var(--spacing) * 2);
 		opacity: 1;
 		background-color: var(--scrollbar-bg-active);
 	}

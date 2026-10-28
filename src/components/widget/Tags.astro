@@ -9,7 +9,7 @@ import WidgetLayout from "./WidgetLayout.astro";
 
 const tags = await getTagList();
 
-const COLLAPSED_HEIGHT = "7.5rem";
+const COLLAPSED_HEIGHT = "calc(var(--spacing) * 30)";
 
 const isCollapsed = tags.length >= 20;
 

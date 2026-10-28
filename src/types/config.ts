@@ -42,11 +42,13 @@ export type SiteConfig = {
 		depth: 1 | 2 | 3;
 	};
 	layout?: {
-		// Font sizes, rem
+		// Base unit of spacing, sizes, icons, radii and the generic type scale (Tailwind --spacing), rem, default 0.1875
+		spacing?: number;
+		// Font sizes of the named text roles, rem
 		fontSize?: {
-			meta?: number; // dates, categories, tags, counts; default 0.6875
-			ui?: number; // sidebar items, excerpts, nav links; default 0.8125
-			prose?: number; // article body; default 0.8125
+			meta?: number; // dates, categories, tags, counts; default 0.703125
+			ui?: number; // sidebar items, excerpts, nav links; default 0.796875
+			prose?: number; // article body; default 0.796875
 			cardTitle?: number; // post card titles; default 1.5
 			widgetTitle?: number; // sidebar widget titles; default 0.9375
 		};

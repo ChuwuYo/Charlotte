@@ -56,14 +56,20 @@ export default defineConfig({
 					},
 				},
 			},
+			// Sizes as multiples of the site's --spacing (see src/styles/global.css)
 			styleOverrides: {
 				codeBackground: "var(--codeblock-bg)",
-				borderRadius: "0.75rem",
+				borderRadius: "var(--radius-xl)",
 				borderColor: "none",
-				codeFontSize: "0.875rem",
+				codeFontSize: "var(--text-sm)",
 				codeFontFamily:
 					"'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-				codeLineHeight: "1.5rem",
+				codeLineHeight: "calc(var(--spacing) * 6)",
+				codePaddingBlock: "calc(var(--spacing) * 4)",
+				codePaddingInline: "calc(var(--spacing) * 5.4)",
+				uiFontSize: "calc(var(--spacing) * 3.6)",
+				uiPaddingBlock: "var(--spacing)",
+				uiPaddingInline: "calc(var(--spacing) * 4)",
 				frames: {
 					editorBackground: "var(--codeblock-bg)",
 					terminalBackground: "var(--codeblock-bg)",
@@ -79,6 +85,11 @@ export default defineConfig({
 					delHue: 0,
 					insHue: 180,
 					markHue: 250,
+					lineMarkerAccentWidth: "calc(var(--spacing) * 0.6)",
+					lineMarkerLabelPaddingInline: "calc(var(--spacing) * 0.8)",
+					lineDiffIndicatorMarginLeft: "calc(var(--spacing) * 1.2)",
+					inlineMarkerBorderRadius: "calc(var(--spacing) * 0.8)",
+					inlineMarkerPadding: "calc(var(--spacing) * 0.6)",
 				},
 			},
 			frames: {
