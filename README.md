@@ -153,7 +153,7 @@ export const siteConfig: SiteConfig = {
 - `sidebarWidth`：侧栏宽度，默认 11.25rem。
 - `pageWidth`：页面（导航栏、横幅文字、侧栏与正文所在区域）宽度，默认 `{ min: 48, viewport: 70, max: 63 }`，即 `clamp(48rem, 70vw, 63rem)`：视口约 1097–1440px 时页面占 70%，更窄时保持 48rem（窗口不足时铺满），更宽时停在 63rem。右侧固定目录的显示断点按此配置在构建时算出（页面两侧各留出 60 × spacing 宽的目录 + 4 × spacing 间距，默认 80rem 即 1280px），更窄时改用浮动目录按钮。正文行长另有 40ic（约 40 个汉字）上限。
 
-默认值等于旧版尺寸在 Chrome 字号「小」（12px）下的效果，即所有 rem 尺寸 × 0.75；媒体查询断点仍为 Tailwind 默认值（`md` 768px、`lg` 1024px）。文章卡片的封面固定为 16:9，卡片至少与封面等高。
+默认值等于旧版尺寸在 Chrome 字号「小」（12px）下的效果，即所有 rem 尺寸 × 0.75；媒体查询断点仍为 Tailwind 默认值（`md` 768px、`lg` 1024px）。
 
 ### 配置Banner高度
 
