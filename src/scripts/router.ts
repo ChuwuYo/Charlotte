@@ -244,8 +244,6 @@ export function initRouter(): void {
 	});
 
 	document.addEventListener("astro:before-swap", (e) => {
-		// No browser view transition: content and frame animate themselves
-		e.viewTransition.skipTransition();
 		flip = undefined;
 		const next = e.newDocument.documentElement;
 		next.classList.toggle("dark", root.classList.contains("dark"));
