@@ -163,9 +163,8 @@ function createToolbar(
 export function pluginCodeToolbar() {
 	return definePlugin({
 		name: "Code Toolbar",
-		// @ts-expect-error
 		// 注：flex-shrink: 0 确保工具栏保持其固有尺寸（包括 padding 和 border），明确指定 1px 是 CSS 最佳实践
-		baseStyles: ({ _cssVar }) => `
+		baseStyles: () => `
 			.code-toolbar {
 				display: flex;
 				align-items: center;

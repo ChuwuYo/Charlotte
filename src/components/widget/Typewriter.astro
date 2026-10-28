@@ -20,14 +20,10 @@ const {
 	showCursor = true,
 	startDelay = 0,
 } = Astro.props;
-
-// 生成唯一 ID 以支持页面中多个打字机实例
-const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 ---
 
 <span class:list={["typewriter-wrapper", className]}>
 	<span 
-		id={uniqueId}
 		class="typewriter-text" 
 		data-words={JSON.stringify(words)} 
 		data-type-speed={typeSpeed}
@@ -83,14 +79,10 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 		private currentText: string = '';
 		private wordIndex: number = 0; // 当前在洗牌数组中的位置
 		private isDeleting: boolean = false;
-		private timeoutId: number | null = null;
 
 		constructor(element: HTMLElement) {
 			this.element = element;
-			
-			// 强制清空内容（防止 View Transitions 缓存导致闪现旧文本）
-			this.element.textContent = '';
-			
+
 			// 从 DOM 属性读取配置
 			try {
 				this.words = JSON.parse(element.dataset.words || '[]');
@@ -113,7 +105,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 				
 				// 如果有启动延迟，先等待
 				if (this.startDelay > 0) {
-					this.timeoutId = window.setTimeout(() => this.tick(), this.startDelay);
+					window.setTimeout(() => this.tick(), this.startDelay);
 				} else {
 					this.tick();
 				}
@@ -197,7 +189,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 				
 				// 使用 RAF 确保 DOM 更新完成后再继续，避免换行时的视觉加速
 				requestAnimationFrame(() => {
-					this.timeoutId = window.setTimeout(() => this.tick(), speed);
+					window.setTimeout(() => this.tick(), speed);
 				});
 			} 
 			// 状态 2: 打字完成 - 停留并触发事件
@@ -209,7 +201,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 				});
 				
 				this.isDeleting = true;
-				this.timeoutId = window.setTimeout(() => this.tick(), this.delay + TypewriterEffect.COMPLETE_EXTRA_DELAY);
+				window.setTimeout(() => this.tick(), this.delay + TypewriterEffect.COMPLETE_EXTRA_DELAY);
 			} 
 			// 状态 3: 删除中
 			else if (this.isDeleting && this.currentText.length > 0) {
@@ -218,7 +210,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 				this.element.textContent = this.currentText;
 				
 				const speed = this.getDeleteSpeed(charToDelete);
-				this.timeoutId = window.setTimeout(() => this.tick(), speed);
+				window.setTimeout(() => this.tick(), speed);
 			} 
 			// 状态 4: 删除完成 - 切换到下一个单词并触发事件
 			else if (this.isDeleting && this.currentText === '') {
@@ -240,7 +232,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 					nextIndex: nextActualIndex 
 				});
 				
-				this.timeoutId = window.setTimeout(() => this.tick(), TypewriterEffect.DELETE_PAUSE_DELAY);
+				window.setTimeout(() => this.tick(), TypewriterEffect.DELETE_PAUSE_DELAY);
 			}
 		}
 

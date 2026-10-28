@@ -71,13 +71,7 @@ class BannerTextController {
 
     constructor() {
         this.authorElement = document.querySelector('.typewriter-author');
-        
-        // 清空可能被缓存的文本内容
-        if (this.authorElement) {
-            this.authorElement.classList.remove('show-author');
-            this.authorElement.textContent = '';
-        }
-        
+
         if (this.authorElement?.dataset.authors) {
             try {
                 this.authors = JSON.parse(this.authorElement.dataset.authors);
