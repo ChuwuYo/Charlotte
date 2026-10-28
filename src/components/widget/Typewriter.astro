@@ -79,6 +79,7 @@ const {
 		private currentText: string = '';
 		private wordIndex: number = 0; // 当前在洗牌数组中的位置
 		private isDeleting: boolean = false;
+		private waiting = false;
 
 		constructor(element: HTMLElement) {
 			this.element = element;
@@ -102,6 +103,8 @@ const {
 			if (this.words.length > 0) {
 				// 初始化时洗牌一次
 				this.shuffleWords();
+				document.addEventListener('astro:after-swap', () => this.resume());
+				document.addEventListener('visibilitychange', () => this.resume());
 				
 				// 如果有启动延迟，先等待
 				if (this.startDelay > 0) {
@@ -171,7 +174,25 @@ const {
 			this.element.dispatchEvent(event);
 		}
 
+		// Banner text is hidden off the home page; background tabs are skipped too
+		private hidden(): boolean {
+			const root = document.documentElement;
+			return document.hidden || (root.classList.contains('enable-banner') && !root.classList.contains('is-home'));
+		}
+
+		// Continue a loop stopped while hidden
+		private resume() {
+			if (!this.waiting || this.hidden()) return;
+			this.waiting = false;
+			this.tick();
+		}
+
 		private tick() {
+			if (!this.element.isConnected) return;
+			if (this.hidden()) {
+				this.waiting = true;
+				return;
+			}
 			// 获取当前在洗牌数组中的位置
 			const currentPosition = this.wordIndex % this.shuffledIndices.length;
 			// 通过洗牌索引获取实际的文本索引

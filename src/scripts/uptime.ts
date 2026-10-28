@@ -21,6 +21,23 @@ export function initUptime(): void {
 			.join("");
 		for (const el of els) el.textContent = text;
 	};
+	// Writes only while the footer is near the viewport and no navigation is running
+	const root = document.documentElement;
+	let near = true;
+	new IntersectionObserver(
+		([entry]) => {
+			near = entry.isIntersecting;
+			if (near) render();
+		},
+		{ rootMargin: "200px 0px" },
+	).observe(els[0]);
 	render();
-	setInterval(render, 1000);
+	setInterval(() => {
+		if (
+			near &&
+			!root.hasAttribute("data-leaving") &&
+			!root.hasAttribute("data-frame-move")
+		)
+			render();
+	}, 1000);
 }

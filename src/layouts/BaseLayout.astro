@@ -287,4 +287,11 @@ const warmupConfig = {
 			top: calc(var(--banner-height-home) - var(--spacing-navbar) - var(--spacing) * 18);
 		}
 	}
+
+	/* Banner text loops pause while the text is hidden or the page is leaving; unlayered to beat component styles */
+	:is(.enable-banner:not(.is-home), html[data-leaving])
+		.banner-text-overlay
+		:is(.quote-float, .quote-float-delayed, .typewriter-cursor) {
+		animation-play-state: paused;
+	}
 </style>
