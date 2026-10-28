@@ -9,6 +9,7 @@ import {
 	getCardBgType,
 	getDefaultHue,
 	getHue,
+	pauseTransitions,
 	saveHue,
 	setCardBgType,
 } from "@utils/setting-utils";
@@ -27,16 +28,15 @@ const cardBgOptions = [
 	{ label: i18n(I18nKey.cardBackgroundThemed), value: CARD_BG_TYPE.THEMED },
 ];
 
-const root = document.documentElement;
-
 // No transitions while dragging
+let resumeTransitions: (() => void) | undefined;
 function startDrag() {
-	root.dataset.noTransition = "";
+	resumeTransitions = pauseTransitions();
 	addEventListener("pointerup", endDrag, { once: true });
 	addEventListener("pointercancel", endDrag, { once: true });
 }
 function endDrag() {
-	delete root.dataset.noTransition;
+	resumeTransitions?.();
 }
 
 function commitHue() {

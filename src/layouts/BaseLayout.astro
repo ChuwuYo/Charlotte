@@ -170,7 +170,7 @@ const warmupConfig = {
 		<div class="main-content-wrapper absolute w-full z-30 pointer-events-none" style={`--main-panel-top: ${mainPanelTop}`}>
 			<div class="relative max-w-page mx-auto pointer-events-auto">
 				<!-- Sidebar and main share row 1 so the sticky sidebar ends with the content -->
-				<div id="main-grid" class="w-full left-0 right-0 grid grid-cols-[var(--spacing-sidebar)_auto] gap-x-4 mx-auto px-0 md:px-4">
+				<div id="main-grid" class="w-full grid grid-cols-[var(--spacing-sidebar)_auto] gap-x-4 mx-auto px-0 md:px-4">
 					{hasBannerCredit && (
 						<a href={siteConfig.banner.credit.url} id="banner-credit" target="_blank" rel="noopener" aria-label="Visit image source"
 							class:list={["group onload-animation transition-ui absolute flex justify-center items-center rounded-full px-3 right-4 -top-13 bg-black/60 hover:bg-black/70 h-9", { "hover:pr-9 active:bg-black/80": hasBannerLink }]}>

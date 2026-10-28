@@ -9,13 +9,17 @@ import type { LIGHT_DARK_MODE } from "@/types/config";
 
 const root = () => document.documentElement;
 
+// Turn transitions off; returns a function that turns them back on
+export function pauseTransitions(): () => void {
+	root().dataset.noTransition = "";
+	return () => delete root().dataset.noTransition;
+}
+
 // Run fn with transitions off for two frames, so color swaps don't animate
 function withoutTransitions(fn: () => void): void {
-	root().dataset.noTransition = "";
+	const resume = pauseTransitions();
 	fn();
-	requestAnimationFrame(() =>
-		requestAnimationFrame(() => delete root().dataset.noTransition),
-	);
+	requestAnimationFrame(() => requestAnimationFrame(resume));
 }
 
 export function getDefaultHue(): number {
