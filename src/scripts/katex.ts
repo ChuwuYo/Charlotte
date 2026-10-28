@@ -7,6 +7,7 @@ export function initKatex(): void {
 		const box = document.createElement("div");
 		box.className = "katex-display-container";
 		box.tabIndex = 0;
+		box.setAttribute("role", "region");
 		box.setAttribute("aria-label", "scrollable container for formulas");
 		el.before(box);
 		box.append(el);
