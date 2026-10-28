@@ -21,23 +21,22 @@ export function initUptime(): void {
 			.join("");
 		for (const el of els) el.textContent = text;
 	};
-	// Writes only while the footer is near the viewport and no navigation is running
-	const root = document.documentElement;
-	let near = true;
+	// Ticks on each whole second since start; stops while the footer is far from the viewport
+	let timer = 0;
+	const tick = () => {
+		render();
+		const elapsed = Date.now() - startTime;
+		timer = window.setTimeout(
+			tick,
+			1000 - (((elapsed % 1000) + 1000) % 1000) + 5,
+		);
+	};
+	render();
 	new IntersectionObserver(
 		([entry]) => {
-			near = entry.isIntersecting;
-			if (near) render();
+			clearTimeout(timer);
+			if (entry.isIntersecting) tick();
 		},
 		{ rootMargin: "200px 0px" },
 	).observe(els[0]);
-	render();
-	setInterval(() => {
-		if (
-			near &&
-			!root.hasAttribute("data-leaving") &&
-			!root.hasAttribute("data-frame-move")
-		)
-			render();
-	}, 1000);
 }
