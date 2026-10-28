@@ -1,5 +1,12 @@
 // Overlay thumb for the page scrollbar: sized from the root scroller, shown while scrolling or moving the pointer, draggable
 const HIDE_DELAY = 500;
+// Elements the router slides on navigation
+const FRAME = [
+	"banner-wrapper",
+	"main-grid",
+	"sidebar-sticky",
+	"navbar-wrapper",
+];
 
 export function initPageScrollbar(): void {
 	const bar = document.getElementById("page-scrollbar");
@@ -77,19 +84,16 @@ export function initPageScrollbar(): void {
 	for (const el of document.body.children) observer.observe(el);
 
 	// Transformed boxes count toward the scroll extent, so entrance and frame animations change it without resizing anything
-	const settle = () => {
+	document.addEventListener("animationend", (e) => {
+		if (!bar.contains(e.target as Node)) schedule();
+	});
+	// Frame moves are script animations (router FLIP), started before this listener runs
+	document.addEventListener("astro:after-swap", () => {
 		schedule();
-		requestAnimationFrame(() => {
-			for (const anim of document.getAnimations()) {
-				if (anim.timeline !== document.timeline) continue;
-				const end = anim.effect?.getComputedTiming().endTime;
-				if (typeof end === "number" && Number.isFinite(end))
-					anim.finished.then(schedule, schedule);
-			}
-		});
-	};
-	document.addEventListener("astro:after-swap", settle);
-	document.addEventListener("astro:page-load", settle);
+		for (const id of FRAME)
+			for (const anim of document.getElementById(id)?.getAnimations() ?? [])
+				anim.finished.then(schedule, schedule);
+	});
 
 	// Drag the thumb; a click on the track pages toward the pointer like a native bar
 	bar.addEventListener("pointerdown", (e) => {
@@ -120,5 +124,5 @@ export function initPageScrollbar(): void {
 		bar.addEventListener("pointercancel", end);
 	});
 
-	settle();
+	schedule();
 }
