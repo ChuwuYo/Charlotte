@@ -45,9 +45,8 @@ const coverWidth = "30%";
 
 const { remarkPluginFrontmatter } = await render(entry);
 ---
-<!-- md+ with a cover: text | 16:9 cover | gap; the card is at least as tall as the cover -->
-<div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", { "md:grid md:grid-cols-[minmax(0,1fr)_var(--coverWidth)_calc(var(--spacing)*3)]": hasCover }, className]} style={style}>
-    <div class:list={["w-full pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", { "md:w-[calc(100%-var(--spacing)*16)]": !hasCover }]}>
+<div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", className]} style={style}>
+    <div class:list={["w-full pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", { "md:w-[calc(100%-var(--spacing)*16)]": !hasCover, "md:w-[calc(100%-var(--coverWidth)-var(--spacing)*3)]": hasCover }]}>
         <a href={url} data-astro-prefetch="viewport"
            class="transition-ui group w-full block font-bold mb-3 text-card-title text-90
  hover:text-[var(--primary)] dark:hover:text-[var(--primary)]
@@ -93,7 +92,7 @@ const { remarkPluginFrontmatter } = await render(entry);
     {hasCover && <a href={url} data-astro-prefetch="viewport" aria-label={title}
                     class:list={["group",
                         "max-h-[20vh] md:max-h-none mx-4 mt-4 -mb-2 md:mb-0 md:mx-0 md:mt-0",
-                        "relative md:w-full md:aspect-video md:my-3 md:self-center rounded-xl overflow-hidden active:scale-95"
+                        "md:w-[var(--coverWidth)] relative md:absolute md:top-3 md:bottom-3 md:right-3 rounded-xl overflow-hidden active:scale-95"
                     ]} >
         <!-- 从左到右滑动的遮罩效果 -->
         <div class="absolute pointer-events-none z-10 w-full h-full bg-black/20 transition-transform duration-300 ease-out -translate-x-full group-hover:translate-x-0"></div>
