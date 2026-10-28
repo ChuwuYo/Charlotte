@@ -52,7 +52,7 @@ export type SiteConfig = {
 			cardTitle?: number; // post card titles; default 1.5
 			widgetTitle?: number; // sidebar widget titles; default 0.9375
 		};
-		sidebarWidth?: number; // rem, default 13.125
+		sidebarWidth?: number; // rem, default 11.25
 		// Page width = clamp(min, viewport% of the window, max)
 		pageWidth?: {
 			min?: number; // rem, default 48

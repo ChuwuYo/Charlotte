@@ -58,7 +58,7 @@ export const siteConfig: SiteConfig = {
 			cardTitle: 1.5, // 文章卡片标题
 			widgetTitle: 0.9375, // 侧栏组件标题
 		},
-		sidebarWidth: 13.125, // 侧栏宽度
+		sidebarWidth: 11.25, // 侧栏宽度
 		// 页面宽度 = clamp(min, 视口宽度 × viewport%, max)；固定目录在两侧各有至少 60 × spacing 宽时显示
 		pageWidth: {
 			min: 48, // 最小宽度

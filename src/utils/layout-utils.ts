@@ -19,7 +19,7 @@ const {
 	cardTitle = 1.5,
 	widgetTitle = 0.9375,
 } = siteConfig.layout?.fontSize ?? {};
-const sidebarWidth = siteConfig.layout?.sidebarWidth ?? 13.125;
+const sidebarWidth = siteConfig.layout?.sidebarWidth ?? 11.25;
 
 // Inline style for <html>: overrides the size tokens in global.css @theme
 export const SIZE_VARS = `--spacing: ${spacing}rem; --text-meta: ${meta}rem; --text-ui: ${ui}rem; --text-prose: ${prose}rem; --text-card-title: ${cardTitle}rem; --text-widget-title: ${widgetTitle}rem; --spacing-sidebar: ${sidebarWidth}rem; --container-page: clamp(${min}rem, ${viewport}vw, ${max}rem);`;

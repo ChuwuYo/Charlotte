@@ -70,7 +70,7 @@
 	/* Layout */
 	/* Defaults; BaseLayout sets them on <html> from siteConfig.layout.pageWidth / sidebarWidth */
 	--container-page: clamp(48rem, 70vw, 63rem);
-	--spacing-sidebar: 13.125rem;
+	--spacing-sidebar: 11.25rem;
 	--spacing-navbar: calc(var(--spacing) * 18);
 	/* Running text stops at about 40 CJK / 70 Latin characters per line */
 	--spacing-measure: 40ic;
