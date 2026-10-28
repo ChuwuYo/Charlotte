@@ -15,7 +15,11 @@ const KEEP_ATTRS = [
 	"data-no-enter",
 	"data-frame-move",
 	"data-overlay-scrollbar",
+	"data-past-banner",
+	"data-no-transition",
 ];
+// Set by the router on the live root during a navigation
+const ASTRO_ATTRS = ["data-astro-transition", "data-astro-transition-fallback"];
 
 const root = document.documentElement;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
@@ -124,9 +128,25 @@ function holdHeight(main: HTMLElement, height: number, islands: Element[]) {
 	requestAnimationFrame(check);
 }
 
+// Root attributes: only changed ones are written, missing ones removed
+function swapRootAttributes(doc: Document) {
+	const next = doc.documentElement;
+	for (const { name } of [...root.attributes])
+		if (
+			!next.hasAttribute(name) &&
+			!KEEP_ATTRS.includes(name) &&
+			!ASTRO_ATTRS.includes(name)
+		)
+			root.removeAttribute(name);
+	for (const { name, value } of next.attributes) {
+		if (ASTRO_ATTRS.includes(name) && root.hasAttribute(name)) continue;
+		if (root.getAttribute(name) !== value) root.setAttribute(name, value);
+	}
+}
+
 function swapRegions(doc: Document, enter: string) {
 	swapFunctions.deselectScripts(doc);
-	swapFunctions.swapRootAttributes(doc);
+	swapRootAttributes(doc);
 	swapFunctions.swapHeadElements(doc);
 	for (const el of document.querySelectorAll(".astro-route-announcer"))
 		el.remove();
