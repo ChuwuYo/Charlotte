@@ -240,7 +240,7 @@ $$
 
 只需从 YouTube 或其他平台复制嵌入代码，然后将其粘贴到 markdown 文件中。
 
-### YouTube
+## YouTube
 
 只需从 YouTube 复制嵌入代码，然后粘贴到 Markdown 文件中即可。
 
