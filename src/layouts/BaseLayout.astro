@@ -290,13 +290,4 @@ const warmupConfig = {
 			top: calc(var(--banner-height-home) - var(--spacing-navbar) - var(--spacing) * 18);
 		}
 	}
-
-	/* Banner text loops idle while the text is hidden or the banner changes (running, they
-	   make the move drop whole frames). Unlayered to beat component styles; named targets
-	   so the root change restyles only these. */
-	:is(.enable-banner:not(.is-home), html[data-frame-move="banner"])
-		.banner-text-overlay
-		:is(.quote-float, .quote-float-delayed, .typewriter-cursor) {
-		animation: none;
-	}
 </style>

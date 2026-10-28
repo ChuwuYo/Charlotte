@@ -270,8 +270,7 @@ export function initRouter(): void {
 				duration: ms(banner ? "--duration-frame" : "--duration-page"),
 			};
 			markFrameMove(flip.duration);
-			// "banner": the banner text fades between shown and hidden
-			next.setAttribute("data-frame-move", banner ? "banner" : "");
+			next.setAttribute("data-frame-move", "");
 		}
 		e.swap = () => swapRegions(e.newDocument, enter);
 	});
