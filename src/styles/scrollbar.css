@@ -6,7 +6,7 @@ html,
 	scrollbar-color: var(--scrollbar-bg) transparent;
 }
 
-/* Page scrollbar: the root still scrolls natively; with a mouse and no touchscreen (set in HeadScript) its bar is replaced by an overlay thumb that takes no width */
+/* Page scrollbar: the root still scrolls natively; with a mouse (set in HeadScript) its bar is replaced by an overlay thumb that takes no width */
 .page-scrollbar {
 	display: none;
 }
