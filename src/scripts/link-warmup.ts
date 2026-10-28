@@ -1,4 +1,4 @@
-export type ExternalLinkWarmupConfig = {
+type ExternalLinkWarmupConfig = {
 	enable?: boolean;
 	enableFetch?: boolean;
 	origins?: string[];

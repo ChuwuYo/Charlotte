@@ -121,21 +121,6 @@ export type LIGHT_DARK_MODE =
 	| typeof DARK_MODE
 	| typeof AUTO_MODE;
 
-export type BlogPostData = {
-	body: string;
-	title: string;
-	published: Date;
-	description: string;
-	tags: string[];
-	draft?: boolean;
-	image?: string;
-	category?: string;
-	prevTitle?: string;
-	prevSlug?: string;
-	nextTitle?: string;
-	nextSlug?: string;
-};
-
 export type ExpressiveCodeConfig = {
 	theme: string;
 };

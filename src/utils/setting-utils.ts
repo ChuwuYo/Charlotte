@@ -10,7 +10,7 @@ import type { LIGHT_DARK_MODE } from "@/types/config";
 const root = () => document.documentElement;
 
 // Run fn with transitions off for two frames, so color swaps don't animate
-export function withoutTransitions(fn: () => void): void {
+function withoutTransitions(fn: () => void): void {
 	root().dataset.noTransition = "";
 	fn();
 	requestAnimationFrame(() =>

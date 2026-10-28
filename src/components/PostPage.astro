@@ -21,7 +21,6 @@ const interval = 50;
                 url={getPostUrlBySlug(entry.id)}
                 image={entry.data.image}
                 description={entry.data.description}
-                draft={entry.data.draft}
                 class:list="onload-animation"
                 style={`animation-delay: calc(var(--content-delay) + ${delay++ * interval}ms);`}
         ></PostCard>

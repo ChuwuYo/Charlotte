@@ -22,7 +22,7 @@ const map: { [key: string]: Translation } = {
 	ja_jp: ja,
 };
 
-export function getTranslation(lang: string): Translation {
+function getTranslation(lang: string): Translation {
 	return map[lang.toLowerCase()] || defaultTranslation;
 }
 
