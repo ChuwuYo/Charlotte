@@ -125,9 +125,3 @@
     }
     
 }
-
-/* Terminal dots: fixed rem in Expressive Code, sized with --spacing here */
-.custom-md .expressive-code .frame.is-terminal .header::before {
-    width: calc(var(--spacing) * 8.4);
-    height: calc(var(--spacing) * 2.24);
-}
