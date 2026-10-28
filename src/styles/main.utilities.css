@@ -16,10 +16,6 @@
 	@apply rounded-(--radius-large) overflow-hidden bg-(--card-bg);
 }
 
-@utility card-shadow {
-	@apply drop-shadow-[0_2px_4px_rgba(0,0,0,0.005)];
-}
-
 /* Hover plate: ::before fades and scales in behind the content */
 @utility expand-animation {
 	position: relative;
@@ -74,9 +70,6 @@
 @utility btn-card {
 	@apply transition-ui flex items-center justify-center bg-(--card-bg) hover:bg-(--btn-card-bg-hover)
 		active:bg-(--btn-card-bg-active);
-	&.disabled {
-		@apply pointer-events-none text-black/10 dark:text-white/10;
-	}
 }
 
 @utility btn-card-disabled {
@@ -113,11 +106,6 @@
 	@apply px-1.5 py-0.5 rounded-(--radius-medium) text-sm font-medium;
 }
 
-@utility link-underline {
-	@apply transition-ui underline decoration-2 decoration-dashed decoration-(--link-underline)
-		hover:decoration-(--link-hover) active:decoration-(--link-active) underline-offset-(--spacing);
-}
-
 @utility toc-hide {
 	@apply opacity-0 pointer-events-none;
 }
@@ -145,26 +133,9 @@
 	@apply text-black/30 dark:text-white/30;
 }
 
-@utility text-25 {
-	@apply text-black/25 dark:text-white/25;
-}
-
 @utility meta-icon {
 	@apply w-8 h-8 rounded-md flex items-center justify-center bg-(--btn-regular-bg)
 		text-(--btn-content) mr-2;
-}
-
-@utility with-divider {
-	@apply before:content-['/'] before:ml-1.5 before:mr-1.5 before:text-(--meta-divider) before:text-sm
-		before:font-medium first-of-type:before:hidden;
-}
-
-@utility btn-regular-dark {
-	@apply flex items-center justify-center transition-ui
-		bg-(--btn-regular-dark-bg) hover:bg-(--btn-regular-dark-bg-hover) active:bg-(--btn-regular-dark-bg-active);
-	&.success {
-		@apply bg-(--btn-regular-dark-success);
-	}
 }
 
 @utility navbar-with-opacity {

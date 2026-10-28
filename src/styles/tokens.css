@@ -37,7 +37,6 @@
   --license-block-bg: rgba(0,0,0,0.03);
   --link-underline: oklch(0.93 0.04 var(--hue));
   --link-hover: oklch(0.95 0.025 var(--hue));
-  --link-active: oklch(0.9 0.05 var(--hue));
   --float-panel-bg: white;
   --scrollbar-bg-light: rgba(0,0,0,0.4);
   --scrollbar-bg-hover-light: rgba(0,0,0,0.5);
@@ -49,24 +48,16 @@
   --scrollbar-bg-hover: var(--scrollbar-bg-hover-light);
   --scrollbar-bg-active: var(--scrollbar-bg-active-light);
   --color-selection-bar: linear-gradient(to right, oklch(0.8 0.1 0), oklch(0.8 0.1 30), oklch(0.8 0.1 60), oklch(0.8 0.1 90), oklch(0.8 0.1 120), oklch(0.8 0.1 150), oklch(0.8 0.1 180), oklch(0.8 0.1 210), oklch(0.8 0.1 240), oklch(0.8 0.1 270), oklch(0.8 0.1 300), oklch(0.8 0.1 330), oklch(0.8 0.1 360));
-  --display-light-icon: 1;
-  --display-dark-icon: 0;
   --admonitions-color-tip: oklch(0.7 0.14 180);
   --admonitions-color-note: oklch(0.7 0.14 250);
   --admonitions-color-important: oklch(0.7 0.14 310);
   --admonitions-color-warning: oklch(0.7 0.14 60);
   --admonitions-color-caution: oklch(0.6 0.2 25);
   --toc-badge-bg: oklch(0.89 0.05 var(--hue));
-  --toc-btn-hover: oklch(0.926 0.015 var(--hue));
   --toc-btn-active: oklch(0.9 0.015 var(--hue));
   --toc-panel-border: oklch(0.7 0.14 var(--hue));
   /* Space beside the page; read on the fixed TOC, where 100% is the viewport width */
   --toc-width: calc((100% - var(--container-page)) / 2 - var(--spacing) * 4);
-  --toc-item-active: oklch(0.7 0.13 var(--hue));
-  --btn-regular-dark-bg: oklch(0.45 0.01 var(--hue));
-  --btn-regular-dark-bg-hover: oklch(0.5 0.01 var(--hue));
-  --btn-regular-dark-bg-active: oklch(0.55 0.01 var(--hue));
-  --btn-regular-dark-success: oklch(0.75 0.14 var(--hue));
 }
 :root.dark {
   --primary: oklch(0.75 0.14 var(--hue));
@@ -92,26 +83,17 @@
   --license-block-bg: var(--codeblock-bg);
   --link-underline: oklch(0.4 0.08 var(--hue));
   --link-hover: oklch(0.4 0.08 var(--hue));
-  --link-active: oklch(0.35 0.07 var(--hue));
   --float-panel-bg: oklch(0.19 0.015 var(--hue));
   --scrollbar-bg: var(--scrollbar-bg-dark);
   --scrollbar-bg-hover: var(--scrollbar-bg-hover-dark);
   --scrollbar-bg-active: var(--scrollbar-bg-active-dark);
   --color-selection-bar: linear-gradient(to right, oklch(0.7 0.1 0), oklch(0.7 0.1 30), oklch(0.7 0.1 60), oklch(0.7 0.1 90), oklch(0.7 0.1 120), oklch(0.7 0.1 150), oklch(0.7 0.1 180), oklch(0.7 0.1 210), oklch(0.7 0.1 240), oklch(0.7 0.1 270), oklch(0.7 0.1 300), oklch(0.7 0.1 330), oklch(0.7 0.1 360));
-  --display-light-icon: 0;
-  --display-dark-icon: 1;
   --admonitions-color-tip: oklch(0.75 0.14 180);
   --admonitions-color-note: oklch(0.75 0.14 250);
   --admonitions-color-important: oklch(0.75 0.14 310);
   --admonitions-color-warning: oklch(0.75 0.14 60);
   --admonitions-color-caution: oklch(0.65 0.2 25);
   --toc-badge-bg: var(--btn-regular-bg);
-  --toc-btn-hover: oklch(0.22 0.02 var(--hue));
   --toc-btn-active: oklch(0.25 0.02 var(--hue));
   --toc-panel-border: oklch(0.7 0.14 var(--hue));
-  --toc-item-active: oklch(0.35 0.07 var(--hue));
-  --btn-regular-dark-bg: oklch(0.3 0.02 var(--hue));
-  --btn-regular-dark-bg-hover: oklch(0.35 0.03 var(--hue));
-  --btn-regular-dark-bg-active: oklch(0.4 0.03 var(--hue));
-  --btn-regular-dark-success: oklch(0.75 0.14 var(--hue));
 }
