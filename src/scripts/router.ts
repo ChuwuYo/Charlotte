@@ -91,26 +91,29 @@ function moveFrame(
 		const b = after[id];
 		return a === undefined || b === undefined ? 0 : a - b + skip;
 	};
-	// Keyframes add to the element's own translate
-	const slide = (id: string, by: number) => {
+	const moves: [string, number][] = FRAME.map((id) => [id, offset(id)]);
+	// A stuck sidebar keeps its screen position
+	if (travel) moves.push([STICKY, offset(STICKY) - skip - offset("main-grid")]);
+	// A stuck navbar stays put; one scrolled away moves like the frame
+	const from = before[NAVBAR];
+	const to = after[NAVBAR];
+	if (from !== undefined && to !== undefined)
+		moves.push([NAVBAR, Math.max(-travel, Math.min(travel, from - to))]);
+	// All own translates are read before any animation starts
+	const slides = moves.flatMap(([id, by]) => {
 		const el = document.getElementById(id);
-		if (!el || Math.abs(by) < 0.5) return;
-		const own = getComputedStyle(el).translate;
+		if (!el || Math.abs(by) < 0.5) return [];
+		return [{ el, by, own: getComputedStyle(el).translate }];
+	});
+	// Keyframes add to the element's own translate
+	for (const { el, by, own } of slides) {
 		const [x, y] = own === "none" ? ["0px", "0px"] : [...own.split(" "), "0px"];
 		const base = Number.parseFloat(y);
 		el.animate(
 			[{ translate: `${x} ${base + by}px` }, { translate: `${x} ${base}px` }],
 			{ duration, easing },
 		);
-	};
-	for (const id of FRAME) slide(id, offset(id));
-	// A stuck sidebar keeps its screen position
-	if (travel) slide(STICKY, offset(STICKY) - skip - offset("main-grid"));
-	// A stuck navbar stays put; one scrolled away moves like the frame
-	const from = before[NAVBAR];
-	const to = after[NAVBAR];
-	if (from !== undefined && to !== undefined)
-		slide(NAVBAR, Math.max(-travel, Math.min(travel, from - to)));
+	}
 }
 
 // client:only islands render nothing until hydrated; keep the old content height so the frame below does not jump
