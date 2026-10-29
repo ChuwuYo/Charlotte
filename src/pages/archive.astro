@@ -6,9 +6,19 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import { getSortedPostsList } from "../utils/content-utils";
 
 const sortedPostsList = await getSortedPostsList({ includePinned: false });
+// 只传归档所需字段
+const archivePosts = sortedPostsList.map(({ slug, data }) => ({
+	slug,
+	data: {
+		title: data.title,
+		tags: data.tags,
+		category: data.category,
+		published: data.published,
+	},
+}));
 ---
 
 <BaseLayout title={i18n(I18nKey.archive)}>
-    <ArchivePanel sortedPosts={sortedPostsList} client:only="svelte"></ArchivePanel>
+    <ArchivePanel sortedPosts={archivePosts} client:only="svelte"></ArchivePanel>
 </BaseLayout>
 
