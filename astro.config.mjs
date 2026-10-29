@@ -125,7 +125,7 @@ export default defineConfig({
 	site: siteConfig.url,
 	base: "/",
 	trailingSlash: "always",
-	// ClientRouter fetches pages; hovered or focused links are fetched ahead
+	// Prefetch all links as they enter the viewport
 	prefetch: { prefetchAll: true, defaultStrategy: "viewport" },
 	integrations: [
 		assetManifest(),
