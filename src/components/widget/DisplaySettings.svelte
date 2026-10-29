@@ -53,7 +53,7 @@ function resetHue() {
 
 <div id="display-setting" class="float-panel float-panel-closed absolute w-80 right-4 px-4 py-4">
     <div class="flex flex-row gap-2 mb-3 items-center justify-between">
-        <div class="flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 relative ml-3
+        <div class="flex gap-2 font-bold text-lg text-90 relative ml-3
             before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
             before:absolute before:-left-3 before:top-1.25"
         >
@@ -81,7 +81,7 @@ function resetHue() {
                onpointerdown={startDrag}>
     </div>
 
-    <div class="flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 relative ml-3 mt-4
+    <div class="flex gap-2 font-bold text-lg text-90 relative ml-3 mt-4
         before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
         before:absolute before:-left-3 before:top-1.25">
         {i18n(I18nKey.cardBackgroundColor)}

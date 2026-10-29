@@ -1,6 +1,17 @@
 .custom-md {
     font-size: var(--text-prose);
 
+    /* Typography plugin colors from the text ramp; unlayered, so they win over prose-invert too */
+    --tw-prose-body: var(--fg-body);
+    --tw-prose-headings: var(--fg-strong);
+    --tw-prose-lead: var(--fg-body);
+    --tw-prose-links: var(--primary-text);
+    --tw-prose-bold: var(--fg-strong);
+    --tw-prose-quotes: var(--fg-strong);
+    --tw-prose-captions: var(--fg-muted);
+    --tw-prose-th-borders: var(--meta-divider);
+    --tw-prose-td-borders: var(--line-color);
+
     /* Line length for running text; code, tables and media keep the full width */
     :where(p, li) {
         max-inline-size: var(--spacing-measure);

@@ -52,8 +52,8 @@ const { remarkPluginFrontmatter } = await render(entry);
     <div class:list={["w-full pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", { "md:w-[calc(100%-var(--spacing)*16)]": !hasCover, "md:w-[calc(100%-var(--coverWidth)-var(--spacing)*3)]": hasCover }]}>
         <a href={url}
            class="transition-ui group w-full block font-bold mb-3 text-card-title text-90
- hover:text-[var(--primary-text)] dark:hover:text-[var(--primary-text)]
- active:text-[var(--title-active)] dark:active:text-[var(--title-active)]
+ hover:text-[var(--primary-text)]
+ active:text-[var(--title-active)]
  before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
  before:absolute before:top-9.5 before:left-4.5 before:hidden md:before:block
  ">
@@ -80,7 +80,7 @@ const { remarkPluginFrontmatter } = await render(entry);
         </div>
 
         <!-- word count and read time  -->
-        <div class="text-meta text-black/30 dark:text-white/30 flex gap-4">
+        <div class="text-meta text-50 flex gap-4">
             <div>
                 {remarkPluginFrontmatter.words} {" " + i18n(remarkPluginFrontmatter.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}
             </div>
