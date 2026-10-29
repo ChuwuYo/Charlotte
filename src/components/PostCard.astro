@@ -22,6 +22,7 @@ interface Props {
 	description: string;
 	style: string;
 	isPinned?: boolean;
+	index?: number;
 }
 const {
 	entry,
@@ -35,7 +36,10 @@ const {
 	description,
 	style,
 	isPinned = false,
+	index = 0,
 } = Astro.props;
+// 前两张封面优先加载
+const eager = index < 2;
 const className = Astro.props.class;
 
 const hasCover = image !== undefined && image !== null && image !== "";
@@ -100,7 +104,7 @@ const { remarkPluginFrontmatter } = await render(entry);
                   class="transition-ui opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 text-white icon-12">
             </Icon>
         </div>
-        <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} alt="Cover of the Post" loading="eager" fetchpriority="high"
+        <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} alt="Cover of the Post" loading={eager ? "eager" : "lazy"} fetchpriority={eager ? "high" : "auto"}
                   class="w-full h-full post-card-cover">
         </ImageWrapper>
     </a>}

@@ -9,9 +9,10 @@ let delay = 0;
 const interval = 50;
 ---
 <div class="flex flex-col rounded-[var(--radius-large)] bg-[var(--card-bg)] py-1 md:py-0 md:bg-transparent md:gap-4 mb-4">
-    {page.data.map((entry: CollectionEntry<"posts">) => (
+    {page.data.map((entry: CollectionEntry<"posts">, index: number) => (
         <PostCard
                 entry={entry}
+                index={index}
                 title={entry.data.title}
                 isPinned={entry.data.isPinned}
                 tags={entry.data.tags}
