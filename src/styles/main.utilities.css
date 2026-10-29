@@ -63,7 +63,7 @@
 
 @utility search-panel {
 	& mark {
-		@apply bg-transparent text-(--primary);
+		@apply bg-transparent text-(--primary-text);
 	}
 }
 
@@ -78,14 +78,14 @@
 
 @utility btn-plain {
 	@apply transition-ui relative flex items-center justify-center bg-none
-		text-black/75 hover:text-(--primary) dark:text-white/75 dark:hover:text-(--primary);
+		text-black/75 hover:text-(--primary-text) dark:text-white/75 dark:hover:text-(--primary-text);
 	&:not(.scale-animation) {
 		@apply hover:bg-(--btn-plain-bg-hover) active:bg-(--btn-plain-bg-active);
 	}
 	&.scale-animation {
 		@apply expand-animation;
 		&.current-theme-btn {
-			@apply text-(--primary);
+			@apply text-(--primary-text);
 			&::before {
 				opacity: 1;
 				scale: 1;

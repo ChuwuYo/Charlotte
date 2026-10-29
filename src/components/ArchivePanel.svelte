@@ -121,7 +121,7 @@ const groups: Group[] = $derived.by(() => {
                         <!-- post title -->
                         <div
                                 class="w-[70%] md:max-w-[65%] md:w-[65%] text-left text-ui font-bold
-                     group-hover:translate-x-1 transition-ui group-hover:text-[var(--primary)]
+                     group-hover:translate-x-1 transition-ui group-hover:text-[var(--primary-text)]
                      text-75 pr-8 whitespace-nowrap text-ellipsis overflow-hidden"
                         >
                             {post.data.title}

@@ -50,7 +50,7 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
         className,
         "card-base navbar-with-opacity !overflow-visible max-w-page h-navbar !rounded-t-none mx-auto flex items-center justify-between px-4"]}>
         <a href={url('/')} class="btn-plain scale-animation rounded-lg h-13 px-5 font-bold active:scale-95">
-            <div class="flex flex-row text-[var(--primary)] items-center text-md">
+            <div class="flex flex-row text-[var(--primary-text)] items-center text-md">
                 {siteConfig.favicon[0]?.src ? (
                     <div class="w-8 h-8 mr-2 mb-1 rounded-full overflow-hidden border border-[var(--primary)]">
                         <ImageWrapper src={siteConfig.favicon[0].src} alt={`${siteConfig.title} ${i18n(I18nKey.home)}`} class="w-full h-full" loading="eager" />

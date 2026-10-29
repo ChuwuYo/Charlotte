@@ -21,7 +21,7 @@ const links = Astro.props.links;
  hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition-ui"
                         data-mobile-dropdown-trigger
                     >
-                        <div class="transition-ui text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                        <div class="transition-ui text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary-text)] group-active:text-[var(--primary-text)]">
                             {link.name}
                         </div>
                         <Icon name="material-symbols:keyboard-arrow-down-rounded"
@@ -37,7 +37,7 @@ const links = Astro.props.links;
  "
                                    target={child.external ? "_blank" : null}
                                 >
-                                    <div class="transition-ui text-black/60 dark:text-white/60 font-medium group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                                    <div class="transition-ui text-black/60 dark:text-white/60 font-medium group-hover:text-[var(--primary-text)] group-active:text-[var(--primary-text)]">
                                         {child.name}
                                     </div>
                                     {child.external && <Icon name="fa6-solid:arrow-up-right-from-square"
@@ -56,7 +56,7 @@ const links = Astro.props.links;
  "
                    target={link.external ? "_blank" : null}
                 >
-                    <div class="transition-ui text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                    <div class="transition-ui text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary-text)] group-active:text-[var(--primary-text)]">
                         {link.name}
                     </div>
                     {!link.external && <Icon name="material-symbols:chevron-right-rounded"

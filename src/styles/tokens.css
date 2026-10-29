@@ -6,11 +6,13 @@
 }
 :root {
   --primary: oklch(0.7 0.14 var(--hue));
+  /* Primary as text: darker in light mode for 4.5:1 */
+  --primary-text: oklch(0.5 0.12 var(--hue));
   --page-bg: oklch(0.95 0.01 var(--hue));
   --card-bg-original: white;
   --card-bg-themed: oklch(0.99 0.01 var(--hue));
   --card-bg: var(--card-bg-original);
-  --btn-content: oklch(0.55 0.12 var(--hue));
+  --btn-content: oklch(0.46 0.12 var(--hue));
   --btn-regular-bg: oklch(0.95 0.025 var(--hue));
   --btn-regular-bg-hover: oklch(0.9 0.05 var(--hue));
   --btn-regular-bg-active: oklch(0.85 0.08 var(--hue));
@@ -53,6 +55,11 @@
   --admonitions-color-important: oklch(0.7 0.14 310);
   --admonitions-color-warning: oklch(0.7 0.14 60);
   --admonitions-color-caution: oklch(0.6 0.2 25);
+  --admonitions-text-tip: oklch(0.5 0.14 180);
+  --admonitions-text-note: oklch(0.5 0.14 250);
+  --admonitions-text-important: oklch(0.5 0.14 310);
+  --admonitions-text-warning: oklch(0.5 0.14 60);
+  --admonitions-text-caution: oklch(0.5 0.2 25);
   --toc-badge-bg: oklch(0.89 0.05 var(--hue));
   --toc-btn-active: oklch(0.9 0.015 var(--hue));
   --toc-panel-border: oklch(0.7 0.14 var(--hue));
@@ -61,6 +68,7 @@
 }
 :root.dark {
   --primary: oklch(0.75 0.14 var(--hue));
+  --primary-text: var(--primary);
   --page-bg: oklch(0.16 0.014 var(--hue));
   --card-bg-original: oklch(0.23 0.015 var(--hue));
   --card-bg-themed: oklch(0.23 0.015 var(--hue));
@@ -93,6 +101,11 @@
   --admonitions-color-important: oklch(0.75 0.14 310);
   --admonitions-color-warning: oklch(0.75 0.14 60);
   --admonitions-color-caution: oklch(0.65 0.2 25);
+  --admonitions-text-tip: var(--admonitions-color-tip);
+  --admonitions-text-note: var(--admonitions-color-note);
+  --admonitions-text-important: var(--admonitions-color-important);
+  --admonitions-text-warning: var(--admonitions-color-warning);
+  --admonitions-text-caution: var(--admonitions-color-caution);
   --toc-badge-bg: var(--btn-regular-bg);
   --toc-btn-active: oklch(0.25 0.02 var(--hue));
   --toc-panel-border: oklch(0.7 0.14 var(--hue));

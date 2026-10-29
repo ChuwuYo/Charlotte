@@ -23,14 +23,14 @@ const className = Astro.props.class;
     </div>
     {isCollapsed && <div class="expand-btn px-4 -mb-2">
         <button class="btn-plain rounded-lg w-full md:h-9 h-12">
-            <div class="text-[var(--primary)] flex items-center justify-center gap-2 -translate-x-2">
+            <div class="text-[var(--primary-text)] flex items-center justify-center gap-2 -translate-x-2">
                 <Icon name="material-symbols:more-horiz" class="icon-7"></Icon> {i18n(I18nKey.more)}
             </div>
         </button>
     </div>}
     <div class="collapse-btn px-4 -mb-2 hidden">
         <button class="btn-plain rounded-lg w-full md:h-9 h-12">
-            <div class="text-[var(--primary)] flex items-center justify-center gap-2 -translate-x-2">
+            <div class="text-[var(--primary-text)] flex items-center justify-center gap-2 -translate-x-2">
                 <Icon name="material-symbols:keyboard-arrow-up-rounded" class="icon-7"></Icon> {i18n(I18nKey.less)}
             </div>
         </button>

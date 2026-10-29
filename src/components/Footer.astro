@@ -24,13 +24,13 @@ const uptimeUnits = JSON.stringify({
 
 <div class="border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
     <div class="text-50 text-sm text-center mb-2">
-        {i18n(I18nKey.websiteRuntimeText)} <span data-start={siteConfig.startDate} data-units={uptimeUnits} class="uptime-display transition-ui link text-[var(--primary)] font-medium">{i18n(I18nKey.loading)}</span>
+        {i18n(I18nKey.websiteRuntimeText)} <span data-start={siteConfig.startDate} data-units={uptimeUnits} class="uptime-display transition-ui link text-[var(--primary-text)] font-medium">{i18n(I18nKey.loading)}</span>
     </div>
     <div class="text-50 text-sm text-center mb-2">
         &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. {i18n(I18nKey.allRightsReserved)}<br>
         {i18n(I18nKey.poweredBy)}{" "}
-        <a class="transition-ui link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &{" "}
-        <a class="transition-ui link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/ChuwuYo/Charlotte">Charlotte ver {version}</a>
+        <a class="transition-ui link text-[var(--primary-text)] font-medium" target="_blank" href="https://astro.build">Astro</a> &{" "}
+        <a class="transition-ui link text-[var(--primary-text)] font-medium" target="_blank" href="https://github.com/ChuwuYo/Charlotte">Charlotte ver {version}</a>
     </div>
     <nav class="flex flex-wrap gap-2 justify-center items-center text-50 text-sm" aria-label="Subscriptions">
         <a class="btn-regular-sm" target="_blank" href={url('rss.xml')} aria-label="RSS">

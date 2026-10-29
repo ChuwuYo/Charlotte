@@ -65,7 +65,7 @@ const className = Astro.props.class;
         <div class="flex flex-row flex-nowrap items-center">
             <a href={getCategoryUrl(category)}
                class="link-lg transition-ui text-50 text-meta font-medium
- hover:text-[var(--primary)] dark:hover:text-[var(--primary)] whitespace-nowrap">
+ hover:text-[var(--primary-text)] dark:hover:text-[var(--primary-text)] whitespace-nowrap">
                 {category || i18n(I18nKey.uncategorized)}
             </a>
         </div>
@@ -82,7 +82,7 @@ const className = Astro.props.class;
                 <div class:list={[{"hidden": i == 0}, "mx-1.5 text-[var(--meta-divider)] text-meta"]}>/</div>
                 <a href={getTagUrl(tag)}
                    class="link-lg transition-ui text-50 text-meta font-medium
- hover:text-[var(--primary)] dark:hover:text-[var(--primary)] whitespace-nowrap">
+ hover:text-[var(--primary-text)] dark:hover:text-[var(--primary-text)] whitespace-nowrap">
                     {tag.trim()}
                 </a>
             ))}
