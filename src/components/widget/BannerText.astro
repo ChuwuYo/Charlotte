@@ -148,12 +148,14 @@ if (document.querySelector(".banner-text-container")) new BannerTextController()
     }
 
     /* 引号浮动动画 */
-    .quote-float {
-        animation: float 4s ease-in-out infinite;
-    }
+    @media (prefers-reduced-motion: no-preference) {
+        .quote-float {
+            animation: float 4s ease-in-out infinite;
+        }
 
-    .quote-float-delayed {
-        animation: float 4s ease-in-out infinite 2s;
+        .quote-float-delayed {
+            animation: float 4s ease-in-out infinite 2s;
+        }
     }
 
     @keyframes float {
