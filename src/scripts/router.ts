@@ -65,15 +65,17 @@ function markFrameMove(duration: number) {
 const FRAME = ["banner-wrapper", "main-grid"];
 const STICKY = "sidebar-sticky";
 const NAVBAR = "navbar-wrapper";
+const NAVBAR_ROW = "top-row";
 const top = (id: string) =>
 	document.getElementById(id)?.getBoundingClientRect().top;
-// A hidden navbar is left out: it only fades back in
-const measure = () => {
-	const ids = [...FRAME, STICKY];
-	if (!document.getElementById(NAVBAR)?.classList.contains("navbar-hidden"))
-		ids.push(NAVBAR);
-	return Object.fromEntries(ids.map((id) => [id, top(id)]));
-};
+const navbarHidden = () =>
+	!!document.getElementById(NAVBAR)?.classList.contains("navbar-hidden");
+const measure = () => ({
+	...Object.fromEntries(
+		[...FRAME, STICKY, NAVBAR, NAVBAR_ROW].map((id) => [id, top(id)]),
+	),
+	hidden: navbarHidden() ? 1 : 0,
+});
 
 // FLIP: frame parts start at their old screen position and slide into place;
 // at most `travel` of the scroll change is animated
@@ -94,10 +96,11 @@ function moveFrame(
 	const moves: [string, number][] = FRAME.map((id) => [id, offset(id)]);
 	// A stuck sidebar keeps its screen position
 	if (travel) moves.push([STICKY, offset(STICKY) - skip - offset("main-grid")]);
-	// A stuck navbar stays put; one scrolled away moves like the frame
+	// Navbar: a stuck one stays put; a hidden one shows at once and enters with the page
 	const from = before[NAVBAR];
 	const to = after[NAVBAR];
-	if (from !== undefined && to !== undefined)
+	if (before.hidden && !after.hidden) moves.push([NAVBAR, offset(NAVBAR_ROW)]);
+	else if (!before.hidden && from !== undefined && to !== undefined)
 		moves.push([NAVBAR, Math.max(-travel, Math.min(travel, from - to))]);
 	// All own translates are read before any animation starts
 	const slides = moves.flatMap(([id, by]) => {
@@ -304,6 +307,8 @@ export function initRouter(): void {
 				top: target.scrollY,
 				behavior: "instant",
 			});
+		// Scroll-driven states settle before the frame is measured
+		document.dispatchEvent(new Event("router:scrolled"));
 		if (flip)
 			moveFrame(flip.before, flip.from - scrollY, flip.travel, flip.duration);
 		flip = undefined;

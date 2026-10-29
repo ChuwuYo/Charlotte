@@ -146,7 +146,7 @@ const warmupConfig = {
 
 		<!-- Navbar -->
 		<div id="top-row" class="z-50 pointer-events-none relative max-w-page px-0 md:px-4 mx-auto">
-			<div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-[opacity,translate]">
+			<div id="navbar-wrapper" class="pointer-events-auto sticky top-0">
 				<Navbar />
 			</div>
 		</div>
@@ -265,6 +265,15 @@ const warmupConfig = {
 		.navbar-hidden {
 			opacity: 0;
 			translate: 0 calc(var(--spacing) * -16);
+		}
+		#navbar-wrapper {
+			transition-property: opacity, translate;
+			transition-duration: var(--default-transition-duration);
+			transition-timing-function: var(--default-transition-timing-function);
+		}
+		/* While the frame moves, the navbar shows and hides without its own transition */
+		html[data-frame-move] #navbar-wrapper {
+			transition: none;
 		}
 
 		/* Thresholds: past the banner, and where the navbar hides */

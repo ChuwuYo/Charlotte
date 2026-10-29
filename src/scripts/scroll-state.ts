@@ -3,13 +3,13 @@
 // A 1px sentinel is passed once it is above the viewport
 const above = (rect: DOMRectReadOnly) => rect.bottom < 0;
 
-// Crossings come from the observer; after a swap the new page is read once
+// Crossings come from the observer; after a navigation the new page is read once
 function onPassed(sentinel: Element | null, cb: (passed: boolean) => void) {
 	if (!sentinel) return;
 	new IntersectionObserver(([entry]) =>
 		cb(above(entry.boundingClientRect)),
 	).observe(sentinel);
-	document.addEventListener("astro:after-swap", () =>
+	document.addEventListener("router:scrolled", () =>
 		cb(above(sentinel.getBoundingClientRect())),
 	);
 }
