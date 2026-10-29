@@ -21,6 +21,15 @@
     h1 {
         font-size: calc(30em / 17);
         line-height: 1.2;
+        /* More space above than below, and above h2's 2em */
+        margin-block: 1.8em 0.8em;
+    }
+
+    /* Headings sit in sections (remark-sectionize): no top gap for the first one,
+       and a subheading right under its heading keeps only that heading's bottom margin */
+    > section:first-child > :first-child,
+    :is(h1, h2, h3) + section > :first-child {
+        margin-top: 0;
     }
 
     h1, h2, h3, h4, h5, h6 {
