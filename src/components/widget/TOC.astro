@@ -48,7 +48,10 @@ const maxLevel = siteConfig.toc.depth;
                     {heading.depth == minDepth + 1 && <div class="w-2 h-2 rounded-[calc(var(--spacing)*0.75)] bg-[var(--toc-badge-bg)]"></div>}
                     {heading.depth == minDepth + 2 && <div class="w-1.5 h-1.5 rounded-xs bg-black/5 dark:bg-white/10"></div>}
                 </div>
-                <div class="text-sm text-50">{removeTailingHash(heading.text)}</div>
+                <div class:list={["text-sm", {
+                    "text-75": heading.depth < minDepth + 2,
+                    "text-50": heading.depth == minDepth + 2,
+                }]}>{removeTailingHash(heading.text)}</div>
             </a>
     )}
     <div style="opacity: 0" class:list={[{'hidden': headings.length == 0}, "active-indicator -z-10 absolute bg-[var(--btn-plain-bg-hover)] left-0 right-0 rounded-xl transition-[top,height,opacity] " +
