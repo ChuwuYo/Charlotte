@@ -15,6 +15,11 @@
     /* Line length for running text; code, tables and media keep the full width */
     :where(p, li) {
         max-inline-size: var(--spacing-measure);
+        text-wrap: pretty;
+    }
+
+    :where(h1, h2, h3, h4, h5, h6) {
+        text-wrap: balance;
     }
 
     /* Headings scale with the body; h1 is 30/17 of it */
