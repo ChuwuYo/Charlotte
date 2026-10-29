@@ -68,7 +68,7 @@ const getPageUrl = (p: number) => {
             if (p == HIDDEN)
                 return <Icon name="material-symbols:more-horiz" class="mx-1"/>;
             if (p == page.currentPage)
-                return <div class="md:h-11 md:w-11 h-12 w-12 rounded-lg bg-[var(--primary)] flex items-center justify-center
+                return <div aria-current="page" class="md:h-11 md:w-11 h-12 w-12 rounded-lg bg-[var(--primary)] flex items-center justify-center
                     font-bold text-white dark:text-black/70"
                 >
                     {p}
