@@ -170,7 +170,7 @@ export function pluginCodeToolbar() {
 				align-items: center;
 				padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
 				background: var(--codeblock-topbar-bg);
-				font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+				font-family: var(--font-jetbrains-mono);
 				user-select: none;
 				border-bottom: 1px solid color-mix(in srgb, var(--primary) 50%, transparent);
 				position: relative;

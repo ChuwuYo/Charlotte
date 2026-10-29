@@ -1,9 +1,7 @@
 ---
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
 import "../styles/global.css";
 
+import { Font } from "astro:assets";
 import BackToTop from "@components/control/BackToTop.astro";
 import Footer from "@components/Footer.astro";
 import HeadScript from "@components/HeadScript.astro";
@@ -103,6 +101,8 @@ const warmupConfig = {
 		<meta charset="UTF-8" />
 		<style is:inline set:html={TOC_MEDIA_CSS}></style>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<Font cssVariable="--font-roboto" preload={[{ subset: "latin", style: "normal", weight: 400 }]} />
+		<Font cssVariable="--font-jetbrains-mono" />
 		<meta name="keywords" content={siteConfig.keywords} />
 		<meta name="description" content={finalDescription} />
 		<meta name="author" content={profileConfig.name} />

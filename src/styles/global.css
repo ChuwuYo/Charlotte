@@ -22,7 +22,7 @@
 
 @theme {
 	--font-sans:
-		Roboto, sans-serif, ui-sans-serif, system-ui, sans-serif,
+		var(--font-roboto), ui-sans-serif, system-ui, sans-serif,
 		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	--ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 }
