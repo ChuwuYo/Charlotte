@@ -41,6 +41,10 @@
   --codeblock-topbar-bg: oklch(0.3 0.02 var(--hue));
   --codeblock-toolbar-element-bg: oklch(0.6 0.09 var(--hue));
   --codeblock-toolbar-element-color: oklch(0.75 0.12 var(--hue));
+  /* Toolbar sits on the dark code bar in both themes */
+  --codeblock-toolbar-element-hover: oklch(0.8 0.1 var(--hue));
+  --codeblock-toolbar-success: oklch(0.85 0.12 var(--hue));
+  --codeblock-toolbar-error: oklch(0.75 0.15 25);
   --license-block-bg: rgba(0,0,0,0.03);
   --link-underline: oklch(0.93 0.04 var(--hue));
   --link-hover: oklch(0.95 0.025 var(--hue));

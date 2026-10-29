@@ -185,14 +185,7 @@ export function pluginCodeToolbar() {
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 20%, transparent);
 				border-radius: var(--radius-lg);
 				line-height: calc(var(--spacing) * 5);
-				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
-				transition: all 0.2s ease;
-				border: 1px solid color-mix(in srgb, var(--codeblock-toolbar-element-bg) 30%, transparent);
 				display: inline-flex;
-			}
-			.code-toolbar-lang:hover {
-				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 25%, transparent);
-				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
 			}
 			.code-toolbar-spacer { flex: 1; }
 			.code-toolbar-title {
@@ -210,36 +203,50 @@ export function pluginCodeToolbar() {
 				pointer-events: none;
 			}
 			.code-toolbar-copy {
+				position: relative;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				width: calc(var(--spacing) * 7);
 				height: calc(var(--spacing) * 7);
 				padding: 0;
-				border: 1px solid color-mix(in srgb, var(--codeblock-toolbar-element-bg) 30%, transparent);
+				border: 0;
 				border-radius: var(--radius-lg);
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 20%, transparent);
 				color: var(--codeblock-toolbar-element-color);
 				cursor: pointer;
-				transition: all 0.2s ease;
-				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
+				transition-property: background-color, color;
+				transition-duration: var(--duration-fast);
+				transition-timing-function: var(--ease-standard);
+			}
+			/* Hit area at least 24px (WCAG 2.5.8) */
+			.code-toolbar-copy::after {
+				content: "";
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: max(100%, 24px);
+				height: max(100%, 24px);
+				translate: -50% -50%;
 			}
 			.code-toolbar-copy:hover {
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 25%, transparent);
-				color: oklch(0.8 0.1 var(--hue));
-				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+				color: var(--codeblock-toolbar-element-hover);
 			}
 			.code-toolbar-copy:active {
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 35%, transparent);
-				box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(255, 255, 255, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
 			}
-			.code-toolbar-copy:focus-visible { 
-				outline: 2px solid oklch(0.75 0.14 var(--hue));
+			.code-toolbar-copy:focus-visible {
+				outline: 2px solid var(--codeblock-toolbar-element-hover);
 				outline-offset: 2px;
 			}
 			.code-toolbar-copy.success {
-				background: color-mix(in srgb, oklch(0.6 0.12 var(--hue)) 40%, transparent);
-				color: oklch(0.85 0.12 var(--hue));
+				background: color-mix(in srgb, var(--codeblock-toolbar-success) 25%, transparent);
+				color: var(--codeblock-toolbar-success);
+			}
+			.code-toolbar-copy.error {
+				background: color-mix(in srgb, var(--codeblock-toolbar-error) 25%, transparent);
+				color: var(--codeblock-toolbar-error);
 			}
 			.copy-icon-wrapper { position: relative; width: calc(var(--spacing) * 4); height: calc(var(--spacing) * 4); }
 			.toolbar-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: currentColor; transition: opacity 0.15s ease, transform 0.15s ease; }
