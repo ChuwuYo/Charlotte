@@ -11,6 +11,7 @@ function manifest(): Manifest {
 }
 
 export const allAssets = () => manifest().assets;
+export const allRoutes = () => Object.keys(manifest().routes);
 
 export function routeAssets(pathname: string) {
 	const { assets, routes } = manifest();

@@ -1,6 +1,6 @@
 // Warms caches before the first click: other pages' assets, then the HTML of visible links
 import { prefetch } from "astro:prefetch";
-import { allAssets } from "./asset-manifest";
+import { allAssets, allRoutes } from "./asset-manifest";
 
 // Content and navbar links; sidebar lists are left to hover/touch
 const SCOPE = "#main a[href], #navbar a[href]";
@@ -44,16 +44,18 @@ function warmImages(html: string) {
 }
 
 const done = new Set<string>();
+// Visible links first (with their images), then every other page
 const queue: string[] = [];
+const rest: string[] = [];
 let inflight = 0;
 
 function pump() {
-	while (inflight < MAX_INFLIGHT && queue.length) {
-		const url = queue.shift() as string;
+	while (inflight < MAX_INFLIGHT && (queue.length || rest.length)) {
+		const visible = queue.length > 0;
+		const url = (visible ? queue.shift() : rest.shift()) as string;
 		inflight++;
 		fetch(url, { priority: "low" } as RequestInit)
-			.then((res) => res.text())
-			.then(warmImages)
+			.then((res) => (visible ? res.text().then(warmImages) : undefined))
 			.catch(() => {})
 			.finally(() => {
 				inflight--;
@@ -79,13 +81,29 @@ const observer =
 					if (!isIntersecting) continue;
 					observer?.unobserve(target);
 					const url = pageUrl(target as HTMLAnchorElement);
-					if (!url || done.has(url)) continue;
+					if (!url) continue;
+					// A queued site page moves ahead once its link is visible
+					const waiting = rest.indexOf(url);
+					if (waiting >= 0) rest.splice(waiting, 1);
+					else if (done.has(url)) continue;
 					done.add(url);
 					queue.push(url);
 				}
 				pump();
 			})
 		: undefined;
+
+// The whole site is small; fetch each page once so the nearest edge has it cached
+function queueSite() {
+	for (const path of allRoutes()) {
+		if (path.endsWith(".html")) continue;
+		const url = new URL(path, location.origin).href;
+		if (done.has(url) || url === location.href.replace(/#.*/, "")) continue;
+		done.add(url);
+		rest.push(url);
+	}
+	pump();
+}
 
 function observeLinks() {
 	if (!observer) return;
@@ -114,6 +132,7 @@ export function initAssetWarmup(): void {
 		idle(() => {
 			warmAssets();
 			observeLinks();
+			queueSite();
 		});
 	if (document.readyState === "complete") start();
 	else addEventListener("load", start, { once: true });
