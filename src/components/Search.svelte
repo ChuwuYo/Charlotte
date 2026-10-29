@@ -12,7 +12,7 @@ let { icons }: { icons: IconMap } = $props();
 let keywordDesktop = $state("");
 let keywordMobile = $state("");
 let result: SearchResult[] = $state([]);
-let initialized = $state(false);
+let initialized = false;
 
 // Dev server has no Pagefind index
 const fakeResult: SearchResult[] = [
@@ -74,7 +74,11 @@ async function search(keyword: string, isDesktop: boolean) {
 
 onMount(() => {
 	const ready = () => {
+		if (initialized) return;
 		initialized = true;
+		// 补搜就绪前的输入
+		if (keywordDesktop) search(keywordDesktop, true);
+		else if (keywordMobile) search(keywordMobile, false);
 	};
 	if (import.meta.env.DEV || window.pagefind) {
 		ready();
@@ -85,14 +89,6 @@ onMount(() => {
 	const timer = setTimeout(ready, 2000);
 	return () => clearTimeout(timer);
 });
-
-$effect(() => {
-	if (initialized && keywordDesktop) search(keywordDesktop, true);
-});
-
-$effect(() => {
-	if (initialized && keywordMobile) search(keywordMobile, false);
-});
 </script>
 
 <!-- search bar for desktop view -->
@@ -101,7 +97,7 @@ $effect(() => {
       dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
 ">
     <Icon icon={icons["material-symbols:search"]} class="absolute icon-5 pointer-events-none ml-3 my-auto text-black/30 dark:text-white/30"></Icon>
-    <input name="search" aria-label={i18n(I18nKey.search)} placeholder={i18n(I18nKey.search)} bind:value={keywordDesktop} onfocus={() => search(keywordDesktop, true)}
+    <input name="search" aria-label={i18n(I18nKey.search)} placeholder={i18n(I18nKey.search)} bind:value={keywordDesktop} oninput={(e) => search(e.currentTarget.value, true)} onfocus={() => search(keywordDesktop, true)}
            class="transition-[width] pl-10 text-sm bg-transparent outline-0
           h-full w-40 active:w-60 focus:w-60 text-black/50 dark:text-white/50"
      >
@@ -123,7 +119,7 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
       dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
   ">
         <Icon icon={icons["material-symbols:search"]} class="absolute icon-5 pointer-events-none ml-3 my-auto text-black/30 dark:text-white/30"></Icon>
-        <input name="search" aria-label={i18n(I18nKey.search)} placeholder={i18n(I18nKey.search)} bind:value={keywordMobile}
+        <input name="search" aria-label={i18n(I18nKey.search)} placeholder={i18n(I18nKey.search)} bind:value={keywordMobile} oninput={(e) => search(e.currentTarget.value, false)}
                class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
                focus:w-60 text-black/50 dark:text-white/50"
         >
