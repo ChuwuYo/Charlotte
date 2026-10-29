@@ -64,11 +64,16 @@ function markFrameMove(duration: number) {
 // Frame parts that move with the page; the sticky sidebar is measured inside the grid
 const FRAME = ["banner-wrapper", "main-grid"];
 const STICKY = "sidebar-sticky";
+const NAVBAR = "navbar-wrapper";
 const top = (id: string) =>
 	document.getElementById(id)?.getBoundingClientRect().top;
-// The navbar is left out: it snaps to its new place without motion
-const measure = () =>
-	Object.fromEntries([...FRAME, STICKY].map((id) => [id, top(id)]));
+// A hidden navbar is left out: it only fades back in
+const measure = () => {
+	const ids = [...FRAME, STICKY];
+	if (!document.getElementById(NAVBAR)?.classList.contains("navbar-hidden"))
+		ids.push(NAVBAR);
+	return Object.fromEntries(ids.map((id) => [id, top(id)]));
+};
 
 // FLIP: frame parts start at their old screen position and slide into place;
 // at most `travel` of the scroll change is animated
@@ -89,6 +94,11 @@ function moveFrame(
 	const moves: [string, number][] = FRAME.map((id) => [id, offset(id)]);
 	// A stuck sidebar keeps its screen position
 	if (travel) moves.push([STICKY, offset(STICKY) - skip - offset("main-grid")]);
+	// A stuck navbar stays put; one scrolled away moves like the frame
+	const from = before[NAVBAR];
+	const to = after[NAVBAR];
+	if (from !== undefined && to !== undefined)
+		moves.push([NAVBAR, Math.max(-travel, Math.min(travel, from - to))]);
 	// All own translates are read before any animation starts
 	const slides = moves.flatMap(([id, by]) => {
 		const el = document.getElementById(id);
