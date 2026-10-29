@@ -17,5 +17,13 @@ export function rehypeLazyIframe() {
 }
 
 function lazy(node) {
-	if (node.tagName === "iframe") node.properties.loading ??= "lazy";
+	if (node.tagName !== "iframe") return;
+	const p = node.properties;
+	p.loading ??= "lazy";
+	// Keep the width/height attribute ratio when max-width shrinks it
+	const w = Number(p.width);
+	const h = Number(p.height);
+	if (w > 0 && h > 0) {
+		p.style = `aspect-ratio: ${w} / ${h}; height: auto;${p.style ? ` ${p.style}` : ""}`;
+	}
 }
