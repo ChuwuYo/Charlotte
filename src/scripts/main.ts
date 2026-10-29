@@ -1,5 +1,4 @@
 // Frame behaviors run once; page behaviors run for each page, including client-side navigations
-import { initAssetWarmup } from "./asset-warmup";
 import { initBackToTop } from "./back-to-top";
 import { initCodeCopy } from "./code-copy";
 import { initCollapsibleToc } from "./collapsible-toc";
@@ -27,7 +26,6 @@ initWidgetCollapse();
 initCodeCopy();
 initUptime();
 initLinkWarmup();
-initAssetWarmup();
 
 const seen = new WeakSet<Element>();
 let page: AbortController | undefined;

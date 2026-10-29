@@ -32,7 +32,7 @@ export default defineConfig({
 	base: "/",
 	trailingSlash: "always",
 	// ClientRouter fetches pages; hovered or focused links are fetched ahead
-	prefetch: { prefetchAll: true, defaultStrategy: "hover" },
+	prefetch: { prefetchAll: true, defaultStrategy: "viewport" },
 	integrations: [
 		assetManifest(),
 		icon({

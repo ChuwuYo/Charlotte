@@ -10,9 +10,6 @@ function manifest(): Manifest {
 	return cached as Manifest;
 }
 
-export const allAssets = () => manifest().assets;
-export const allRoutes = () => Object.keys(manifest().routes);
-
 export function routeAssets(pathname: string) {
 	const { assets, routes } = manifest();
 	const ids = routes[pathname] ?? routes[pathname.replace(/\/?$/, "/")] ?? [];
