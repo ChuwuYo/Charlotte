@@ -26,6 +26,23 @@ function warmAssets() {
 	}
 }
 
+// Content images show only once loaded; fetch the first ones of the prefetched page
+let parser: DOMParser | undefined;
+function warmImages(html: string) {
+	idle(() => {
+		parser ??= new DOMParser();
+		const doc = parser.parseFromString(html, "text/html");
+		const imgs = doc.querySelectorAll<HTMLImageElement>("#main img[src]");
+		for (const el of [...imgs].slice(0, 2)) {
+			const img = new Image();
+			img.fetchPriority = "low";
+			img.sizes = el.getAttribute("sizes") ?? "";
+			img.srcset = el.getAttribute("srcset") ?? "";
+			img.src = el.getAttribute("src") ?? "";
+		}
+	});
+}
+
 const done = new Set<string>();
 const queue: string[] = [];
 let inflight = 0;
@@ -35,6 +52,8 @@ function pump() {
 		const url = queue.shift() as string;
 		inflight++;
 		fetch(url, { priority: "low" } as RequestInit)
+			.then((res) => res.text())
+			.then(warmImages)
 			.catch(() => {})
 			.finally(() => {
 				inflight--;

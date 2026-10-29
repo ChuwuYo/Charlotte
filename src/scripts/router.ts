@@ -218,6 +218,18 @@ function preloadFromDocument(doc: Document | undefined) {
 			const url = island.getAttribute(attr);
 			if (url) preloadModule(url);
 		}
+	// Images stay hidden until loaded; start the first ones now instead of after the swap
+	const imgs = REGIONS.flatMap((id) => [
+		...(doc.getElementById(id)?.querySelectorAll("img") ?? []),
+	]);
+	for (const el of imgs.slice(0, 6)) {
+		if (!el.getAttribute("src")) continue;
+		const img = new Image();
+		img.decoding = "async";
+		img.sizes = el.getAttribute("sizes") ?? "";
+		img.srcset = el.getAttribute("srcset") ?? "";
+		img.src = el.getAttribute("src") ?? "";
+	}
 	const hrefs = [...doc.body.querySelectorAll("link[rel=stylesheet]")].map(
 		(link) => link.getAttribute("href"),
 	);
