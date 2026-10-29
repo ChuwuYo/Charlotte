@@ -80,7 +80,7 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
         </div>
         <div class="navbar-controls flex items-center" data-post-mode={hideButtonsOnPostPage ? "" : undefined}>
             <div class="search-container">
-                <Search icons={searchIcons} client:only="svelte"></Search>
+                <Search icons={searchIcons} client:load></Search>
             </div>
             <div class="buttons-container flex">
                 {!siteConfig.themeColor.fixed && (
@@ -88,7 +88,10 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
                             <Icon name="material-symbols:palette-outline" class="icon-5"></Icon>
                         </button>
                 )}
-                <LightDarkSwitch icons={themeIcons} client:only="svelte"></LightDarkSwitch>
+                <LightDarkSwitch icons={themeIcons} client:only="svelte">
+                    <!-- 占位，防止导航偏移 -->
+                    <div slot="fallback" class="h-11 w-11"></div>
+                </LightDarkSwitch>
             </div>
             <button aria-label="Menu" class="btn-plain scale-animation rounded-lg md:w-11 md:h-11 w-12 h-12 active:scale-90 md:!hidden" id="nav-menu-switch" aria-controls="nav-menu-panel" aria-expanded="false">
                 <Icon name="material-symbols:menu-rounded" class="icon-5"></Icon>
