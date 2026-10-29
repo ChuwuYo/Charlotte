@@ -131,7 +131,7 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
            class="transition-ui first-of-type:mt-2 lg:first-of-type:mt-0 group block
  rounded-xl text-lg px-3 py-2 hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]">
             <div class="transition-ui text-90 inline-flex font-bold group-hover:text-[var(--primary-text)]">
-                {item.meta.title}<Icon icon={icons["fa6-solid:chevron-right"]} class="icon-3 translate-x-1 my-auto text-[var(--primary)]"></Icon>
+                {item.meta.title}<Icon icon={icons["fa6-solid:chevron-right"]} class="icon-3 translate-x-1 my-auto text-(--primary-text)"></Icon>
             </div>
             <div class="text-meta text-50">
                 {@html item.excerpt}

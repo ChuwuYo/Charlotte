@@ -114,7 +114,7 @@ const jsonLd = {
             <a href={getPostUrlBySlug(entry.data.nextSlug)}
                class="w-full font-bold overflow-hidden press">
                 <div class="btn-card rounded-2xl w-full h-15 max-w-full px-4 flex items-center !justify-start gap-4" >
-                    <Icon name="material-symbols:chevron-left-rounded" class="icon-8 text-[var(--primary)]" />
+                    <Icon name="material-symbols:chevron-left-rounded" class="icon-8 text-(--primary-text)" />
                     <div class="overflow-hidden text-ellipsis whitespace-nowrap max-w-[calc(100%-var(--spacing)*12)] text-75">
                         {entry.data.nextTitle}
                     </div>
@@ -131,7 +131,7 @@ const jsonLd = {
                     <div class="overflow-hidden text-ellipsis whitespace-nowrap max-w-[calc(100%-var(--spacing)*12)] text-75">
                         {entry.data.prevTitle}
                     </div>
-                    <Icon name="material-symbols:chevron-right-rounded" class="icon-8 text-[var(--primary)]" />
+                    <Icon name="material-symbols:chevron-right-rounded" class="icon-8 text-(--primary-text)" />
                 </div>
             </a>
         ) : (

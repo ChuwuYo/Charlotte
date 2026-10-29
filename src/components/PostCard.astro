@@ -58,8 +58,8 @@ const { remarkPluginFrontmatter } = await render(entry);
  before:absolute before:top-9.5 before:left-4.5 before:hidden md:before:block
  ">
             {title}
-            <Icon class="inline icon-8 text-[var(--primary)] md:hidden translate-y-0.5 absolute" name="material-symbols:chevron-right-rounded" ></Icon>
-            <Icon class="text-[var(--primary)] icon-8 transition-ui hidden md:inline absolute translate-y-0.5 opacity-0 group-hover:opacity-100 motion-safe:-translate-x-1 motion-safe:group-hover:translate-x-0" name="material-symbols:chevron-right-rounded"></Icon>
+            <Icon class="inline icon-8 text-(--primary-text) md:hidden translate-y-0.5 absolute" name="material-symbols:chevron-right-rounded" ></Icon>
+            <Icon class="text-(--primary-text) icon-8 transition-ui hidden md:inline absolute translate-y-0.5 opacity-0 group-hover:opacity-100 motion-safe:-translate-x-1 motion-safe:group-hover:translate-x-0" name="material-symbols:chevron-right-rounded"></Icon>
         </a>
 
         <!-- metadata -->
@@ -116,7 +116,7 @@ const { remarkPluginFrontmatter } = await render(entry);
          hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] press
         ">
             <Icon name="material-symbols:chevron-right-rounded"
-                  class="text-[var(--primary)] icon-9 mx-auto">
+                  class="text-(--primary-text) icon-9 mx-auto">
             </Icon>
         </a>
     }

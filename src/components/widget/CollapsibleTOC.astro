@@ -19,7 +19,7 @@ const closeIcon = "material-symbols:close-rounded";
     <!-- Trigger Button -->
     <div id="collapsible-toc-btn" class="collapsible-toc-btn hide flex items-center rounded-full overflow-hidden transition-[opacity,transform] shadow-xl border border-black/10 dark:border-white/10 bg-[var(--card-bg)]">
         <button aria-label={i18n(I18nKey.tableOfContents)} aria-controls="collapsible-toc-panel" aria-expanded="false" class="h-12 w-12 md:h-15 md:w-15 flex items-center justify-center active:bg-[var(--btn-plain-bg-active)] transition-ui">
-            <Icon name={tocIcon} class="icon-5 md:icon-7 text-[var(--primary)]"></Icon>
+            <Icon name={tocIcon} class="icon-5 md:icon-7 text-(--primary-text)"></Icon>
         </button>
     </div>
 
@@ -27,7 +27,7 @@ const closeIcon = "material-symbols:close-rounded";
     <div id="collapsible-toc-panel" class="collapsible-toc-panel fixed top-20 bottom-28 right-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] rounded-2xl border-2 border-[var(--toc-panel-border)] z-50 flex-col">
         <div class="px-3 py-3 md:px-4 md:py-4 font-bold text-base md:text-lg text-90 border-b border-[var(--toc-panel-border)]/30 flex items-center justify-between shrink-0">
             <div class="flex items-center gap-2">
-                <Icon name={tocIcon} class="icon-4 md:icon-4.5 text-[var(--primary)]"></Icon>
+                <Icon name={tocIcon} class="icon-4 md:icon-4.5 text-(--primary-text)"></Icon>
                 <span>{i18n(I18nKey.tableOfContents)}</span>
             </div>
             <button id="collapsible-toc-close" aria-label="Close" class="btn-plain p-1.5 md:p-2 rounded-lg hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition-ui">
