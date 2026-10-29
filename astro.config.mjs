@@ -17,6 +17,7 @@ import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import { expressiveCodeConfig, siteConfig } from "./src/config.ts";
 import { pluginCodeToolbar } from "./src/plugins/expressive-code/code-toolbar.ts";
+import { assetManifest } from "./src/plugins/asset-manifest.mjs";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
 import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.mjs";
 import { rehypeLazyIframe } from "./src/plugins/rehype-lazy-iframe.mjs";
@@ -33,6 +34,7 @@ export default defineConfig({
 	// ClientRouter fetches pages; hovered or focused links are fetched ahead
 	prefetch: { prefetchAll: true, defaultStrategy: "hover" },
 	integrations: [
+		assetManifest(),
 		icon({
 			include: {
 				"material-symbols": ["*"],
