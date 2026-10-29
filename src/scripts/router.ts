@@ -1,6 +1,7 @@
 // ClientRouter navigation: the frame stays in place, only the content regions are swapped
 
 import { swapFunctions } from "astro:transitions/client";
+import { routeAssets } from "./asset-manifest";
 import { closePanels } from "./panels";
 
 // Swapped content regions, including the side TOC scroller and the floating TOC
@@ -176,10 +177,38 @@ function swapRegions(doc: Document, enter: string) {
 	if (main && islands.length) holdHeight(main, height, islands);
 }
 
-// Load island modules of the next page so they hydrate right after the swap
-function preloadIslands(doc: Document | undefined) {
+const linked = (sel: string) => !!document.querySelector(sel);
+
+// Fetches CSS into the cache; resolves when loaded or failed
+function preloadStyle(href: string) {
+	if (linked(`link[rel=stylesheet][href="${href}"]`)) return;
+	return new Promise((resolve) => {
+		const link = document.createElement("link");
+		link.rel = "preload";
+		link.as = "style";
+		link.href = href;
+		link.addEventListener("load", resolve);
+		link.addEventListener("error", resolve);
+		document.head.append(link);
+	});
+}
+
+// Fetches and compiles a module without running it
+function preloadModule(src: string) {
+	if (
+		linked(`script[src="${src}"], link[href="${src}"]`) ||
+		linked(`astro-island[component-url="${src}"]`)
+	)
+		return;
+	const link = document.createElement("link");
+	link.rel = "modulepreload";
+	link.href = src;
+	document.head.append(link);
+}
+
+// Assets the next document references that the manifest did not list
+function preloadFromDocument(doc: Document | undefined) {
 	if (!doc || doc === document) return;
-	const urls = new Set<string>();
 	for (const island of doc.querySelectorAll("astro-island"))
 		for (const attr of [
 			"component-url",
@@ -187,37 +216,12 @@ function preloadIslands(doc: Document | undefined) {
 			"before-hydration-url",
 		]) {
 			const url = island.getAttribute(attr);
-			if (url) urls.add(url);
+			if (url) preloadModule(url);
 		}
-	return Promise.all(
-		[...urls].map((url) => import(/* @vite-ignore */ url).catch(() => {})),
+	const hrefs = [...doc.body.querySelectorAll("link[rel=stylesheet]")].map(
+		(link) => link.getAttribute("href"),
 	);
-}
-
-// Preload stylesheets linked in the body (Expressive Code), as the router does for head ones
-function preloadStyles(doc: Document | undefined) {
-	if (!doc || doc === document) return;
-	const hrefs = [...doc.body.querySelectorAll("link[rel=stylesheet]")]
-		.map((link) => link.getAttribute("href"))
-		.filter(
-			(href): href is string =>
-				!!href &&
-				!document.querySelector(`link[rel=stylesheet][href="${href}"]`),
-		);
-	return Promise.all(
-		hrefs.map(
-			(href) =>
-				new Promise((resolve) => {
-					const link = document.createElement("link");
-					link.rel = "preload";
-					link.as = "style";
-					link.href = href;
-					link.addEventListener("load", resolve);
-					link.addEventListener("error", resolve);
-					document.head.append(link);
-				}),
-		),
-	);
+	return Promise.all(hrefs.map((href) => href && preloadStyle(href)));
 }
 
 // Scroll travel animated on push: the frame's on-screen extent, at least one viewport
@@ -255,15 +259,15 @@ export function initRouter(): void {
 		const motion = !reducedMotion();
 		if (motion) root.dataset.leaving = enter;
 		const leave = motion ? wait(ms("--duration-fast")) : undefined;
+		// HTML, CSS and modules load in parallel; the swap waits for HTML and CSS only
+		const { styles, scripts } = routeAssets(e.to.pathname);
+		const css = Promise.all(styles.map(preloadStyle));
+		for (const src of scripts) preloadModule(src);
 		const load = e.loader;
 		e.loader = async () => {
 			await Promise.all([
-				load().then(() =>
-					Promise.all([
-						preloadIslands(e.newDocument),
-						preloadStyles(e.newDocument),
-					]),
-				),
+				load().then(() => preloadFromDocument(e.newDocument)),
+				css,
 				leave,
 			]);
 		};
