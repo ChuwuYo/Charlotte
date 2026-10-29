@@ -20,6 +20,8 @@ export function parseDirectiveNode() {
 					// Add a flag to the node to indicate that it has a directive label
 					node.attributes["has-directive-label"] = true;
 				}
+				// Spoilers also reveal on focus, so keyboard users can read them
+				if (node.name === "spoiler") node.attributes.tabindex = "0";
 				const hast = h(node.name, node.attributes);
 
 				data.hName = hast.tagName;
