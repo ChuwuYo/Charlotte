@@ -66,6 +66,8 @@
 	--text-card-title--line-height: 1.25;
 	--text-widget-title: 0.9375rem; /* 15px: sidebar widget titles */
 	--text-widget-title--line-height: 1.4;
+	/* Touch-screen inputs: 16px stops iOS zooming on focus; fixed, not from --spacing */
+	--text-input: 16px;
 
 	/* Layout */
 	/* Defaults; BaseLayout sets them on <html> from siteConfig.layout.pageWidth / sidebarWidth */

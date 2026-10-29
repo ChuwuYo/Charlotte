@@ -99,7 +99,7 @@ onMount(() => {
     <Icon icon={icons["material-symbols:search"]} class="absolute icon-5 pointer-events-none ml-3 my-auto text-30"></Icon>
     <input name="search" aria-label={i18n(I18nKey.search)} placeholder={i18n(I18nKey.search)} bind:value={keywordDesktop} oninput={(e) => search(e.currentTarget.value, true)} onfocus={() => search(keywordDesktop, true)}
            class="transition-[width] pl-10 text-sm bg-transparent outline-0
-          h-full w-40 active:w-60 focus:w-60 text-50"
+          h-full w-40 active:w-60 focus:w-60 text-75 placeholder:text-50"
      >
 </div>
 
@@ -120,8 +120,8 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
   ">
         <Icon icon={icons["material-symbols:search"]} class="absolute icon-5 pointer-events-none ml-3 my-auto text-30"></Icon>
         <input name="search" aria-label={i18n(I18nKey.search)} placeholder={i18n(I18nKey.search)} bind:value={keywordMobile} oninput={(e) => search(e.currentTarget.value, false)}
-               class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
-               focus:w-60 text-50"
+               class="pl-10 absolute inset-0 text-input bg-transparent outline-0
+               focus:w-60 text-75 placeholder:text-50"
         >
     </div>
 
