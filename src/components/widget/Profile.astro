@@ -9,11 +9,11 @@ const config = profileConfig;
 <div class="card-base p-3">
     <a aria-label="Go to About Page" href={url('/about/')}
        class="group block relative mx-auto mt-1 lg:mx-0 lg:mt-0 mb-3
-       max-w-40 lg:max-w-none overflow-hidden rounded-xl active:scale-95">
+       max-w-40 lg:max-w-none overflow-hidden rounded-xl press">
         <div class="absolute transition-ui pointer-events-none group-hover:bg-black/30 group-active:bg-black/50
  w-full h-full z-50 flex items-center justify-center">
             <Icon name="fa6-regular:address-card"
-                  class="transition-ui opacity-0 scale-90 group-hover:scale-100 group-hover:opacity-100 text-white icon-12">
+                  class="transition-ui opacity-0 motion-safe:scale-90 motion-safe:group-hover:scale-100 group-hover:opacity-100 text-white icon-12">
             </Icon>
         </div>
         <ImageWrapper src={config.avatar || ""} alt="Profile of the Author" class="mx-auto lg:w-full h-full lg:mt-0" loading="eager" fetchpriority="high"></ImageWrapper>
@@ -24,12 +24,12 @@ const config = profileConfig;
         <div class="text-center text-ui text-50 mb-2.5">{config.bio}</div>
         <div class="flex flex-wrap gap-2 justify-center mb-1">
             {config.links.length > 1 && config.links.map(item =>
-                    <a rel="me" aria-label={item.name} href={item.url} target="_blank" class="btn-regular rounded-lg md:h-10 md:w-10 h-12 w-12 active:scale-90">
+                    <a rel="me" aria-label={item.name} href={item.url} target="_blank" class="btn-regular rounded-lg md:h-10 md:w-10 h-12 w-12 press">
                         <Icon name={item.icon} class="icon-6"></Icon>
                     </a>
             )}
             {config.links.length == 1 && <a rel="me" aria-label={config.links[0].name} href={config.links[0].url} target="_blank"
-                                            class="btn-regular rounded-lg md:h-10 h-12 gap-2 px-3 font-bold active:scale-95">
+                                            class="btn-regular rounded-lg md:h-10 h-12 gap-2 px-3 font-bold press">
                 <Icon name={config.links[0].icon} class="icon-6"></Icon>
                 {config.links[0].name}
             </a>}

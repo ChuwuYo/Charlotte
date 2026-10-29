@@ -59,7 +59,7 @@ const { remarkPluginFrontmatter } = await render(entry);
  ">
             {title}
             <Icon class="inline icon-8 text-[var(--primary)] md:hidden translate-y-0.5 absolute" name="material-symbols:chevron-right-rounded" ></Icon>
-            <Icon class="text-[var(--primary)] icon-8 transition-ui hidden md:inline absolute translate-y-0.5 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0" name="material-symbols:chevron-right-rounded"></Icon>
+            <Icon class="text-[var(--primary)] icon-8 transition-ui hidden md:inline absolute translate-y-0.5 opacity-0 group-hover:opacity-100 motion-safe:-translate-x-1 motion-safe:group-hover:translate-x-0" name="material-symbols:chevron-right-rounded"></Icon>
         </a>
 
         <!-- metadata -->
@@ -95,13 +95,14 @@ const { remarkPluginFrontmatter } = await render(entry);
     {hasCover && <a href={url} aria-label={title}
                     class:list={["group",
                         "max-h-[20vh] md:max-h-none mx-4 mt-4 -mb-2 md:mb-0 md:mx-0 md:mt-0",
-                        "md:w-[var(--coverWidth)] relative md:absolute md:top-3 md:bottom-3 md:right-3 rounded-xl overflow-hidden active:scale-95"
+                        "md:w-[var(--coverWidth)] relative md:absolute md:top-3 md:bottom-3 md:right-3 rounded-xl overflow-hidden press"
                     ]} >
         <!-- 从左到右滑动的遮罩效果 -->
-        <div class="absolute pointer-events-none z-10 w-full h-full bg-black/20 transition-transform duration-300 ease-out -translate-x-full group-hover:translate-x-0"></div>
+        <div class="absolute pointer-events-none z-10 w-full h-full bg-black/20 transition-[translate,opacity] duration-300 ease-out -translate-x-full group-hover:translate-x-0
+                    motion-reduce:translate-x-0 motion-reduce:opacity-0 motion-reduce:group-hover:opacity-100"></div>
         <div class="absolute pointer-events-none z-20 w-full h-full flex items-center justify-center ">
             <Icon name="material-symbols:chevron-right-rounded"
-                  class="transition-ui opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 text-white icon-12">
+                  class="transition-ui opacity-0 group-hover:opacity-100 motion-safe:scale-50 motion-safe:group-hover:scale-100 text-white icon-12">
             </Icon>
         </div>
         <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} alt="Cover of the Post" loading={eager ? "eager" : "lazy"} fetchpriority={eager ? "high" : "auto"}
@@ -112,7 +113,7 @@ const { remarkPluginFrontmatter } = await render(entry);
     {!hasCover &&
         <a href={url} aria-label={title} class="!hidden md:!flex btn-regular w-13
          absolute right-3 top-3 bottom-3 rounded-xl bg-[var(--enter-btn-bg)]
-         hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] active:scale-95
+         hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] press
         ">
             <Icon name="material-symbols:chevron-right-rounded"
                   class="text-[var(--primary)] icon-9 mx-auto">

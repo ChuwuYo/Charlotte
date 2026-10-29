@@ -105,7 +105,7 @@ onMount(() => {
 
 <!-- toggle btn for phone/tablet view -->
 <button onclick={togglePanel} aria-label="Search Panel" id="search-switch"
-        class="btn-plain scale-animation lg:!hidden rounded-lg w-11 h-11 active:scale-90">
+        class="btn-plain scale-animation lg:!hidden rounded-lg w-11 h-11 press">
     <Icon icon={icons["material-symbols:search"]} class="icon-5"></Icon>
 </button>
 

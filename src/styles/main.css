@@ -12,7 +12,7 @@
 .custom-md img {
 	cursor: zoom-in;
 }
-@media (hover: hover) {
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
 	.post-card-cover:hover img,
 	#post-cover:hover img {
 		scale: 1.05;

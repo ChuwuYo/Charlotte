@@ -49,7 +49,7 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
     <div class:list={[
         className,
         "card-base navbar-with-opacity !overflow-visible max-w-page h-navbar !rounded-t-none mx-auto flex items-center justify-between px-4"]}>
-        <a href={url('/')} class="btn-plain scale-animation rounded-lg h-13 px-5 font-bold active:scale-95">
+        <a href={url('/')} class="btn-plain scale-animation rounded-lg h-13 px-5 font-bold press">
             <div class="flex flex-row text-[var(--primary-text)] items-center text-md">
                 {siteConfig.favicon[0]?.src ? (
                     <div class="w-8 h-8 mr-2 mb-1 rounded-full overflow-hidden border border-[var(--primary)]">
@@ -69,7 +69,7 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
                     return <NavDropdown title={l.name} items={l.children!} />;
                 }
                 return <a aria-label={l.name} href={l.external ? l.url : url(l.url)} target={l.external ? "_blank" : null}
-                          class="btn-plain scale-animation rounded-lg md:h-11 h-12 text-ui font-bold px-5 active:scale-95"
+                          class="btn-plain scale-animation rounded-lg md:h-11 h-12 text-ui font-bold px-5 press"
                 >
                     <div class="flex items-center">
                         {l.name}
@@ -84,7 +84,7 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
             </div>
             <div class="buttons-container flex">
                 {!siteConfig.themeColor.fixed && (
-                        <button aria-label="Display Settings" class="btn-plain scale-animation rounded-lg md:h-11 md:w-11 h-12 w-12 active:scale-90" id="display-settings-switch" aria-controls="display-setting" aria-expanded="false">
+                        <button aria-label="Display Settings" class="btn-plain scale-animation rounded-lg md:h-11 md:w-11 h-12 w-12 press" id="display-settings-switch" aria-controls="display-setting" aria-expanded="false">
                             <Icon name="material-symbols:palette-outline" class="icon-5"></Icon>
                         </button>
                 )}
@@ -93,7 +93,7 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
                     <div slot="fallback" class="h-11 w-11"></div>
                 </LightDarkSwitch>
             </div>
-            <button aria-label="Menu" class="btn-plain scale-animation rounded-lg md:w-11 md:h-11 w-12 h-12 active:scale-90 md:!hidden" id="nav-menu-switch" aria-controls="nav-menu-panel" aria-expanded="false">
+            <button aria-label="Menu" class="btn-plain scale-animation rounded-lg md:w-11 md:h-11 w-12 h-12 press md:!hidden" id="nav-menu-switch" aria-controls="nav-menu-panel" aria-expanded="false">
                 <Icon name="material-symbols:menu-rounded" class="icon-5"></Icon>
             </button>
         </div>
