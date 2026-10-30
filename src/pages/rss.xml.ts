@@ -1,7 +1,7 @@
 import rss from "@astrojs/rss";
 import { getSortedPosts } from "@utils/content-utils";
 import { absoluteUrl, renderFeedContent } from "@utils/feed-utils";
-import { url } from "@utils/url-utils";
+import { getPostUrlBySlug } from "@utils/url-utils";
 import type { APIContext } from "astro";
 import { siteConfig } from "@/config";
 
@@ -21,7 +21,7 @@ export async function GET(context: APIContext) {
 			title: post.data.title,
 			pubDate: post.data.published,
 			description: post.data.description || "",
-			link: url(`/posts/${post.id}/`),
+			link: getPostUrlBySlug(post.id),
 			content: renderFeedContent(post),
 		})),
 

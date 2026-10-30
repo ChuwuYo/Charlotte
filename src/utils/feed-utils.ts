@@ -1,4 +1,5 @@
 import type { CollectionEntry } from "astro:content";
+import { url } from "@utils/url-utils";
 import type { ImageMetadata } from "astro";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
@@ -21,7 +22,7 @@ function stripInvalidXmlChars(str: string): string {
 }
 
 export function absoluteUrl(path: string): string {
-	return new URL(path, siteConfig.url).href;
+	return new URL(url(path), siteConfig.url).href;
 }
 
 // Root paths → site URL; post-relative images → built asset URL
