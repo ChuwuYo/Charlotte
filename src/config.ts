@@ -47,7 +47,7 @@ export const siteConfig: SiteConfig = {
 		depth: 2, // 目录中显示的最大标题深度，范围 1-3
 	},
 	layout: {
-		// 以下尺寸单位均为 rem（1rem = 浏览器默认字号，Chrome「中」为 16px）
+		// 以下尺寸单位均为 rem（根字号固定 16px，不随浏览器字号设置变化）
 		// 基础间距单位（Tailwind --spacing）：间距、宽高、图标、圆角和通用字号阶梯都是它的倍数；0.25 为 Tailwind 默认
 		spacing: 0.1875,
 		// 各类文字的字号

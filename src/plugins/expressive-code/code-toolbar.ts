@@ -260,7 +260,7 @@ export function pluginCodeToolbar() {
 			.code-toolbar-copy.success .copy-icon { opacity: 0; transform: scale(0.8); }
 			.code-toolbar-copy.success .success-icon { opacity: 1; transform: scale(1); }
 			.frame.is-terminal .code-toolbar { background: var(--codeblock-topbar-bg); }
-			@media (width < 40rem) {
+			@media (width < 640px) {
 				.code-toolbar { padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2); }
 				.code-toolbar-lang { padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 1.5); }
 				.code-toolbar-copy { width: calc(var(--spacing) * 6); height: calc(var(--spacing) * 6); }

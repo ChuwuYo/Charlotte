@@ -20,7 +20,14 @@
 /* :is() adds .dark's specificity, so dark: utilities win over plain ones */
 @custom-variant dark (&:is(.dark *));
 
+/* Breakpoints in px: rem in media queries follows the browser font setting, not the 16px root */
 @theme {
+	--breakpoint-*: initial;
+	--breakpoint-sm: 640px;
+	--breakpoint-md: 768px;
+	--breakpoint-lg: 1024px;
+	--breakpoint-xl: 1280px;
+	--breakpoint-2xl: 1536px;
 	--font-sans:
 		var(--font-roboto), ui-sans-serif, system-ui, sans-serif,
 		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -86,6 +93,11 @@
 }
 
 @layer base {
+	/* Fixed root size: the layout ignores the browser font-size setting; page zoom still scales it */
+	html {
+		font-size: 16px;
+	}
+
 	/* Tailwind 3 border color default */
 	*,
 	::after,

@@ -32,5 +32,6 @@ const tocBreakpoint = Math.max(
 	Math.min(v < 1 ? need / (1 - v) : Number.POSITIVE_INFINITY, max + need),
 );
 
-// Swaps the fixed TOC and the collapsible one at the breakpoint
-export const TOC_MEDIA_CSS = `@media (width < ${+tocBreakpoint.toFixed(3)}rem){.toc-wide-only{display:none}}@media (width >= ${+tocBreakpoint.toFixed(3)}rem){.toc-narrow-only{display:none}}`;
+// Swaps the fixed TOC and the collapsible one at the breakpoint; px because rem in media queries ignores the 16px root
+const tocBreakpointPx = +(tocBreakpoint * 16).toFixed(2);
+export const TOC_MEDIA_CSS = `@media (width < ${tocBreakpointPx}px){.toc-wide-only{display:none}}@media (width >= ${tocBreakpointPx}px){.toc-narrow-only{display:none}}`;

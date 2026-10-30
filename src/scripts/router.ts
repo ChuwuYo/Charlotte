@@ -239,7 +239,7 @@ function preloadFromDocument(doc: Document | undefined) {
 // Scroll travel animated on push: the frame's on-screen extent, at least one viewport
 function travelFor(scrolled: number) {
 	const ids = ["top-row", "banner-wrapper"];
-	if (matchMedia("(width >= 64rem)").matches) ids.push("sidebar");
+	if (matchMedia("(width >= 1024px)").matches) ids.push("sidebar");
 	const bottom = Math.max(
 		...ids.map(
 			(id) => document.getElementById(id)?.getBoundingClientRect().bottom ?? 0,
