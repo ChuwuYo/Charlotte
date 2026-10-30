@@ -20,6 +20,12 @@
 		}
 	}
 
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+	}
+
 	@keyframes banner-in {
 		from {
 			opacity: 0;
@@ -52,6 +58,11 @@
 		}
 		html [data-enter="backwards"] .onload-animation {
 			animation-name: fade-in-right;
+		}
+
+		/* While the frame slides, content only fades so the two motions do not oppose */
+		[data-enter="fade"] :is(.onload-animation, #toc) {
+			animation-name: fade-in;
 		}
 
 		/* Leaving content fades out before the swap; transform and opacity only */

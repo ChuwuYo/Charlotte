@@ -303,6 +303,7 @@ export function initRouter(): void {
 				!document.getElementById(id) === !e.newDocument.getElementById(id),
 		);
 		if (!sameFrame || !document.getElementById("main")) return;
+		let entrance = enter;
 		// History restores land instantly; the frame only moves when landing near the top
 		if (!reducedMotion() && !e.to.hash && target.scrollY < innerHeight / 2) {
 			// The banner resizes between home and other pages; scroll-only moves are quicker
@@ -317,8 +318,10 @@ export function initRouter(): void {
 			};
 			markFrameMove(flip.duration);
 			next.setAttribute("data-frame-move", "");
+			// A sliding frame carries the motion; content without a direction only fades
+			if (!enter && (banner || flip.travel > 0)) entrance = "fade";
 		}
-		e.swap = () => swapRegions(e.newDocument, enter);
+		e.swap = () => swapRegions(e.newDocument, entrance);
 	});
 
 	document.addEventListener("astro:after-swap", () => {
