@@ -48,7 +48,7 @@ export type SiteConfig = {
 		fontSize?: {
 			meta?: number; // dates, categories, tags, counts; default 0.703125
 			ui?: number; // sidebar items, excerpts, nav links; default 0.796875
-			prose?: number; // article body; default 0.796875
+			prose?: number; // article body; default 0.9375
 			cardTitle?: number; // post card titles; default 1.5
 			widgetTitle?: number; // sidebar widget titles; default 0.9375
 		};

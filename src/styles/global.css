@@ -68,7 +68,7 @@
 	--text-meta--line-height: calc(22 / 15);
 	--text-ui: 0.796875rem; /* 12.75px: sidebar items, excerpts, nav links */
 	--text-ui--line-height: calc(26 / 17);
-	--text-prose: 0.796875rem; /* 12.75px: article body */
+	--text-prose: 0.9375rem; /* 15px: article body */
 	--text-card-title: 1.5rem; /* 24px: post card titles */
 	--text-card-title--line-height: 1.25;
 	--text-widget-title: 0.9375rem; /* 15px: sidebar widget titles */

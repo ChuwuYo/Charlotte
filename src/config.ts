@@ -54,7 +54,7 @@ export const siteConfig: SiteConfig = {
 		fontSize: {
 			meta: 0.703125, // 日期、分类、标签、计数
 			ui: 0.796875, // 侧栏条目、摘要、导航链接
-			prose: 0.796875, // 文章正文
+			prose: 0.9375, // 文章正文
 			cardTitle: 1.5, // 文章卡片标题
 			widgetTitle: 0.9375, // 侧栏组件标题
 		},

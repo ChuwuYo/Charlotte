@@ -15,7 +15,7 @@ const {
 const {
 	meta = 0.703125,
 	ui = 0.796875,
-	prose = 0.796875,
+	prose = 0.9375,
 	cardTitle = 1.5,
 	widgetTitle = 0.9375,
 } = siteConfig.layout?.fontSize ?? {};
