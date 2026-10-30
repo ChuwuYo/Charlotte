@@ -75,7 +75,7 @@ export const siteConfig: SiteConfig = {
 			sizes: "32x32,64x64,128x128,256x256,512x512,1024x1024", // （可选）网站图标的尺寸，仅在有不同尺寸的网站图标时设置, 逗号分隔
 		},
 	],
-	pinnedPost: ["2025-09-29/Unveiling"], // 置顶文章的 slug 路径，如果为空则不置顶，按顺序排序多个置顶，逗号分隔
+	pinnedPost: ["2025-09-29/Unveiling"], // 置顶文章的 slug（不带 .md），每项一篇，按数组顺序置顶；为空则不置顶
 	performance: {
 		externalLinkWarmup: {
 			enable: true, // 外链预热总开关（dns-prefetch / preconnect / fetch）
