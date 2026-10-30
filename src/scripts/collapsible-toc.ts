@@ -40,6 +40,18 @@ export function initCollapsibleToc(signal: AbortSignal): void {
 	panel.addEventListener("click", (e) => {
 		if ((e.target as Element).closest("a")) setOpen(false);
 	});
+	// Tap outside only closes; capture swallows it. Scroll gestures fire no click
+	document.addEventListener(
+		"click",
+		(e) => {
+			if (!isOpen() || !panel.checkVisibility()) return;
+			if (panel.contains(e.target as Node)) return;
+			e.preventDefault();
+			e.stopPropagation();
+			setOpen(false);
+		},
+		{ capture: true, signal },
+	);
 	document.addEventListener(
 		"keydown",
 		(e) => {
