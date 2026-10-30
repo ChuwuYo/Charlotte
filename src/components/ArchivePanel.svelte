@@ -25,9 +25,10 @@ const tags = params.getAll("tag");
 const categories = params.getAll("category");
 const uncategorized = params.get("uncategorized");
 
+// UTC, like the dates in post metadata (date-utils)
 function formatDate(date: Date) {
-	const month = (date.getMonth() + 1).toString().padStart(2, "0");
-	const day = date.getDate().toString().padStart(2, "0");
+	const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+	const day = date.getUTCDate().toString().padStart(2, "0");
 	return `${month}-${day}`;
 }
 
@@ -58,7 +59,7 @@ const groups: Group[] = $derived.by(() => {
 
 	const grouped = filteredPosts.reduce(
 		(acc, post) => {
-			const year = post.data.published.getFullYear();
+			const year = post.data.published.getUTCFullYear();
 			if (!acc[year]) {
 				acc[year] = [];
 			}
