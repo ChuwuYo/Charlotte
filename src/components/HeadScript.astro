@@ -4,12 +4,14 @@ import { siteConfig } from "@/config";
 import { BANNER_HEIGHT_EXTEND } from "../constants/constants";
 
 const defaultTheme = siteConfig.defaultTheme;
+// Display settings hidden: stored hue and card background are ignored
+const fixedSettings = siteConfig.themeColor.fixed;
 ---
 
 <ClientRouter />
 
 <!-- Classic blocking script: settings before first paint -->
-<script is:inline define:vars={{ defaultTheme, BANNER_HEIGHT_EXTEND }}>
+<script is:inline define:vars={{ defaultTheme, fixedSettings, BANNER_HEIGHT_EXTEND }}>
 	const root = document.documentElement;
 
 	// Theme, hue and card background from storage
@@ -19,11 +21,11 @@ const defaultTheme = siteConfig.defaultTheme;
 			theme === "dark" ||
 			(theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
 		root.classList.toggle("dark", dark);
-		const hue = localStorage.getItem("hue");
+		const hue = !fixedSettings && localStorage.getItem("hue");
 		if (hue) root.style.setProperty("--hue", hue);
 		root.style.setProperty(
 			"--card-bg",
-			localStorage.getItem("cardBgType") === "1"
+			!fixedSettings && localStorage.getItem("cardBgType") === "1"
 				? "var(--card-bg-themed)"
 				: "var(--card-bg-original)",
 		);

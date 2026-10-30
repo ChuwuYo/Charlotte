@@ -98,7 +98,7 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
             </button>
         </div>
         <NavMenuPanel links={links}></NavMenuPanel>
-        <DisplaySettings icons={settingsIcons} client:only="svelte"></DisplaySettings>
+        {!siteConfig.themeColor.fixed && <DisplaySettings icons={settingsIcons} client:only="svelte"></DisplaySettings>}
     </div>
 </div>
 
