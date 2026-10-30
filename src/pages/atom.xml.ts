@@ -1,22 +1,7 @@
 import { getSortedPosts } from "@utils/content-utils";
+import { absoluteUrl, renderFeedContent } from "@utils/feed-utils";
 import getAtomResponse from "astrojs-atom";
-import MarkdownIt from "markdown-it";
-import sanitizeHtml from "sanitize-html";
 import { profileConfig, siteConfig } from "@/config";
-
-const parser = new MarkdownIt();
-
-function stripInvalidXmlChars(str: string): string {
-	return str.replace(
-		// biome-ignore lint/suspicious/noControlCharactersInRegex: https://www.w3.org/TR/xml/#charsets
-		/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFDD0-\uFDEF\uFFFE\uFFFF]/g,
-		"",
-	);
-}
-
-function absoluteUrl(path: string): string {
-	return new URL(path, siteConfig.url).href;
-}
 
 export async function GET() {
 	const blog = await getSortedPosts();
@@ -37,35 +22,28 @@ export async function GET() {
 				type: "text/html",
 			},
 		],
-		entry: blog.map((post) => {
-			const content = typeof post.body === "string" ? post.body : "";
-			const cleanedContent = stripInvalidXmlChars(content);
-
-			return {
-				title: post.data.title,
-				id: absoluteUrl(`/posts/${post.id}/`),
-				updated: (post.data.updated || post.data.published).toISOString(),
-				published: post.data.published.toISOString(),
-				author: [
-					{
-						name: profileConfig.name,
-					},
-				],
-				content: {
-					type: "html",
-					value: sanitizeHtml(parser.render(cleanedContent), {
-						allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
-					}),
+		entry: blog.map((post) => ({
+			title: post.data.title,
+			id: absoluteUrl(`/posts/${post.id}/`),
+			updated: (post.data.updated || post.data.published).toISOString(),
+			published: post.data.published.toISOString(),
+			author: [
+				{
+					name: profileConfig.name,
 				},
-				summary: post.data.description || "",
-				link: [
-					{
-						href: absoluteUrl(`/posts/${post.id}/`),
-						rel: "alternate",
-					},
-				],
-			};
-		}),
+			],
+			content: {
+				type: "html",
+				value: renderFeedContent(post),
+			},
+			summary: post.data.description || "",
+			link: [
+				{
+					href: absoluteUrl(`/posts/${post.id}/`),
+					rel: "alternate",
+				},
+			],
+		})),
 		subtitle:
 			siteConfig.description ||
 			siteConfig.subtitle ||
