@@ -13,7 +13,7 @@ export type SiteConfig = {
 		hue: number;
 		fixed: boolean;
 	};
-	defaultTheme: typeof LIGHT_MODE | typeof DARK_MODE | typeof AUTO_MODE;
+	defaultTheme: LIGHT_DARK_MODE;
 	banner: {
 		enable: boolean;
 		src: string;

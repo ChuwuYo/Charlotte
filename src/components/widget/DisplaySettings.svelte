@@ -66,7 +66,7 @@ function resetHue() {
             </button>
         </div>
         <div class="flex gap-1">
-            <div id="hueValue" class="bg-[var(--btn-regular-bg)] w-10 h-7 rounded-md flex justify-center
+            <div class="bg-[var(--btn-regular-bg)] w-10 h-7 rounded-md flex justify-center
             font-bold text-sm items-center text-[var(--btn-content)]">
                 {hue}
             </div>
@@ -74,7 +74,7 @@ function resetHue() {
     </div>
     <div class="w-full h-6 px-1 bg-[oklch(0.80_0.10_0)] dark:bg-[oklch(0.70_0.10_0)] rounded-sm select-none">
         <input aria-label={i18n(I18nKey.themeColor)} type="range" min="0" max="360" step="5"
-               class="slider w-full" id="colorSlider"
+               class="w-full"
                bind:value={hue}
                oninput={() => applyHue(hue)}
                onchange={commitHue}

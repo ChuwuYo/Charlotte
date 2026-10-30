@@ -1,9 +1,4 @@
-import {
-	AUTO_MODE,
-	DARK_MODE,
-	DEFAULT_THEME,
-	LIGHT_MODE,
-} from "@constants/constants.ts";
+import { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants.ts";
 import { siteConfig } from "@/config";
 import type { LIGHT_DARK_MODE } from "@/types/config";
 
@@ -108,7 +103,7 @@ export function getStoredTheme(): LIGHT_DARK_MODE {
 	const stored = localStorage.getItem("theme");
 	if (stored === LIGHT_MODE || stored === DARK_MODE || stored === AUTO_MODE)
 		return stored;
-	return siteConfig.defaultTheme ?? DEFAULT_THEME;
+	return siteConfig.defaultTheme;
 }
 
 export const CARD_BG_TYPE = {

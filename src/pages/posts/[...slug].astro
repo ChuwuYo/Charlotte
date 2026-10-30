@@ -96,15 +96,15 @@ const jsonLd = {
             <!-- always show cover as long as it has one -->
 
             {entry.data.image &&
-                <ImageWrapper id="post-cover" src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} class="mb-8 rounded-xl banner-container onload-animation" loading="eager" fetchpriority="high"/>
+                <ImageWrapper id="post-cover" src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} class="mb-8 rounded-xl onload-animation" loading="eager" fetchpriority="high"/>
             }
 
 
-            <Markdown class="mb-6 markdown-content onload-animation">
+            <Markdown class="mb-6 onload-animation">
                 <Content />
             </Markdown>
 
-            {licenseConfig.enable && <License title={entry.data.title} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
+            {licenseConfig.enable && <License title={entry.data.title} pubDate={entry.data.published} class="mb-6 rounded-xl onload-animation"></License>}
 
         </div>
     </div>

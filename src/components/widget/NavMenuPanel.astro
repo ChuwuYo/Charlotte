@@ -9,13 +9,13 @@ interface Props {
 
 const links = Astro.props.links;
 ---
-<div id="nav-menu-panel" class:list={["float-panel float-panel-closed absolute fixed right-4 px-2 py-2"]}>
+<div id="nav-menu-panel" class:list={["float-panel float-panel-closed fixed right-4 px-2 py-2"]}>
     {links.map((link) => {
         const hasChildren = link.children && link.children.length > 0;
         
         if (hasChildren) {
             return (
-                <div class="nav-dropdown-mobile" data-mobile-dropdown>
+                <div data-mobile-dropdown>
                     <button 
                         class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8 w-full
  hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition-ui"
