@@ -87,6 +87,9 @@ export function setTheme(theme: LIGHT_DARK_MODE): void {
 	pendingDark = dark;
 	r.dataset.noTransition = "";
 	r.dataset.themeFade = "";
+	// The snapshot overlay hit-tests as <html>; keep the hovered element's cursor
+	const hovered = [...document.querySelectorAll(":hover")].pop();
+	if (hovered) r.style.cursor = getComputedStyle(hovered).cursor;
 	document
 		// Latest stored theme: a switch made before this callback runs wins
 		.startViewTransition(() => {
@@ -97,6 +100,7 @@ export function setTheme(theme: LIGHT_DARK_MODE): void {
 			pendingDark = undefined;
 			delete r.dataset.noTransition;
 			delete r.dataset.themeFade;
+			r.style.removeProperty("cursor");
 		});
 }
 
