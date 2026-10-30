@@ -128,14 +128,3 @@ html[data-no-transition] *::before,
 html[data-no-transition] *::after {
 	transition: none;
 }
-
-/* Theme reveal: clip-path is animated in JS, so drop the default crossfade */
-html[data-theme-reveal]::view-transition-old(root),
-html[data-theme-reveal]::view-transition-new(root) {
-	animation: none;
-	mix-blend-mode: normal;
-}
-
-html[data-theme-reveal="collapse"]::view-transition-old(root) {
-	z-index: 1;
-}
