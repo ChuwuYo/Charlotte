@@ -71,7 +71,7 @@ const top = (id: string) =>
 	document.getElementById(id)?.getBoundingClientRect().top;
 const navbarHidden = () =>
 	!!document.getElementById(NAVBAR)?.classList.contains("navbar-hidden");
-const measure = () => ({
+const measure = (): Record<string, number | undefined> => ({
 	...Object.fromEntries(
 		[...FRAME, STICKY, NAVBAR, NAVBAR_ROW].map((id) => [id, top(id)]),
 	),
