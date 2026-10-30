@@ -45,6 +45,9 @@ export function revealTheme(dark: boolean, origin: Element): boolean {
 	const cx = rect.left + rect.width / 2;
 	const cy = rect.top + rect.height / 2;
 	const probe = createProbe();
+	// ClientRouter names <html> (transition:animate), so its group isn't "root"
+	const name = getComputedStyle(root).viewTransitionName;
+	const group = name && name !== "none" ? name : "root";
 
 	root.dataset.noTransition = "";
 	root.dataset.themeReveal = collapse ? "collapse" : "expand";
@@ -56,7 +59,7 @@ export function revealTheme(dark: boolean, origin: Element): boolean {
 	let clip: Animation | undefined;
 	transition.ready
 		.then(() => {
-			const pseudoElement = `::view-transition-${collapse ? "old" : "new"}(root)`;
+			const pseudoElement = `::view-transition-${collapse ? "old" : "new"}(${group})`;
 			const off = probeOffset();
 			const x = cx + off.x;
 			const y = cy + off.y;
