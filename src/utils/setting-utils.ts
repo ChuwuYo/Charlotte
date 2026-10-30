@@ -49,17 +49,49 @@ export function saveHue(hue: number): void {
 	localStorage.setItem("hue", String(hue));
 }
 
-export function applyThemeToDocument(theme: LIGHT_DARK_MODE): void {
-	const dark =
+function isDark(theme: LIGHT_DARK_MODE): boolean {
+	return (
 		theme === DARK_MODE ||
 		(theme === AUTO_MODE &&
-			window.matchMedia("(prefers-color-scheme: dark)").matches);
+			window.matchMedia("(prefers-color-scheme: dark)").matches)
+	);
+}
+
+export function applyThemeToDocument(theme: LIGHT_DARK_MODE): void {
+	const dark = isDark(theme);
 	withoutTransitions(() => root().classList.toggle("dark", dark));
 }
 
+let fadeId = 0;
+
+// User switch: crossfade the whole page once (View Transitions) instead of
+// per-element color transitions; instant when unsupported or reduced motion
 export function setTheme(theme: LIGHT_DARK_MODE): void {
 	localStorage.setItem("theme", theme);
-	applyThemeToDocument(theme);
+	const r = root();
+	const dark = isDark(theme);
+	if (dark === r.classList.contains("dark")) return;
+	if (
+		typeof document.startViewTransition !== "function" ||
+		matchMedia("(prefers-reduced-motion: reduce)").matches ||
+		r.hasAttribute("data-astro-transition") // ClientRouter navigating
+	) {
+		applyThemeToDocument(theme);
+		return;
+	}
+
+	const id = ++fadeId;
+	r.dataset.noTransition = "";
+	r.dataset.themeFade = "";
+	document
+		.startViewTransition(() => {
+			r.classList.toggle("dark", dark);
+		})
+		.finished.finally(() => {
+			if (id !== fadeId) return; // a newer switch owns the flags
+			delete r.dataset.noTransition;
+			delete r.dataset.themeFade;
+		});
 }
 
 export function getStoredTheme(): LIGHT_DARK_MODE {

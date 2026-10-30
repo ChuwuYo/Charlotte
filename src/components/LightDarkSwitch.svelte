@@ -40,14 +40,32 @@ function showPanel() {
 	panel.classList.remove("float-panel-closed");
 }
 
+let wrapper: HTMLElement;
+
+function closePanel() {
+	document
+		.querySelector("#light-dark-panel")
+		.classList.add("float-panel-closed");
+}
+
+// The crossfade overlay steals hover; decide on the first move after it ends
 function hidePanel() {
-	const panel = document.querySelector("#light-dark-panel");
-	panel.classList.add("float-panel-closed");
+	const root = document.documentElement;
+	if (!root.hasAttribute("data-theme-fade")) {
+		closePanel();
+		return;
+	}
+	const onMove = (e: PointerEvent) => {
+		if (root.hasAttribute("data-theme-fade")) return;
+		document.removeEventListener("pointermove", onMove);
+		if (!wrapper.contains(e.target as Node)) closePanel();
+	};
+	document.addEventListener("pointermove", onMove);
 }
 </script>
 
 <!-- z-50 make the panel higher than other float panels -->
-<div class="relative z-50" onmouseleave={hidePanel}>
+<div class="relative z-50" bind:this={wrapper} onmouseleave={hidePanel}>
     <button aria-label="Light/Dark Mode" class="relative btn-plain scale-animation rounded-lg h-11 w-11 press" id="scheme-switch" onclick={toggleScheme} onmouseenter={showPanel}>
         <div class="absolute" class:opacity-0={mode !== LIGHT_MODE}>
             <Icon icon={icons["material-symbols:wb-sunny-outline-rounded"]} class="icon-5"></Icon>

@@ -128,3 +128,19 @@ html[data-no-transition] *::before,
 html[data-no-transition] *::after {
 	transition: none;
 }
+
+/* Theme crossfade: new snapshot fades in over the old one. Unlayered, so it
+   beats Astro's @layer rules for the <html> transition:animate="none" group */
+html[data-theme-fade]::view-transition-old(*) {
+	opacity: 1;
+}
+
+html[data-theme-fade]::view-transition-new(*) {
+	animation: theme-fade 250ms ease-out both;
+}
+
+@keyframes theme-fade {
+	from {
+		opacity: 0;
+	}
+}
