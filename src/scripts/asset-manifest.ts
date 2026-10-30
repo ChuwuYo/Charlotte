@@ -12,7 +12,12 @@ function manifest(): Manifest {
 
 export function routeAssets(pathname: string) {
 	const { assets, routes } = manifest();
-	const ids = routes[pathname] ?? routes[pathname.replace(/\/?$/, "/")] ?? [];
+	// Keys are decoded file paths; URLs encode CJK and spaces
+	let path = pathname;
+	try {
+		path = decodeURI(pathname);
+	} catch {}
+	const ids = routes[path] ?? routes[path.replace(/\/?$/, "/")] ?? [];
 	const urls = ids.map((i) => assets[i]);
 	return {
 		styles: urls.filter((u) => u.endsWith(".css")),

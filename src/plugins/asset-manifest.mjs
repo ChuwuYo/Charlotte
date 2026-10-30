@@ -3,8 +3,12 @@ import { join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // Lists every page's hashed CSS/JS, so the client can fetch a page's assets alongside its HTML
-const ASSET =
-	/(?:href|src|component-url|renderer-url|before-hydration-url)="(\/_astro\/[^"]+\.(?:css|js))"/g;
+const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const assetPattern = (dir) =>
+	new RegExp(
+		`(?:href|src|component-url|renderer-url|before-hydration-url)="(${escapeRegExp(dir)}[^"]+\\.(?:css|js))"`,
+		"g",
+	);
 
 async function htmlFiles(dir) {
 	const out = [];
@@ -24,11 +28,13 @@ function route(base, root, file) {
 
 export function assetManifest() {
 	let base = "/";
+	let asset = assetPattern("/_astro/");
 	return {
 		name: "asset-manifest",
 		hooks: {
 			"astro:config:done": ({ config }) => {
 				base = config.base.replace(/\/?$/, "/");
+				asset = assetPattern(`${base}${config.build.assets}/`);
 			},
 			"astro:build:done": async ({ dir }) => {
 				const root = fileURLToPath(dir);
@@ -39,7 +45,7 @@ export function assetManifest() {
 				const routes = {};
 				files.forEach((file, i) => {
 					const ids = new Set();
-					for (const [, url] of pages[i].matchAll(ASSET)) {
+					for (const [, url] of pages[i].matchAll(asset)) {
 						if (!index.has(url)) index.set(url, assets.push(url) - 1);
 						ids.add(index.get(url));
 					}
