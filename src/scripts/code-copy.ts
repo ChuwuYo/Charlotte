@@ -43,10 +43,10 @@ export function initCodeCopy(): void {
 		btn.dataset.copying = "true";
 		try {
 			await navigator.clipboard.writeText(code);
-			showResult(btn, "success", "Copied");
+			showResult(btn, "success", btn.dataset.copied ?? "");
 		} catch (err) {
 			console.error("Failed to copy code:", err);
-			showResult(btn, "error", "Copy failed");
+			showResult(btn, "error", btn.dataset.copyFailed ?? "");
 		} finally {
 			delete btn.dataset.copying;
 		}

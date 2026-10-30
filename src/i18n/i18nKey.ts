@@ -52,6 +52,10 @@ enum I18nKey {
 
 	pinned = "pinned",
 	tableOfContents = "tableOfContents",
+
+	copyCode = "copyCode",
+	copied = "copied",
+	copyFailed = "copyFailed",
 }
 
 export default I18nKey;

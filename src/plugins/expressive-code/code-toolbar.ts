@@ -4,6 +4,8 @@
 
 import { definePlugin } from "@expressive-code/core";
 import type { Element } from "hast";
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
 
 /**
  * 创建复制图标 SVG
@@ -67,8 +69,11 @@ function createCopyButton(): Element {
 		properties: {
 			type: "button",
 			className: ["code-toolbar-copy"],
-			"aria-label": "Copy code to clipboard",
-			title: "Copy code",
+			"aria-label": i18n(I18nKey.copyCode),
+			title: i18n(I18nKey.copyCode),
+			// Read by code-copy.ts for the live-region announcement
+			"data-copied": i18n(I18nKey.copied),
+			"data-copy-failed": i18n(I18nKey.copyFailed),
 		},
 		children: [
 			{

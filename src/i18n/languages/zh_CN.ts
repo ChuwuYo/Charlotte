@@ -55,4 +55,8 @@ export const zh_CN: Translation = {
 
 	[Key.pinned]: "置顶",
 	[Key.tableOfContents]: "目录",
+
+	[Key.copyCode]: "复制代码",
+	[Key.copied]: "已复制",
+	[Key.copyFailed]: "复制失败",
 };

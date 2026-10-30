@@ -55,4 +55,8 @@ export const ja: Translation = {
 	// 置顶相关翻译
 	[Key.pinned]: "ピン留め",
 	[Key.tableOfContents]: "目次",
+
+	[Key.copyCode]: "コードをコピー",
+	[Key.copied]: "コピーしました",
+	[Key.copyFailed]: "コピーに失敗しました",
 };
