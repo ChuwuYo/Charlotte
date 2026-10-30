@@ -218,7 +218,7 @@ function preloadFromDocument(doc: Document | undefined) {
 			const url = island.getAttribute(attr);
 			if (url) preloadModule(url);
 		}
-	// Images stay hidden until loaded; start the first ones now instead of after the swap
+	// Images stay hidden until loaded; start loading the first ones before the swap
 	const imgs = REGIONS.flatMap((id) => [
 		...(doc.getElementById(id)?.querySelectorAll("img") ?? []),
 	]);

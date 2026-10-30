@@ -3,7 +3,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Unlayered like before: these must keep beating Tailwind layers and Expressive Code styles */
+/* Unlayered, so these beat Tailwind layers and Expressive Code styles */
 @import "katex/dist/katex.css";
 
 @import "./tokens.css" layer(base);
@@ -17,7 +17,7 @@
 @import "./markdown-extend.css";
 @import "photoswipe/style.css";
 
-/* Same specificity as before (:is), so dark utilities still win over plain ones */
+/* :is() adds .dark's specificity, so dark: utilities win over plain ones */
 @custom-variant dark (&:is(.dark *));
 
 @theme {

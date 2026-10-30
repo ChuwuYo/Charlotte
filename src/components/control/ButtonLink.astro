@@ -25,7 +25,7 @@ const { badge, url } = Astro.props;
         }
     >
         <div class="flex items-center justify-between relative mr-2">
-            <!-- Label nudges right on hover (transform instead of padding) -->
+            <!-- Label nudges right on hover; transform avoids relayout -->
             <div class="overflow-hidden text-left whitespace-nowrap text-ellipsis transition-transform motion-safe:group-hover:translate-x-1">
                 <slot></slot>
             </div>

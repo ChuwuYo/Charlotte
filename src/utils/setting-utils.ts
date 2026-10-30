@@ -64,8 +64,8 @@ export function applyThemeToDocument(theme: LIGHT_DARK_MODE): void {
 
 let fadeId = 0;
 
-// User switch: crossfade the whole page once (View Transitions) instead of
-// per-element color transitions; instant when unsupported or reduced motion
+// User switch: one whole-page crossfade (View Transitions); instant when
+// unsupported, with reduced motion, or during a ClientRouter navigation
 export function setTheme(theme: LIGHT_DARK_MODE): void {
 	localStorage.setItem("theme", theme);
 	const r = root();

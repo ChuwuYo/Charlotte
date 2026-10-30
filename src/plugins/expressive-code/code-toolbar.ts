@@ -289,7 +289,7 @@ export function pluginCodeToolbar() {
 						// 规范化 children 为数组
 						if (!node.children) node.children = [];
 
-						// 查找并删除旧的 header 节点（工具栏已完全替代其功能）
+						// 删除 Expressive Code 自带的 header，由工具栏提供其功能
 						const headerIndex = node.children.findIndex(
 							(child) =>
 								child.type === "element" &&

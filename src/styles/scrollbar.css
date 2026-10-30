@@ -1,4 +1,4 @@
-/* Native scrollbars tinted like the old overlay ones */
+/* Thin native scrollbars in the theme scrollbar color */
 html,
 .katex-display-container,
 .search-panel {
@@ -6,7 +6,7 @@ html,
 	scrollbar-color: var(--scrollbar-bg) transparent;
 }
 
-/* Page scrollbar: the root still scrolls natively; with a mouse (set in HeadScript) its bar is replaced by an overlay thumb that takes no width */
+/* Page scrollbar: the root scrolls natively; with a mouse (set in HeadScript) its bar is replaced by an overlay thumb that takes no width */
 .page-scrollbar {
 	display: none;
 }

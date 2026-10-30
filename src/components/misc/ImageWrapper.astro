@@ -73,7 +73,6 @@ const onerrorScript = `${hideBar} this.parentElement.querySelector('.error-icon'
     <div class="error-icon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl text-30 z-10 opacity-0 transition-opacity duration-500 pointer-events-none">
         <Icon name="material-symbols:image-not-supported-outline-rounded" />
     </div>
-	<!-- 移除暗色模式冗余的遮罩层，由各组件自行处理视觉效果 -->
     {isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority} onload={onloadScript} onerror={onerrorScript}/>}
     {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority} onload={onloadScript} onerror={onerrorScript}/>}
 </div>
