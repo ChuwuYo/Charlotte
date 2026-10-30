@@ -63,6 +63,8 @@ export function applyThemeToDocument(theme: LIGHT_DARK_MODE): void {
 }
 
 let fadeId = 0;
+// Target of a crossfade whose class change has not run yet
+let pendingDark: boolean | undefined;
 
 // User switch: one whole-page crossfade (View Transitions); instant when
 // unsupported, with reduced motion, or during a ClientRouter navigation
@@ -70,25 +72,29 @@ export function setTheme(theme: LIGHT_DARK_MODE): void {
 	localStorage.setItem("theme", theme);
 	const r = root();
 	const dark = isDark(theme);
-	if (dark === r.classList.contains("dark")) return;
+	if (dark === (pendingDark ?? r.classList.contains("dark"))) return;
 	if (
 		typeof document.startViewTransition !== "function" ||
 		matchMedia("(prefers-reduced-motion: reduce)").matches ||
 		r.hasAttribute("data-astro-transition") // ClientRouter navigating
 	) {
+		pendingDark = undefined;
 		applyThemeToDocument(theme);
 		return;
 	}
 
 	const id = ++fadeId;
+	pendingDark = dark;
 	r.dataset.noTransition = "";
 	r.dataset.themeFade = "";
 	document
+		// Latest stored theme: a switch made before this callback runs wins
 		.startViewTransition(() => {
-			r.classList.toggle("dark", dark);
+			r.classList.toggle("dark", isDark(getStoredTheme()));
 		})
 		.finished.finally(() => {
 			if (id !== fadeId) return; // a newer switch owns the flags
+			pendingDark = undefined;
 			delete r.dataset.noTransition;
 			delete r.dataset.themeFade;
 		});
