@@ -6,6 +6,7 @@ import {
 } from "@constants/constants.ts";
 import { siteConfig } from "@/config";
 import type { LIGHT_DARK_MODE } from "@/types/config";
+import { revealTheme } from "./theme-reveal";
 
 const root = () => document.documentElement;
 
@@ -49,17 +50,25 @@ export function saveHue(hue: number): void {
 	localStorage.setItem("hue", String(hue));
 }
 
-export function applyThemeToDocument(theme: LIGHT_DARK_MODE): void {
-	const dark =
+function isDark(theme: LIGHT_DARK_MODE): boolean {
+	return (
 		theme === DARK_MODE ||
 		(theme === AUTO_MODE &&
-			window.matchMedia("(prefers-color-scheme: dark)").matches);
+			window.matchMedia("(prefers-color-scheme: dark)").matches)
+	);
+}
+
+export function applyThemeToDocument(theme: LIGHT_DARK_MODE): void {
+	const dark = isDark(theme);
 	withoutTransitions(() => root().classList.toggle("dark", dark));
 }
 
-export function setTheme(theme: LIGHT_DARK_MODE): void {
+// User switch: circular reveal from origin when the scheme actually flips
+export function setTheme(theme: LIGHT_DARK_MODE, origin?: Element): void {
 	localStorage.setItem("theme", theme);
-	applyThemeToDocument(theme);
+	const dark = isDark(theme);
+	if (dark === root().classList.contains("dark")) return;
+	if (!origin || !revealTheme(dark, origin)) applyThemeToDocument(theme);
 }
 
 export function getStoredTheme(): LIGHT_DARK_MODE {

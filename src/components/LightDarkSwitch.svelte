@@ -26,13 +26,13 @@ onMount(() => {
 	return () => query.removeEventListener("change", onChange);
 });
 
-function switchScheme(newMode: LIGHT_DARK_MODE) {
+function switchScheme(newMode: LIGHT_DARK_MODE, e: MouseEvent) {
 	mode = newMode;
-	setTheme(newMode);
+	setTheme(newMode, e.currentTarget as Element);
 }
 
-function toggleScheme() {
-	switchScheme(seq[(seq.indexOf(mode) + 1) % seq.length]);
+function toggleScheme(e: MouseEvent) {
+	switchScheme(seq[(seq.indexOf(mode) + 1) % seq.length], e);
 }
 
 function showPanel() {
@@ -66,7 +66,7 @@ function hidePanel() {
                     class:current-theme-btn={mode === LIGHT_MODE}
                     role="radio"
                     aria-checked={mode === LIGHT_MODE}
-                    onclick={() => switchScheme(LIGHT_MODE)}
+                    onclick={(e) => switchScheme(LIGHT_MODE, e)}
             >
                 <Icon icon={icons["material-symbols:wb-sunny-outline-rounded"]} class="icon-5 mr-3"></Icon>
                 {i18n(I18nKey.lightMode)}
@@ -75,7 +75,7 @@ function hidePanel() {
                     class:current-theme-btn={mode === DARK_MODE}
                     role="radio"
                     aria-checked={mode === DARK_MODE}
-                    onclick={() => switchScheme(DARK_MODE)}
+                    onclick={(e) => switchScheme(DARK_MODE, e)}
             >
                 <Icon icon={icons["material-symbols:dark-mode-outline-rounded"]} class="icon-5 mr-3"></Icon>
                 {i18n(I18nKey.darkMode)}
@@ -84,7 +84,7 @@ function hidePanel() {
                     class:current-theme-btn={mode === AUTO_MODE}
                     role="radio"
                     aria-checked={mode === AUTO_MODE}
-                    onclick={() => switchScheme(AUTO_MODE)}
+                    onclick={(e) => switchScheme(AUTO_MODE, e)}
             >
                 <Icon icon={icons["material-symbols:radio-button-partial-outline"]} class="icon-5 mr-3"></Icon>
                 {i18n(I18nKey.systemMode)}
