@@ -44,7 +44,11 @@ export function initCollapsibleToc(signal: AbortSignal): void {
 	document.addEventListener(
 		"click",
 		(e) => {
-			if (!isOpen() || !panel.checkVisibility()) return;
+			if (
+				!isOpen() ||
+				!(panel.checkVisibility?.() ?? panel.getClientRects().length > 0)
+			)
+				return;
 			if (panel.contains(e.target as Node)) return;
 			e.preventDefault();
 			e.stopPropagation();
