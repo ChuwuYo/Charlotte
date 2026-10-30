@@ -269,7 +269,13 @@ export function initRouter(): void {
 		const state = traverse ? history.state : undefined;
 		target = { scrollX: state?.scrollX ?? 0, scrollY: state?.scrollY ?? 0 };
 		const motion = !reducedMotion();
-		if (motion) root.dataset.leaving = enter;
+		if (motion) {
+			root.dataset.leaving = enter;
+			// An aborted navigation never swaps, so nothing else clears it
+			e.signal.addEventListener("abort", () => delete root.dataset.leaving, {
+				once: true,
+			});
+		}
 		const leave = motion ? wait(ms("--duration-fast")) : undefined;
 		// HTML, CSS and modules load in parallel; the swap waits for HTML and CSS only
 		const { styles, scripts } = routeAssets(e.to.pathname);
