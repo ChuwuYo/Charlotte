@@ -1,5 +1,16 @@
 /// <reference types="mdast" />
+import { readFileSync } from "node:fs";
 import { h } from "hastscript";
+
+// Written by scripts/github-card-data.mjs before each build; the page makes no API requests
+const cards = JSON.parse(
+	readFileSync(new URL("../data/github-cards.json", import.meta.url), "utf8"),
+);
+
+const compact = (n) =>
+	Intl.NumberFormat("en-us", { notation: "compact", maximumFractionDigits: 1 })
+		.format(n)
+		.replaceAll("\u202f", "");
 
 /**
  * Creates a GitHub Card component.
@@ -23,73 +34,48 @@ export function GithubCardComponent(properties, children) {
 		);
 
 	const repo = properties.repo;
-	const cardUuid = `GC${Math.random().toString(36).slice(-6)}`; // Collisions are not important
-
-	const nAvatar = h(`div#${cardUuid}-avatar`, { class: "gc-avatar" });
-	const nLanguage = h(
-		`span#${cardUuid}-language`,
-		{ class: "gc-language" },
-		"Waiting...",
-	);
+	const [owner, name] = repo.split("/");
+	const data = cards[repo.toLowerCase()];
 
 	const nTitle = h("div", { class: "gc-titlebar" }, [
 		h("div", { class: "gc-titlebar-left" }, [
 			h("div", { class: "gc-owner" }, [
-				nAvatar,
-				h("div", { class: "gc-user" }, repo.split("/")[0]),
+				h("div", {
+					class: "gc-avatar",
+					style: data ? `background-image: url(${data.avatar})` : undefined,
+				}),
+				h("div", { class: "gc-user" }, data?.owner ?? owner),
 			]),
 			h("div", { class: "gc-divider" }, "/"),
-			h("div", { class: "gc-repo" }, repo.split("/")[1]),
+			h("div", { class: "gc-repo" }, data?.name ?? name),
 		]),
 		h("div", { class: "github-logo" }),
 	]);
 
-	const nDescription = h(
-		`div#${cardUuid}-description`,
-		{ class: "gc-description" },
-		"Waiting for api.github.com...",
-	);
-
-	const nStars = h(`div#${cardUuid}-stars`, { class: "gc-stars" }, "00K");
-	const nForks = h(`div#${cardUuid}-forks`, { class: "gc-forks" }, "0K");
-	const nLicense = h(`div#${cardUuid}-license`, { class: "gc-license" }, "0K");
-
-	const nScript = h(
-		`script#${cardUuid}-script`,
-		{ type: "text/javascript", defer: true },
-		`
-      fetch('https://api.github.com/repos/${repo}', { referrerPolicy: "no-referrer" }).then(response => response.json()).then(data => {
-        document.getElementById('${cardUuid}-description').innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
-        document.getElementById('${cardUuid}-language').innerText = data.language;
-        document.getElementById('${cardUuid}-forks').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll("\u202f", '');
-        document.getElementById('${cardUuid}-stars').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll("\u202f", '');
-        const avatarEl = document.getElementById('${cardUuid}-avatar');
-        avatarEl.style.backgroundImage = 'url(' + data.owner.avatar_url + ')';
-        avatarEl.style.backgroundColor = 'transparent';
-        document.getElementById('${cardUuid}-license').innerText = data.license?.spdx_id || "no-license";
-        document.getElementById('${cardUuid}-card').classList.remove("fetch-waiting");
-        console.log("[GITHUB-CARD] Loaded card for ${repo} | ${cardUuid}.")
-      }).catch(err => {
-        const c = document.getElementById('${cardUuid}-card');
-        c?.classList.add("fetch-error");
-        console.warn("[GITHUB-CARD] (Error) Loading card for ${repo} | ${cardUuid}.")
-      })
-    `,
-	);
+	// No saved data: a plain link card with the title bar only
+	const details = data
+		? [
+				h(
+					"div",
+					{ class: "gc-description" },
+					data.description || "Description not set",
+				),
+				h("div", { class: "gc-infobar" }, [
+					h("div", { class: "gc-stars" }, compact(data.stars)),
+					h("div", { class: "gc-forks" }, compact(data.forks)),
+					h("div", { class: "gc-license" }, data.license || "no-license"),
+				]),
+			]
+		: [];
 
 	return h(
-		`a#${cardUuid}-card`,
+		"a",
 		{
-			class: "card-github fetch-waiting no-styling",
+			class: "card-github no-styling",
 			href: `https://github.com/${repo}`,
 			target: "_blank",
-			repo,
+			rel: "noopener",
 		},
-		[
-			nTitle,
-			nDescription,
-			h("div", { class: "gc-infobar" }, [nStars, nForks, nLicense, nLanguage]),
-			nScript,
-		],
+		[nTitle, ...details],
 	);
 }
