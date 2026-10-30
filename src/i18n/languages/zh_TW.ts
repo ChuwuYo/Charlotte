@@ -60,4 +60,7 @@ export const zh_TW: Translation = {
 	[Key.copyCode]: "複製程式碼",
 	[Key.copied]: "已複製",
 	[Key.copyFailed]: "複製失敗",
+
+	[Key.notFoundTitle]: "頁面不存在",
+	[Key.notFoundDescription]: "這個連結可能已經失效，或者頁面被移到了別處。",
 };

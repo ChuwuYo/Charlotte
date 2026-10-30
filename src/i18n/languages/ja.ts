@@ -59,4 +59,7 @@ export const ja: Translation = {
 	[Key.copyCode]: "コードをコピー",
 	[Key.copied]: "コピーしました",
 	[Key.copyFailed]: "コピーに失敗しました",
+
+	[Key.notFoundTitle]: "ページが見つかりません",
+	[Key.notFoundDescription]: "リンクが切れているか、ページが移動した可能性があります。",
 };

@@ -59,4 +59,7 @@ export const zh_CN: Translation = {
 	[Key.copyCode]: "复制代码",
 	[Key.copied]: "已复制",
 	[Key.copyFailed]: "复制失败",
+
+	[Key.notFoundTitle]: "页面不存在",
+	[Key.notFoundDescription]: "这个链接可能已经失效，或者页面被移到了别处。",
 };

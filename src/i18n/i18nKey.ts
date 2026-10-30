@@ -56,6 +56,9 @@ enum I18nKey {
 	copyCode = "copyCode",
 	copied = "copied",
 	copyFailed = "copyFailed",
+
+	notFoundTitle = "notFoundTitle",
+	notFoundDescription = "notFoundDescription",
 }
 
 export default I18nKey;

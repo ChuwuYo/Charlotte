@@ -60,4 +60,7 @@ export const en: Translation = {
 	[Key.copyCode]: "Copy code",
 	[Key.copied]: "Copied",
 	[Key.copyFailed]: "Copy failed",
+
+	[Key.notFoundTitle]: "Page not found",
+	[Key.notFoundDescription]: "The link may be broken, or the page may have moved.",
 };
