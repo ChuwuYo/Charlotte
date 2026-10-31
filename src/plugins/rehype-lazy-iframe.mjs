@@ -26,7 +26,7 @@ function lazy(node) {
 	const h = Number(p.height);
 	let ratio;
 	if (w > 0 && h > 0) ratio = `aspect-ratio: ${w} / ${h}; height: auto;`;
-	else if (p.height === undefined)
-		ratio = `${p.width === undefined ? "width: 100%; " : ""}aspect-ratio: 16 / 9; height: auto;`;
+	else if (!p.height)
+		ratio = `${p.width ? "" : "width: 100%; "}aspect-ratio: 16 / 9; height: auto;`;
 	if (ratio) p.style = `${ratio}${p.style ? ` ${p.style}` : ""}`;
 }

@@ -9,7 +9,7 @@ const parser = new MarkdownIt();
 
 // Images beside posts, keyed by /src/... path; src is the built /_astro/ URL
 const postImages = import.meta.glob<ImageMetadata>(
-	"/src/content/posts/**/*.{png,jpg,jpeg,webp,gif,avif,svg}",
+	"/src/content/posts/**/*.{png,jpg,jpeg,webp,gif,svg,avif,PNG,JPG,JPEG,WEBP,GIF,SVG,AVIF}",
 	{ eager: true, import: "default" },
 );
 
@@ -30,7 +30,12 @@ function resolveUrl(path: string, postFile: string | undefined): string {
 	if (/^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(path)) return path;
 	if (path.startsWith("/")) return absoluteUrl(path);
 	if (!postFile) return path;
-	const key = decodeURI(new URL(path, `file:///${postFile}`).pathname);
+	let key: string;
+	try {
+		key = decodeURI(new URL(path, `file:///${postFile}`).pathname);
+	} catch {
+		return path;
+	}
 	const image = postImages[key];
 	return image ? absoluteUrl(image.src) : path;
 }

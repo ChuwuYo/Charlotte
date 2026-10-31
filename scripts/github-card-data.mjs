@@ -9,7 +9,7 @@ import { join } from "node:path";
 const CONTENT_DIR = "src/content";
 const OUT = "src/data/github-cards.json";
 const DIRECTIVE =
-	/^::github\{[^}]*\brepo\s*=\s*["']([^"'/\s]+\/[^"'\s]+)["']/gm;
+	/^[ \t>]*::github\{[^}]*\brepo\s*=\s*["']([^"'/\s]+\/[^"'\s]+)["']/gm;
 
 function markdownFiles(dir) {
 	return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {

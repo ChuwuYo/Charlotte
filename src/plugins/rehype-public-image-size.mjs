@@ -22,11 +22,16 @@ export function rehypePublicImageSize() {
 		});
 		await Promise.all(
 			imgs.map(async (node) => {
-				const file =
-					publicDir + decodeURI(node.properties.src.split(/[?#]/)[0]).slice(1);
-				if (!existsSync(file)) return;
-				const { width, height } = await sharp(file).metadata();
-				if (width && height) Object.assign(node.properties, { width, height });
+				// Unreadable paths and files are skipped; the image renders without a size
+				try {
+					const file =
+						publicDir +
+						decodeURI(node.properties.src.split(/[?#]/)[0]).slice(1);
+					if (!existsSync(file)) return;
+					const { width, height } = await sharp(file).metadata();
+					if (width && height)
+						Object.assign(node.properties, { width, height });
+				} catch {}
 			}),
 		);
 	};
