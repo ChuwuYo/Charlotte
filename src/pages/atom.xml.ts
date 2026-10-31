@@ -35,6 +35,7 @@ export async function GET() {
 			content: {
 				type: "html",
 				value: renderFeedContent(post),
+				base: absoluteUrl(`/posts/${post.id}/`),
 			},
 			summary: post.data.description || "",
 			link: [
