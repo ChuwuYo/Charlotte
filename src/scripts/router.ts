@@ -71,10 +71,19 @@ const top = (id: string) =>
 	document.getElementById(id)?.getBoundingClientRect().top;
 const navbarHidden = () =>
 	!!document.getElementById(NAVBAR)?.classList.contains("navbar-hidden");
+// Sticky navbar position derived from its row: Android Chrome can report the
+// navbar's own rect as unstuck while its toolbar is shown
+function navbarTop() {
+	const row = document.getElementById(NAVBAR_ROW)?.getBoundingClientRect();
+	const height = document.getElementById(NAVBAR)?.offsetHeight;
+	if (!row || height === undefined) return undefined;
+	return Math.max(row.top, Math.min(0, row.bottom - height));
+}
 const measure = (): Record<string, number | undefined> => ({
 	...Object.fromEntries(
-		[...FRAME, STICKY, NAVBAR, NAVBAR_ROW].map((id) => [id, top(id)]),
+		[...FRAME, STICKY, NAVBAR_ROW].map((id) => [id, top(id)]),
 	),
+	[NAVBAR]: navbarTop(),
 	hidden: navbarHidden() ? 1 : 0,
 });
 
