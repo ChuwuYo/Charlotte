@@ -119,8 +119,10 @@ const settingsIcons = iconData(["fa6-solid:arrow-rotate-left"]);
 :global(.is-post) .navbar-controls[data-post-mode] .buttons-container {
     opacity: 0;
     pointer-events: none;
+    /* Unfocusable once faded out */
+    visibility: hidden;
     transform: translateX(0);
-    transition: opacity 0.1s ease-out, transform 0.3s ease-out;
+    transition: opacity 0.1s ease-out, transform 0.3s ease-out, visibility 0s linear 0.1s;
 }
 
 :global(.is-post) .navbar-controls[data-post-mode] > .search-container {

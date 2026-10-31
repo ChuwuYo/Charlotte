@@ -17,7 +17,7 @@ const links = Astro.props.links;
             return (
                 <div data-mobile-dropdown>
                     <button 
-                        class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8 w-full
+                        class="group peer flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8 w-full
  hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition-ui"
                         data-mobile-dropdown-trigger
                     >
@@ -28,7 +28,7 @@ const links = Astro.props.links;
                               class="transition-transform icon-5 text-(--primary-text) duration-200 group-aria-expanded:rotate-180"
                         />
                     </button>
-                    <div class="overflow-hidden transition-[max-height] duration-200 max-h-0" data-mobile-dropdown-content>
+                    <div class="overflow-hidden transition-[max-height,visibility] duration-200 max-h-0 invisible peer-aria-expanded:visible" data-mobile-dropdown-content>
                         <div class="pl-4 py-1">
                             {link.children!.map((child) => (
                                 <a href={child.external ? child.url : url(child.url)} 

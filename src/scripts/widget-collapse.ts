@@ -8,12 +8,22 @@ export function initWidgetCollapse(): void {
 		const expand = widget.querySelector(".expand-btn");
 		const collapse = widget.querySelector(".collapse-btn");
 		if (!wrapper || !expand || !collapse) continue;
+		// Items fully below the collapsed edge leave the tab order
+		const clip = () => {
+			const collapsed = wrapper.classList.contains("collapsed");
+			const bottom = wrapper.getBoundingClientRect().bottom;
+			for (const el of wrapper.querySelectorAll<HTMLElement>("a, button"))
+				el.inert = collapsed && el.getBoundingClientRect().top >= bottom;
+		};
 		const set = (collapsed: boolean) => {
 			wrapper.classList.toggle("collapsed", collapsed);
 			expand.classList.toggle("hidden", !collapsed);
 			collapse.classList.toggle("hidden", collapsed);
+			clip();
 		};
 		expand.addEventListener("click", () => set(false));
 		collapse.addEventListener("click", () => set(true));
+		window.addEventListener("resize", clip, { passive: true });
+		clip();
 	}
 }

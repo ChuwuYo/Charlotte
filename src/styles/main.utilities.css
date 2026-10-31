@@ -17,11 +17,12 @@
 	}
 }
 
-/* Float panel open/close */
+/* Float panel open/close; visibility flips after the fade-out, instantly on open */
 @utility transition-panel {
-	transition-property: opacity, translate;
+	transition-property: opacity, translate, visibility;
 	transition-timing-function: var(--ease-standard);
-	transition-duration: var(--duration-fast);
+	transition-duration: var(--duration-fast), var(--duration-fast), 0s;
+	transition-delay: 0s, 0s, var(--panel-hide-delay, 0s);
 }
 
 @utility card-base {
@@ -71,8 +72,11 @@
 	@apply top-21 rounded-(--radius-large) overflow-hidden bg-(--float-panel-bg) transition-panel shadow-xl dark:shadow-none;
 }
 
+/* Hidden panels leave the tab order and accessibility tree */
 @utility float-panel-closed {
 	@apply -translate-y-1 opacity-0 pointer-events-none;
+	visibility: hidden;
+	--panel-hide-delay: var(--duration-fast);
 }
 
 @utility search-panel {
