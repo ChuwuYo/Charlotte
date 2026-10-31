@@ -1,11 +1,45 @@
 .custom-md {
+    font-size: var(--text-prose);
+
+    /* Typography plugin colors from the text ramp; unlayered, so they win over prose-invert too */
+    --tw-prose-body: var(--fg-body);
+    --tw-prose-headings: var(--fg-strong);
+    --tw-prose-lead: var(--fg-body);
+    --tw-prose-links: var(--primary-text);
+    --tw-prose-bold: var(--fg-strong);
+    --tw-prose-quotes: var(--fg-strong);
+    --tw-prose-captions: var(--fg-muted);
+    --tw-prose-th-borders: var(--meta-divider);
+    --tw-prose-td-borders: var(--line-color);
+
+    /* Line length for running text; code, tables and media keep the full width */
+    :where(p, li) {
+        max-inline-size: var(--spacing-measure);
+        text-wrap: pretty;
+    }
+
+    :where(h1, h2, h3, h4, h5, h6) {
+        text-wrap: balance;
+    }
+
+    /* Headings scale with the body; h1 is 30/17 of it */
     h1 {
-        @apply text-3xl;
+        font-size: calc(30em / 17);
+        line-height: 1.2;
+        /* More space above than below, and above h2's 2em */
+        margin-block: 1.8em 0.8em;
+    }
+
+    /* Headings sit in sections (remark-sectionize): no top gap for the first one,
+       and a subheading right under its heading keeps only that heading's bottom margin */
+    > section:first-child > :first-child,
+    :is(h1, h2, h3) + section > :first-child {
+        margin-top: 0;
     }
 
     h1, h2, h3, h4, h5, h6 {
         .anchor {
-            @apply transition! -m-0.5! ml-[0.2ch]! p-0.5! select-none! opacity-0! no-underline!;
+            @apply transition-opacity! -m-0.5! ml-[0.2ch]! p-0.5! select-none! opacity-0! no-underline!;
 
             .anchor-icon {
                 @apply mx-[0.45ch]!;
@@ -20,7 +54,7 @@
     }
 
     a:not(.no-styling) {
-        @apply relative bg-none link font-medium text-(--primary)
+        @apply relative bg-none link font-medium text-(--primary-text)
         underline decoration-(--link-underline) decoration-1 decoration-dashed underline-offset-4;
         box-decoration-break: clone;
         -webkit-box-decoration-break: clone;
@@ -37,25 +71,12 @@
     code {
         @apply bg-(--inline-code-bg) text-(--inline-code-color) px-1 py-0.5 rounded-md overflow-hidden;
 
-        font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+        font-family: var(--font-jetbrains-mono);
         &:before {
             content:none;
         }
         &:after {
             content:none;
-        }
-
-        counter-reset: line;
-        span.line {
-            &:before {
-                @apply text-white/25 mr-4 w-4 inline-block;
-                content: counter(line);
-                counter-increment: line;
-                direction: rtl;
-            }
-            &:last-child:empty, &:last-child:has(> span:empty:only-child) {
-                display: none;
-            }
         }
     }
 
@@ -96,9 +117,10 @@
     blockquote {
         @apply not-italic border-transparent relative;
         font-weight: inherit;
+        border-inline-start-width: var(--spacing);
 
         &:before {
-            @apply content-[''] absolute -left-1 block transition bg-(--btn-regular-bg) h-full w-1 rounded-full;
+            @apply content-[''] absolute -left-1 block bg-(--btn-regular-bg) h-full w-1 rounded-full;
         }
 
         /* Remove the double quotes from default styles */

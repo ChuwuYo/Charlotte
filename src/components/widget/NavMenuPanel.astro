@@ -9,41 +9,39 @@ interface Props {
 
 const links = Astro.props.links;
 ---
-<div id="nav-menu-panel" class:list={["float-panel float-panel-closed absolute transition-all fixed right-4 px-2 py-2"]}>
+<div id="nav-menu-panel" class:list={["float-panel float-panel-closed fixed right-4 px-2 py-2"]}>
     {links.map((link) => {
-        // 检查是否有子菜单
         const hasChildren = link.children && link.children.length > 0;
         
         if (hasChildren) {
             return (
-                <div class="nav-dropdown-mobile" data-mobile-dropdown>
+                <div data-mobile-dropdown>
                     <button 
                         class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8 w-full
-                            hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition"
+ hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition-ui"
                         data-mobile-dropdown-trigger
                     >
-                        <div class="transition text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                        <div class="transition-ui text-75 font-bold group-hover:text-[var(--primary-text)] group-active:text-[var(--primary-text)]">
                             {link.name}
                         </div>
                         <Icon name="material-symbols:keyboard-arrow-down-rounded"
-                              class="transition text-[1.25rem] text-[var(--primary)] duration-200"
-                              data-mobile-dropdown-icon
+                              class="transition-transform icon-5 text-(--primary-text) duration-200 group-aria-expanded:rotate-180"
                         />
                     </button>
-                    <div class="overflow-hidden transition-all duration-200 max-h-0" data-mobile-dropdown-content>
+                    <div class="overflow-hidden transition-[max-height] duration-200 max-h-0" data-mobile-dropdown-content>
                         <div class="pl-4 py-1">
                             {link.children!.map((child) => (
                                 <a href={child.external ? child.url : url(child.url)} 
                                    class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8
-                                       hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition
-                                   "
+ hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition-ui
+ "
                                    target={child.external ? "_blank" : null}
                                 >
-                                    <div class="transition text-black/60 dark:text-white/60 font-medium group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                                    <div class="transition-ui text-50 font-medium group-hover:text-[var(--primary-text)] group-active:text-[var(--primary-text)]">
                                         {child.name}
                                     </div>
                                     {child.external && <Icon name="fa6-solid:arrow-up-right-from-square"
-                                          class="transition text-[0.75rem] text-black/25 dark:text-white/25 -translate-x-1"
+                                          class="icon-3 text-50 -translate-x-1"
                                     />}
                                 </a>
                             ))}
@@ -54,99 +52,21 @@ const links = Astro.props.links;
         } else {
             return (
                 <a href={link.external ? link.url : url(link.url)} class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8
-                    hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition
-                "
+ hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition-ui
+ "
                    target={link.external ? "_blank" : null}
                 >
-                    <div class="transition text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                    <div class="transition-ui text-75 font-bold group-hover:text-[var(--primary-text)] group-active:text-[var(--primary-text)]">
                         {link.name}
                     </div>
                     {!link.external && <Icon name="material-symbols:chevron-right-rounded"
-                          class="transition text-[1.25rem] text-[var(--primary)]"
+                          class="icon-5 text-(--primary-text)"
                     />}
                     {link.external && <Icon name="fa6-solid:arrow-up-right-from-square"
-                          class="transition text-[0.75rem] text-black/25 dark:text-white/25 -translate-x-1"
+                          class="icon-3 text-50 -translate-x-1"
                     />}
                 </a>
             );
         }
     })}
 </div>
-
-<script>
- // 移动端下拉菜单功能
- function initMobileDropdowns() {
-     document.querySelectorAll('[data-mobile-dropdown]').forEach(dropdown => {
-         // 防重复初始化
-         if ((dropdown as HTMLElement).dataset.init) return;
-         (dropdown as HTMLElement).dataset.init = 'true';
-
-         const trigger = dropdown.querySelector('[data-mobile-dropdown-trigger]');
-         const content = dropdown.querySelector('[data-mobile-dropdown-content]');
-         const icon = dropdown.querySelector('[data-mobile-dropdown-icon]');
-
-         if (!trigger || !content || !icon) return;
-
-         // 点击切换菜单
-         trigger.addEventListener('click', (e) => {
-             e?.preventDefault();
-             e?.stopPropagation();
-
-             const isOpen = (content as HTMLElement).style.maxHeight !== '0px';
-
-             if (isOpen) {
-                 // 收起菜单
-                 (content as HTMLElement).style.maxHeight = '0px';
-                 (icon as SVGElement).style.transform = 'rotate(0deg)';
-             } else {
-                 // 先关闭所有其他菜单
-                 document.querySelectorAll('[data-mobile-dropdown]').forEach(otherDropdown => {
-                     if (otherDropdown !== dropdown) {
-                         const otherContent = otherDropdown.querySelector('[data-mobile-dropdown-content]');
-                         const otherIcon = otherDropdown.querySelector('[data-mobile-dropdown-icon]');
-                         if (otherContent) (otherContent as HTMLElement).style.maxHeight = '0px';
-                         if (otherIcon) (otherIcon as SVGElement).style.transform = 'rotate(0deg)';
-                     }
-                 });
-                 
-                 // 展开当前菜单
-                 (content as HTMLElement).style.maxHeight = (content as HTMLElement).scrollHeight + 'px';
-                 (icon as SVGElement).style.transform = 'rotate(180deg)';
-             }
-         });
-     });
- }
-
- // 点击外部关闭所有菜单
- document.addEventListener('click', (e) => {
-     if (!(e.target as Element)?.closest('[data-mobile-dropdown]')) {
-         document.querySelectorAll('[data-mobile-dropdown]').forEach(dropdown => {
-             const content = dropdown.querySelector('[data-mobile-dropdown-content]');
-             const icon = dropdown.querySelector('[data-mobile-dropdown-icon]');
-             if (content) (content as HTMLElement).style.maxHeight = '0px';
-             if (icon) (icon as SVGElement).style.transform = 'rotate(0deg)';
-         });
-     }
- });
-
- // 页面加载完成后初始化
- if (document.readyState === 'loading') {
-     document.addEventListener('DOMContentLoaded', initMobileDropdowns);
- } else {
-     initMobileDropdowns();
- }
-
- // Swup页面切换时重新初始化
- if (window.swup?.hooks) {
-     window.swup.hooks.on('page:view', () => {
-         // 重置所有菜单状态后重新初始化
-         document.querySelectorAll('[data-mobile-dropdown]').forEach(dropdown => {
-             const content = dropdown.querySelector('[data-mobile-dropdown-content]');
-             const icon = dropdown.querySelector('[data-mobile-dropdown-icon]');
-             if (content) (content as HTMLElement).style.maxHeight = '0px';
-             if (icon) (icon as SVGElement).style.transform = 'rotate(0deg)';
-         });
-         initMobileDropdowns();
-     });
- }
-</script>

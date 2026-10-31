@@ -1,0 +1,18 @@
+---
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { url } from "../utils/url-utils";
+---
+<BaseLayout title={i18n(I18nKey.notFoundTitle)} description={i18n(I18nKey.notFoundDescription)}>
+    <div class="card-base onload-animation flex flex-col items-center text-center px-9 py-16">
+        <div class="font-bold text-9xl leading-none tabular-nums text-(--primary-text)" aria-hidden="true">404</div>
+        <h1 class="font-bold text-2xl text-90 mt-6 mb-1">{i18n(I18nKey.notFoundTitle)}</h1>
+        <div class="h-1 w-5 bg-(--primary) rounded-full mb-3"></div>
+        <p class="text-ui text-50">{i18n(I18nKey.notFoundDescription)}</p>
+        <div class="flex gap-2 mt-8">
+            <a href={url("/")} class="btn-regular rounded-lg md:h-10 h-12 px-5 font-bold press">{i18n(I18nKey.home)}</a>
+            <a href={url("/archive/")} class="btn-regular rounded-lg md:h-10 h-12 px-5 font-bold press">{i18n(I18nKey.archive)}</a>
+        </div>
+    </div>
+</BaseLayout>

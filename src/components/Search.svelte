@@ -1,186 +1,141 @@
 <script lang="ts">
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import Icon from "@iconify/svelte";
+import Icon from "@iconify/svelte/dist/OfflineIcon.svelte";
+import type { IconMap } from "@utils/icon-data";
 import { url } from "@utils/url-utils.ts";
 import { onMount } from "svelte";
 import type { SearchResult } from "@/global";
 
-let keywordDesktop = "";
-let keywordMobile = "";
-let result: SearchResult[] = [];
-let isSearching = false;
-let pagefindLoaded = false;
+let { icons }: { icons: IconMap } = $props();
+
+let keywordDesktop = $state("");
+let keywordMobile = $state("");
+let result: SearchResult[] = $state([]);
 let initialized = false;
 
+// Dev server has no Pagefind index
 const fakeResult: SearchResult[] = [
 	{
 		url: url("/"),
-		meta: {
-			title: "This Is a Fake Search Result",
-		},
+		meta: { title: "This Is a Fake Search Result" },
 		excerpt:
 			"Because the search cannot work in the <mark>dev</mark> environment.",
 	},
 	{
 		url: url("/"),
-		meta: {
-			title: "If You Want to Test the Search",
-		},
+		meta: { title: "If You Want to Test the Search" },
 		excerpt: "Try running <mark>npm build && npm preview</mark> instead.",
 	},
 ];
 
-const togglePanel = () => {
-	const panel = document.getElementById("search-panel");
-	panel?.classList.toggle("float-panel-closed");
-};
+const panel = () => document.getElementById("search-panel");
 
-const setPanelVisibility = (show: boolean, isDesktop: boolean): void => {
-	const panel = document.getElementById("search-panel");
-	if (!panel || !isDesktop) return;
+function togglePanel() {
+	panel()?.classList.toggle("float-panel-closed");
+}
 
-	if (show) {
-		panel.classList.remove("float-panel-closed");
-	} else {
-		panel.classList.add("float-panel-closed");
-	}
-};
+// Desktop opens the panel only when there are results
+function setPanelVisibility(show: boolean, isDesktop: boolean) {
+	if (isDesktop) panel()?.classList.toggle("float-panel-closed", !show);
+}
 
-const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
+// Drop responses from searches superseded by newer input
+let seq = 0;
+
+async function search(keyword: string, isDesktop: boolean) {
+	const id = ++seq;
 	if (!keyword) {
 		setPanelVisibility(false, isDesktop);
 		result = [];
 		return;
 	}
-
-	if (!initialized) {
-		return;
-	}
-
-	isSearching = true;
-
+	if (!initialized) return;
 	try {
-		let searchResults: SearchResult[] = [];
-
-		if (import.meta.env.PROD && pagefindLoaded && window.pagefind) {
+		if (import.meta.env.DEV) {
+			result = fakeResult;
+		} else if (window.pagefind) {
 			const response = await window.pagefind.search(keyword);
-			searchResults = await Promise.all(
+			const data = await Promise.all(
 				response.results.map((item) => item.data()),
 			);
-		} else if (import.meta.env.DEV) {
-			searchResults = fakeResult;
+			if (id !== seq) return;
+			result = data;
 		} else {
-			searchResults = [];
-			console.error("Pagefind is not available in production environment.");
+			result = [];
 		}
-
-		result = searchResults;
 		setPanelVisibility(result.length > 0, isDesktop);
 	} catch (error) {
 		console.error("Search error:", error);
 		result = [];
 		setPanelVisibility(false, isDesktop);
-	} finally {
-		isSearching = false;
 	}
-};
+}
 
 onMount(() => {
-	const initializeSearch = () => {
+	// Runs on load, load error, or timeout; a later load reruns the pending query
+	let timer: ReturnType<typeof setTimeout> | undefined;
+	const ready = () => {
+		clearTimeout(timer);
 		initialized = true;
-		pagefindLoaded =
-			typeof window !== "undefined" &&
-			!!window.pagefind &&
-			typeof window.pagefind.search === "function";
-		console.log("Pagefind status on init:", pagefindLoaded);
+		// 补搜就绪前的输入
 		if (keywordDesktop) search(keywordDesktop, true);
-		if (keywordMobile) search(keywordMobile, false);
+		else if (keywordMobile) search(keywordMobile, false);
 	};
-
-	if (import.meta.env.DEV) {
-		console.log(
-			"Pagefind is not available in development mode. Using mock data.",
-		);
-		initializeSearch();
-	} else {
-		document.addEventListener("pagefindready", () => {
-			console.log("Pagefind ready event received.");
-			initializeSearch();
-		});
-		document.addEventListener("pagefindloaderror", () => {
-			console.warn(
-				"Pagefind load error event received. Search functionality will be limited.",
-			);
-			initializeSearch(); // Initialize with pagefindLoaded as false
-		});
-
-		// Fallback in case events are not caught or pagefind is already loaded by the time this script runs
-		setTimeout(() => {
-			if (!initialized) {
-				console.log("Fallback: Initializing search after timeout.");
-				initializeSearch();
-			}
-		}, 2000); // Adjust timeout as needed
+	if (import.meta.env.DEV || window.pagefind) {
+		ready();
+		return;
 	}
+	document.addEventListener("pagefindready", ready, { once: true });
+	document.addEventListener("pagefindloaderror", ready, { once: true });
+	timer = setTimeout(ready, 2000);
+	return () => clearTimeout(timer);
 });
-
-$: if (initialized && keywordDesktop) {
-	(async () => {
-		await search(keywordDesktop, true);
-	})();
-}
-
-$: if (initialized && keywordMobile) {
-	(async () => {
-		await search(keywordMobile, false);
-	})();
-}
 </script>
 
 <!-- search bar for desktop view -->
-<div id="search-bar" class="search-container hidden lg:flex transition-all items-center h-11 mr-2 rounded-lg
+<div id="search-bar" class="search-container hidden lg:flex items-center h-11 mr-2 rounded-lg
       bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
       dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
 ">
-    <Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
-    <input name="search" placeholder="{i18n(I18nKey.search)}" bind:value={keywordDesktop} on:focus={() => search(keywordDesktop, true)}
-           class="transition-all pl-10 text-sm bg-transparent outline-0
-          h-full w-40 active:w-60 focus:w-60 text-black/50 dark:text-white/50"
+    <Icon icon={icons["material-symbols:search"]} class="absolute icon-5 pointer-events-none ml-3 my-auto text-30"></Icon>
+    <input name="search" aria-label={i18n(I18nKey.search)} placeholder={i18n(I18nKey.search)} bind:value={keywordDesktop} oninput={(e) => search(e.currentTarget.value, true)} onfocus={() => search(keywordDesktop, true)}
+           class="transition-[width] pl-10 text-sm bg-transparent outline-0
+          h-full w-40 active:w-60 focus:w-60 text-75 placeholder:text-50"
      >
 </div>
 
 <!-- toggle btn for phone/tablet view -->
-<button on:click={togglePanel} aria-label="Search Panel" id="search-switch"
-        class="btn-plain scale-animation lg:!hidden rounded-lg w-11 h-11 active:scale-90">
-    <Icon icon="material-symbols:search" class="text-[1.25rem]"></Icon>
+<button onclick={togglePanel} aria-label="Search Panel" id="search-switch"
+        class="btn-plain scale-animation lg:!hidden rounded-lg w-11 h-11 press">
+    <Icon icon={icons["material-symbols:search"]} class="icon-5"></Icon>
 </button>
 
 <!-- search panel -->
-<div id="search-panel" class="float-panel float-panel-closed search-panel absolute md:w-[30rem]
+<div id="search-panel" class="float-panel float-panel-closed search-panel absolute md:w-120
 top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
 
     <!-- search bar inside panel for phone/tablet -->
-    <div id="search-bar-inside" class="search-container flex relative lg:hidden transition-all items-center h-11 rounded-xl
+    <div id="search-bar-inside" class="search-container flex relative lg:hidden items-center h-11 rounded-xl
       bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
       dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
   ">
-        <Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
-        <input name="search" placeholder="Search" bind:value={keywordMobile}
-               class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
-               focus:w-60 text-black/50 dark:text-white/50"
+        <Icon icon={icons["material-symbols:search"]} class="absolute icon-5 pointer-events-none ml-3 my-auto text-30"></Icon>
+        <input name="search" aria-label={i18n(I18nKey.search)} placeholder={i18n(I18nKey.search)} bind:value={keywordMobile} oninput={(e) => search(e.currentTarget.value, false)}
+               class="pl-10 absolute inset-0 text-input bg-transparent outline-0
+               focus:w-60 text-75 placeholder:text-50"
         >
     </div>
 
     <!-- search results -->
     {#each result as item}
         <a href={item.url}
-           class="transition first-of-type:mt-2 lg:first-of-type:mt-0 group block
-       rounded-xl text-lg px-3 py-2 hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]">
-            <div class="transition text-90 inline-flex font-bold group-hover:text-[var(--primary)]">
-                {item.meta.title}<Icon icon="fa6-solid:chevron-right" class="transition text-[0.75rem] translate-x-1 my-auto text-[var(--primary)]"></Icon>
+           class="transition-ui first-of-type:mt-2 lg:first-of-type:mt-0 group block
+ rounded-xl text-lg px-3 py-2 hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]">
+            <div class="transition-ui text-90 inline-flex font-bold group-hover:text-[var(--primary-text)]">
+                {item.meta.title}<Icon icon={icons["fa6-solid:chevron-right"]} class="icon-3 translate-x-1 my-auto text-(--primary-text)"></Icon>
             </div>
-            <div class="transition text-sm text-50">
+            <div class="text-meta text-50">
                 {@html item.excerpt}
             </div>
         </a>
@@ -204,7 +159,7 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
   }
   .search-panel {
-    max-height: calc(100vh - 100px);
+    max-height: calc(100vh - var(--spacing) * 25);
     overflow-y: auto;
   }
 </style>

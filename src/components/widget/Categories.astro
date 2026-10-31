@@ -7,7 +7,7 @@ import WidgetLayout from "./WidgetLayout.astro";
 
 const categories = await getCategoryList();
 
-const COLLAPSED_HEIGHT = "7.5rem";
+const COLLAPSED_HEIGHT = "calc(var(--spacing) * 30)";
 const COLLAPSE_THRESHOLD = 5;
 
 const isCollapsed = categories.length >= COLLAPSE_THRESHOLD;
@@ -27,7 +27,6 @@ const style = Astro.props.style;
         <ButtonLink
             url={c.url}
             badge={String(c.count)}
-            label={`View all posts in the ${c.name.trim()} category`}
         >
             {c.name.trim()}
         </ButtonLink>

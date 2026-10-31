@@ -1,0 +1,65 @@
+{
+	"chuwuyo/bookmarksportal": {
+		"owner": "ChuwuYo",
+		"name": "BookmarksPortal",
+		"description": "BookmarksPortal is a  powerful browser extension that accompanies the ChuwuBookmarks project for exporting your bookmarks to JSON file.   BookmarksPortal是ChuwuBookmarks项目的配套拓展程序，用于导出浏览器书签为合适的JSON格式文件。",
+		"stars": 6,
+		"forks": 0,
+		"license": "MIT",
+		"avatar": "https://avatars.githubusercontent.com/u/141227996?v=4"
+	},
+	"chuwuyo/charlotte": {
+		"owner": "ChuwuYo",
+		"name": "Charlotte",
+		"description": "Charlotte - 一个Astro博客模板，基于Fuwari",
+		"stars": 5,
+		"forks": 2,
+		"license": "MIT",
+		"avatar": "https://avatars.githubusercontent.com/u/141227996?v=4"
+	},
+	"chuwuyo/chuwubookmarks": {
+		"owner": "ChuwuYo",
+		"name": "ChuwuBookmarks",
+		"description": "ChuwuBookmarks - A Bookmarks List Template Website - 初五的书签 - 这是一个书签导航静态网页模板",
+		"stars": 16,
+		"forks": 3,
+		"license": "MPL-2.0",
+		"avatar": "https://avatars.githubusercontent.com/u/141227996?v=4"
+	},
+	"chuwuyo/endfield-pomodoro": {
+		"owner": "ChuwuYo",
+		"name": "Endfield-Pomodoro",
+		"description": "Pomodoro website with custom music. 一个受 Cyber UI 和 终末地 风格启发的沉浸式 Web 番茄钟应用",
+		"stars": 17,
+		"forks": 6,
+		"license": "MIT",
+		"avatar": "https://avatars.githubusercontent.com/u/141227996?v=4"
+	},
+	"chuwuyo/multilangswitcher": {
+		"owner": "ChuwuYo",
+		"name": "MultiLangSwitcher",
+		"description": "MultiLangSwitcher - a Chromium-based V3 extension. It helps users quickly switch the Accept-Language HTTP header  —— 一个 Chromium 内核浏览器V3扩展，帮助用户快速切换 HTTP 请求头语言",
+		"stars": 81,
+		"forks": 7,
+		"license": "AGPL-3.0",
+		"avatar": "https://avatars.githubusercontent.com/u/141227996?v=4"
+	},
+	"chuwuyo/ncmcoversnatcher": {
+		"owner": "ChuwuYo",
+		"name": "NCMCoverSnatcher",
+		"description": "一个简单的网易云音乐封面图片批量爬虫工具，支持歌曲和专辑封面的批量下载",
+		"stars": 5,
+		"forks": 0,
+		"license": "MIT",
+		"avatar": "https://avatars.githubusercontent.com/u/141227996?v=4"
+	},
+	"chuwuyo/proxy-cleaner": {
+		"owner": "ChuwuYo",
+		"name": "proxy-cleaner",
+		"description": "ProxyCleaner 是一个Go+Wails+Vue3开发的桌面应用程序，帮助用户清理代理残留设置、修复和验证设备网络。",
+		"stars": 5,
+		"forks": 3,
+		"license": "AGPL-3.0",
+		"avatar": "https://avatars.githubusercontent.com/u/141227996?v=4"
+	}
+}

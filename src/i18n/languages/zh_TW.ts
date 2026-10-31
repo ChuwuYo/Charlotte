@@ -9,11 +9,7 @@ export const zh_TW: Translation = {
 
 	[Key.tags]: "標籤",
 	[Key.categories]: "分類",
-	[Key.recentPosts]: "最新文章",
 
-	[Key.comments]: "評論",
-
-	[Key.untitled]: "無標題",
 	[Key.uncategorized]: "未分類",
 	[Key.noTags]: "無標籤",
 
@@ -28,10 +24,6 @@ export const zh_TW: Translation = {
 	[Key.cardBackgroundColor]: "亮色模式卡片背景色",
 	[Key.cardBackgroundWhite]: "純白色",
 	[Key.cardBackgroundThemed]: "主題色",
-
-	[Key.fontSizeScaling]: "字型大小縮放策略",
-	[Key.fontScalingLocked]: "預設鎖定",
-	[Key.fontScalingResponsive]: "跟隨瀏覽器",
 
 	[Key.lightMode]: "亮色",
 	[Key.darkMode]: "暗色",
@@ -64,4 +56,11 @@ export const zh_TW: Translation = {
 	// 置顶相关翻译
 	[Key.pinned]: "置頂",
 	[Key.tableOfContents]: "目錄",
+
+	[Key.copyCode]: "複製程式碼",
+	[Key.copied]: "已複製",
+	[Key.copyFailed]: "複製失敗",
+
+	[Key.notFoundTitle]: "頁面不存在",
+	[Key.notFoundDescription]: "這個連結可能已經失效，或者頁面被移到了別處",
 };

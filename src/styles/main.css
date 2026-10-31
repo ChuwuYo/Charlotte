@@ -1,81 +1,56 @@
-@layer components {
-    h1, h2, h3, h4, h5, h6, p, a, span, li, ul, ol, blockquote, code, pre, table, th, td, strong {
-        @apply transition;
-    }
-
-    #toc-inner-wrapper {
-        mask-image: linear-gradient(to bottom, transparent 0%, black 2rem, black calc(100% - 2rem), transparent 100%);
-    }
+#toc-inner-wrapper {
+	mask-image: linear-gradient(to bottom, transparent 0%, black calc(var(--spacing) * 8), black calc(100% - var(--spacing) * 8), transparent 100%);
 }
 
-/* Banner稳定性优化 - 防止加载时的位置跳跃 */
-.enable-banner #banner {
-    will-change: transform, opacity;
+/* Image fade-in and cover zoom */
+.image-content {
+	transition:
+		opacity 500ms,
+		scale 300ms var(--ease-out);
 }
-
-/* 确保CSS变量有默认值 */
-:root {
-    --banner-height-extend: 0px;
-}
-
-/* Post Card封面图片悬停放大效果 */
-.post-card-cover img {
-    @apply transition-transform duration-300 ease-out;
-}
-
 #post-cover img,
 .custom-md img {
-    @apply cursor-zoom-in transition-transform duration-300 ease-out;
+	cursor: zoom-in;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+	.post-card-cover:hover img,
+	#post-cover:hover img {
+		scale: 1.05;
+	}
 }
 
-.post-card-cover:hover img,
-#post-cover:hover img {
-    transform: scale(1.05);
-}
-
-/* 图片加载动画 */
 @keyframes loading-progress {
-    0% { transform: translateX(-100%); }
-    50% { transform: translateX(300%); }
-    100% { transform: translateX(-100%); }
+	0% { transform: translateX(-100%); }
+	50% { transform: translateX(300%); }
+	100% { transform: translateX(-100%); }
 }
-
 .animate-loading-progress {
-    animation: loading-progress 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    will-change: transform;
-}
-
-::selection {
-    background-color: var(--selection-bg)
+	animation: loading-progress 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .dash-line {
-    position: relative;
+	position: relative;
 }
-
 .dash-line::before {
-    content: "";
-    position: absolute;
-    width: 10%;
-    height: 100%;
-    left: calc(50% - 1px);
-    border-left: 2px dashed var(--line-color);
-    pointer-events: none;
-    transition: all 0.3s;
-    transform: translateY(-50%);
-}
-
-.collapsed {
-    height: var(--collapsedHeight);
+	content: "";
+	position: absolute;
+	width: 10%;
+	height: 100%;
+	left: calc(50% - 1px);
+	border-left: 2px dashed var(--line-color);
+	pointer-events: none;
+	transform: translateY(-50%);
 }
 
 .custom-md spoiler {
-  @apply bg-(--codeblock-bg) hover:bg-transparent px-1 py-0.5 overflow-hidden rounded-md transition-all duration-150;
-
-  &:not(:hover) {
-    color: var(--codeblock-bg);
-    * {
-        color: var(--codeblock-bg);
-    }
-  }
+	@apply bg-(--codeblock-bg) px-1 py-0.5 overflow-hidden rounded-md transition-colors duration-150;
+	&:is(:hover, :focus-within) {
+		@apply bg-transparent;
+	}
+	&:not(:hover, :focus-within) {
+		color: var(--codeblock-bg);
+		* {
+			color: var(--codeblock-bg);
+		}
+	}
 }

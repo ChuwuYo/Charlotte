@@ -1,58 +1,112 @@
-/* Page transition animations with Swup */
-html.is-changing .transition-swup-fade {
-    @apply transition-all duration-200
-}
-html.is-animating .transition-swup-fade {
-    @apply opacity-0 translate-y-4
-}
+/* Entrance on a fresh load and for swapped content ([data-enter]); skipped on history
+   restores and reduced motion. Backwards fill only, so no animation value lingers. */
+@layer components {
+	@keyframes fade-in-up {
+		from {
+			transform: translateY(calc(var(--spacing) * 8));
+			opacity: 0;
+		}
+	}
+	@keyframes fade-in-left {
+		from {
+			transform: translateX(calc(var(--spacing) * 8));
+			opacity: 0;
+		}
+	}
+	@keyframes fade-in-right {
+		from {
+			transform: translateX(calc(var(--spacing) * -8));
+			opacity: 0;
+		}
+	}
 
-/* Fade-in animations for components */
-@keyframes fade-in-up {
-    0% {
-        transform: translateY(2rem);
-        opacity: 0;
-    }
-    100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+	}
 
-/* Main components */
-.onload-animation {
-    opacity: 0;
-    animation: 300ms fade-in-up;
-    animation-fill-mode: forwards;
-}
-#navbar {
-    animation-delay: 0ms
-}
-#sidebar {
-    animation-delay: 100ms
-}
-#swup-container {
-    outline: none;
-}
-#content-wrapper {
-    animation-delay: var(--content-delay);
-}
-.footer {
-    animation-delay: 250ms;
-}
-#banner-credit {
-    animation-delay: 400ms;
-}
+	@keyframes banner-in {
+		from {
+			opacity: 0;
+			scale: 1.05;
+		}
+	}
 
-/* Post content */
-#post-container :nth-child(1) { animation-delay: calc(var(--content-delay) + 0ms) }
-#post-container :nth-child(2) { animation-delay: calc(var(--content-delay) + 50ms) }
-#post-container :nth-child(3) { animation-delay: calc(var(--content-delay) + 100ms) }
-#post-container :nth-child(4) { animation-delay: calc(var(--content-delay) + 175ms) }
-#post-container :nth-child(5) { animation-delay: calc(var(--content-delay) + 250ms) }
-#post-container :nth-child(6) { animation-delay: calc(var(--content-delay) + 325ms) }
+	/* Same containing block with or without the entrance */
+	.onload-animation {
+		transform: translateY(0);
+	}
 
-/* Hide content during transition to prevent animation conflicts with scrolling */
-body.is-transitioning #content-wrapper {
-    opacity: 0;
+	/* Swapped content starts without the first-load delay */
+	[data-enter] {
+		--content-delay: 0ms;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		html:not([data-no-enter]) .onload-animation,
+		[data-enter] :is(.onload-animation, #toc) {
+			animation: 300ms backwards fade-in-up;
+		}
+		html:not([data-no-enter]) #banner {
+			animation: 700ms var(--ease-standard) backwards banner-in;
+		}
+
+		/* List pages enter from the side they were paged towards */
+		html [data-enter="forwards"] .onload-animation {
+			animation-name: fade-in-left;
+		}
+		html [data-enter="backwards"] .onload-animation {
+			animation-name: fade-in-right;
+		}
+
+		/* While the frame slides, content only fades so the two motions do not oppose */
+		[data-enter="fade"] :is(.onload-animation, #toc) {
+			animation-name: fade-in;
+		}
+
+		/* Leaving content fades out before the swap; transform and opacity only */
+		html[data-leaving] :is(#content-wrapper, .collapsible-toc-wrapper, #main-after, #toc) {
+			opacity: 0;
+			transition: opacity var(--duration-fast) var(--ease-standard);
+		}
+		html[data-leaving] :is(#content-wrapper, #main-after) {
+			translate: 0 calc(var(--spacing) * 4);
+			transition-property: opacity, translate;
+		}
+		html[data-leaving="forwards"] :is(#content-wrapper, #main-after) {
+			translate: calc(var(--spacing) * -8) 0;
+		}
+		html[data-leaving="backwards"] :is(#content-wrapper, #main-after) {
+			translate: calc(var(--spacing) * 8) 0;
+		}
+
+		/* Banner image and text follow the home/inner offset while navigating */
+		html[data-frame-move] :is(#banner, .banner-text-overlay) {
+			transition:
+				translate var(--duration-frame) var(--ease-standard),
+				opacity var(--duration-frame) var(--ease-standard),
+				visibility var(--duration-frame);
+		}
+	}
+
+	#sidebar {
+		animation-delay: 100ms;
+	}
+	#content-wrapper {
+		animation-delay: var(--content-delay);
+	}
+	.footer {
+		animation-delay: 250ms;
+	}
+	#banner-credit {
+		animation-delay: 400ms;
+	}
+
+	#post-container :nth-child(1) { animation-delay: calc(var(--content-delay) + 0ms); }
+	#post-container :nth-child(2) { animation-delay: calc(var(--content-delay) + 50ms); }
+	#post-container :nth-child(3) { animation-delay: calc(var(--content-delay) + 100ms); }
+	#post-container :nth-child(4) { animation-delay: calc(var(--content-delay) + 175ms); }
+	#post-container :nth-child(5) { animation-delay: calc(var(--content-delay) + 250ms); }
+	#post-container :nth-child(6) { animation-delay: calc(var(--content-delay) + 325ms); }
 }
-

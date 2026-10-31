@@ -9,11 +9,7 @@ export const ja: Translation = {
 
 	[Key.tags]: "タグ",
 	[Key.categories]: "カテゴリ",
-	[Key.recentPosts]: "最近の投稿",
 
-	[Key.comments]: "コメント",
-
-	[Key.untitled]: "タイトルなし",
 	[Key.uncategorized]: "カテゴリなし",
 	[Key.noTags]: "タグなし",
 
@@ -28,10 +24,6 @@ export const ja: Translation = {
 	[Key.cardBackgroundColor]: "明るいモード カード背景色",
 	[Key.cardBackgroundWhite]: "真っ白",
 	[Key.cardBackgroundThemed]: "テーマ風",
-
-	[Key.fontSizeScaling]: "フォント拡縮戦略",
-	[Key.fontScalingLocked]: "デフォルト固定",
-	[Key.fontScalingResponsive]: "ブラウザに追従",
 
 	[Key.lightMode]: "ライト",
 	[Key.darkMode]: "ダーク",
@@ -63,4 +55,12 @@ export const ja: Translation = {
 	// 置顶相关翻译
 	[Key.pinned]: "ピン留め",
 	[Key.tableOfContents]: "目次",
+
+	[Key.copyCode]: "コードをコピー",
+	[Key.copied]: "コピーしました",
+	[Key.copyFailed]: "コピーに失敗しました",
+
+	[Key.notFoundTitle]: "ページが見つかりません",
+	[Key.notFoundDescription]:
+		"リンクが切れているか、ページが移動した可能性があります",
 };

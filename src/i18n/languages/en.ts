@@ -9,11 +9,7 @@ export const en: Translation = {
 
 	[Key.tags]: "Tags",
 	[Key.categories]: "Categories",
-	[Key.recentPosts]: "Recent Posts",
 
-	[Key.comments]: "Comments",
-
-	[Key.untitled]: "Untitled",
 	[Key.uncategorized]: "Uncategorized",
 	[Key.noTags]: "No Tags",
 
@@ -28,10 +24,6 @@ export const en: Translation = {
 	[Key.cardBackgroundColor]: "Light Mode Card Bg-Color", //Light Mode Card Background Color 由于溢出换行选择缩写,再做考虑
 	[Key.cardBackgroundWhite]: "White",
 	[Key.cardBackgroundThemed]: "Themed",
-
-	[Key.fontSizeScaling]: "Font Size Scaling",
-	[Key.fontScalingLocked]: "Locked (Default)",
-	[Key.fontScalingResponsive]: "Follow Browser",
 
 	[Key.lightMode]: "Light",
 	[Key.darkMode]: "Dark",
@@ -64,4 +56,12 @@ export const en: Translation = {
 	// 置顶相关翻译
 	[Key.pinned]: "Pinned",
 	[Key.tableOfContents]: "Table of Contents",
+
+	[Key.copyCode]: "Copy code",
+	[Key.copied]: "Copied",
+	[Key.copyFailed]: "Copy failed",
+
+	[Key.notFoundTitle]: "Page not found",
+	[Key.notFoundDescription]:
+		"The link may be broken, or the page may have moved",
 };

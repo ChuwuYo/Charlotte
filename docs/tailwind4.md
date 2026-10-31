@@ -1,124 +1,20 @@
-# Tailwind 4 迁移指南
+# Tailwind CSS 4 约定
 
-⚠️ **警告：** `@astrojs/tailwind` 集成已弃用，以下是初步迁移文档。
+项目通过 `@tailwindcss/vite` 使用 Tailwind CSS 4，入口为 `src/styles/global.css`。
 
-Tailwind CSS 现在提供了一个 Vite 插件，这是 Astro 中使用 Tailwind 4 的首选方式。
-
-## 为什么需要迁移？
-
-当前项目使用的是 `@astrojs/tailwind` 集成，这是 Tailwind 3 的支持方式。随着 Tailwind 4 的发布，官方推荐使用 `@tailwindcss/vite` 插件来获得更好的性能和最新功能。
-
-## 迁移步骤
-
-### 1. 安装 Tailwind CSS
-
-使用以下命令安装 `@tailwindcss/vite` 和其对等依赖项：
-
-```bash
-npm install tailwindcss @tailwindcss/vite
-```
-
-### 2. 配置 Vite 插件
-
-在 `astro.config.mjs` 文件中添加 `@tailwindcss/vite` 插件到 Vite 插件列表中。如果 `vite` 配置不存在，请添加它。
-
-```javascript
-// @ts-check
-import { defineConfig } from "astro/config";
-import tailwindcss from "@tailwindcss/vite";
-
-// https://astro.build/config
-export default defineConfig({
-  // ... 其他配置
-  vite: {
-    plugins: [tailwindcss()],
-    // 如果已有其他 vite 配置，请保留
-    build: {
-      // ... 现有 build 配置
-    },
-  },
-});
-```
-
-### 3. 创建全局样式文件
-
-创建一个 `./src/styles/global.css` 文件，并添加 Tailwind CSS 的 `@import`。
-
-```css
-@import "tailwindcss";
-```
-
-### 4. 更新现有样式导入
-
-在你的布局文件（如 `src/layouts/Layout.astro`）中，移除 `@tailwind components;` 指令，因为新的导入会自动包含所有 Tailwind 层。
-
-然后，在布局文件的 frontmatter 中导入新创建的全局样式文件：
-
-```astro
----
-// 在其他导入之后添加
-import "../styles/global.css";
----
-```
-
-### 5. 移除旧的集成
-
-从项目中卸载 `@astrojs/tailwind` 集成：
-
-```bash
-npm uninstall @astrojs/tailwind
-```
-
-从 `astro.config.mjs` 中移除 `@astrojs/tailwind` 集成：
-
-```javascript
-import { defineConfig } from 'astro/config';
-// 移除这一行：import tailwind from '@astrojs/tailwind';
-
-export default defineConfig({
-  // ...
-  integrations: [
-    // 移除这一行：tailwind(),
-    // ...
-  ],
-  // ...
-});
-```
-
-### 6. 启动构建过程
-
-运行开发服务器以测试更改：
-
-```bash
-npm run dev
-```
-
-### 7. 在项目中使用 Tailwind
-
-确保在需要使用 Tailwind 的页面中导入新创建的 CSS 文件。通常在布局组件中完成此操作，以便 Tailwind 样式在所有页面上都可用。
-
-```astro
----
-// 导入全局样式
-import "../styles/global.css";
----
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Astro</title>
-  </head>
-  <body>
-    <h1 class="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-  </body>
-</html>
-```
+- **层级**：`@layer theme, base, components, utilities;`。设计变量放 `tokens.css`（base 层），组件类放 `@layer components`，自定义工具类用 `@utility`（见 `main.utilities.css`）。
+- **不分层的样式**：`markdown.css`、`markdown-extend.css`、KaTeX、`photoswipe/style.css` 与本地 `photoswipe.css` 保持不分层，以免被 Expressive Code 等样式覆盖。
+- **深色模式**：`@custom-variant dark (&:is(.dark *));`，由 `<html class="dark">` 控制（首帧前由 `HeadScript.astro` 设置）。
+- **主题变量**：`@theme` 中定义字体与缓动，`@theme static` 中定义尺寸与时长（static：只在组件样式或 Expressive Code 配置里用到的变量也会输出）。根字号固定 16px（页面不随浏览器字号设置变化，浏览器缩放照常），尺寸都从以下变量派生：
+  - `--spacing`（默认 0.1875rem）：Tailwind 的间距单位，所有间距/宽高工具类以它为单位；Tailwind 的字号阶梯 `--text-xs`…`--text-9xl` 与圆角阶梯 `--radius-xs`…`--radius-4xl` 也写成它的倍数（与 Tailwind 默认值相对 0.25rem 的倍数相同），`--radius-large`/`--radius-medium`（`tokens.css`）、导航栏高度 `--spacing-navbar`（`h-navbar`）同理。组件 `<style>`、`markdown*.css`、代码块工具栏和 `astro.config.mjs` 的 Expressive Code `styleOverrides` 中的尺寸写成 `calc(var(--spacing) * n)` 或上述变量，页面默认字号（`body`）为 `--text-base`。
+  - 图标用 `icon-<n>`（`main.utilities.css`，`font-size: calc(var(--spacing) * n)`），图标高 1em、宽度保持各自比例。
+  - 按用途命名的字号：`text-meta`（日期/分类/标签/计数）、`text-ui`（侧栏条目/摘要/导航）、`text-card-title`、`text-widget-title`，正文字号 `--text-prose`（文章内标题用 em，随正文）；布局 `max-w-page`（`--container-page`）、`max-w-sidebar`（`--spacing-sidebar`）、`--spacing-measure`（40ic，正文每行约 40 个汉字）。
+  - 间距单位、字号、侧栏宽度与页面宽度可在 `siteConfig.layout` 中配置，`src/utils/layout-utils.ts` 在构建时把它们写到 `<html>` 的 style 上覆盖默认值；行高写成比例（如 `calc(22 / 15)`），随字号变化。固定目录与浮动目录用 `.toc-wide-only` / `.toc-narrow-only` 切换，断点由 `layout-utils.ts` 按页面宽度与间距单位算出（固定目录至少 60 × spacing 宽时显示），不是 Tailwind 断点。
+  - 不跟随的只有：边框、描边、阴影、`px` 级细线、图片 `width/height` 属性（与旧版在小字号下相同，均为 px）以及媒体查询断点（Tailwind 默认值写成 px，在 `global.css` 的 `@theme` 中重设；目录断点由 `layout-utils.ts` 输出为 px）。媒体查询里的 rem 取浏览器默认字号而不是根字号，所以断点不用 rem。改尺寸时改配置或这些变量，不在组件里写新的 rem 数值。
+- **组件内样式**：如需在组件 `<style>` 中使用 `@apply`，先用相对路径引用 `src/styles/global.css`，如 `src/components/` 下为 `@reference "../styles/global.css";`，`src/components/widget/` 下为 `@reference "../../styles/global.css";`。
+- **无障碍**：动效放在 `@media (prefers-reduced-motion: no-preference)` 中。
 
 ## 参考
 
-- [Tailwind 的 v4 升级指南](https://tailwindcss.com/docs/upgrade-guide#changes-from-v3)
-- [Tailwind CSS 官方文档](https://tailwindcss.com/docs/installation/framework-guides/astro)
-- [Tailwind 4 迁移指南](https://docs.astro.build/en/guides/styling/#tailwind)
+- [Tailwind CSS 4 文档](https://tailwindcss.com/docs)
+- [在 Astro 中使用 Tailwind](https://docs.astro.build/en/guides/styling/#tailwind)

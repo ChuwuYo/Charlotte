@@ -1,13 +1,9 @@
 ---
 interface Props {
-	size?: string;
-	dot?: boolean;
 	href?: string;
-	label?: string;
 }
-const { dot, href, label }: Props = Astro.props;
+const { href }: Props = Astro.props;
 ---
-<a href={href} aria-label={label} class="btn-regular md:h-8 h-12 text-sm px-3 rounded-lg">
-    {dot && <div class="h-1 w-1 bg-[var(--btn-content)] dark:bg-[var(--card-bg)] transition rounded-md mr-2"></div>}
+<a href={href} class="btn-regular md:h-8 h-12 text-meta px-3 rounded-lg">
     <slot></slot>
 </a>

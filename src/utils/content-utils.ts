@@ -59,11 +59,12 @@ async function getRawSortedPosts() {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
 
-	const sortedByPublished = allBlogPosts.sort((a, b) => {
-		const dateA = new Date(a.data.published);
-		const dateB = new Date(b.data.published);
-		return dateA > dateB ? -1 : 1;
-	});
+	// 日期降序，同日按 id 排
+	const sortedByPublished = allBlogPosts.sort(
+		(a, b) =>
+			b.data.published.getTime() - a.data.published.getTime() ||
+			a.id.localeCompare(b.id),
+	);
 
 	return sortedByPublished;
 }

@@ -4,6 +4,8 @@
 
 import { definePlugin } from "@expressive-code/core";
 import type { Element } from "hast";
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
 
 /**
  * 创建复制图标 SVG
@@ -67,8 +69,11 @@ function createCopyButton(): Element {
 		properties: {
 			type: "button",
 			className: ["code-toolbar-copy"],
-			"aria-label": "Copy code to clipboard",
-			title: "Copy code",
+			"aria-label": i18n(I18nKey.copyCode),
+			title: i18n(I18nKey.copyCode),
+			// Read by code-copy.ts for the live-region announcement
+			"data-copied": i18n(I18nKey.copied),
+			"data-copy-failed": i18n(I18nKey.copyFailed),
 		},
 		children: [
 			{
@@ -163,37 +168,29 @@ function createToolbar(
 export function pluginCodeToolbar() {
 	return definePlugin({
 		name: "Code Toolbar",
-		// @ts-expect-error
 		// 注：flex-shrink: 0 确保工具栏保持其固有尺寸（包括 padding 和 border），明确指定 1px 是 CSS 最佳实践
-		baseStyles: ({ _cssVar }) => `
+		baseStyles: () => `
 			.code-toolbar {
 				display: flex;
 				align-items: center;
-				padding: 0.5rem 0.75rem;
+				padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
 				background: var(--codeblock-topbar-bg);
-				font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+				font-family: var(--font-jetbrains-mono);
 				user-select: none;
 				border-bottom: 1px solid color-mix(in srgb, var(--primary) 50%, transparent);
 				position: relative;
 			}
 			.code-toolbar-lang {
-				font-size: 0.75rem;
+				font-size: var(--text-sm);
 				font-weight: 600;
 				text-transform: uppercase;
 				letter-spacing: 0.025em;
 				color: var(--codeblock-toolbar-element-color);
-				padding: 0.25rem 0.625rem;
+				padding: var(--spacing) calc(var(--spacing) * 2.5);
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 20%, transparent);
-				border-radius: 0.5rem;
-				line-height: 1.25rem;
-				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
-				transition: all 0.2s ease;
-				border: 1px solid color-mix(in srgb, var(--codeblock-toolbar-element-bg) 30%, transparent);
+				border-radius: var(--radius-lg);
+				line-height: calc(var(--spacing) * 5);
 				display: inline-flex;
-			}
-			.code-toolbar-lang:hover {
-				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 25%, transparent);
-				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
 			}
 			.code-toolbar-spacer { flex: 1; }
 			.code-toolbar-title {
@@ -201,59 +198,73 @@ export function pluginCodeToolbar() {
 				left: 50%;
 				top: 50%;
 				transform: translate(-50%, -50%);
-				font-size: 0.875rem;
+				font-size: var(--text-sm);
 				font-weight: 500;
 				color: var(--codeblock-toolbar-element-color);
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
-				max-width: calc(100% - 14rem);
+				max-width: calc(100% - var(--spacing) * 56);
 				pointer-events: none;
 			}
 			.code-toolbar-copy {
+				position: relative;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				width: 1.75rem;
-				height: 1.75rem;
+				width: calc(var(--spacing) * 7);
+				height: calc(var(--spacing) * 7);
 				padding: 0;
-				border: 1px solid color-mix(in srgb, var(--codeblock-toolbar-element-bg) 30%, transparent);
-				border-radius: 0.5rem;
+				border: 0;
+				border-radius: var(--radius-lg);
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 20%, transparent);
 				color: var(--codeblock-toolbar-element-color);
 				cursor: pointer;
-				transition: all 0.2s ease;
-				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
+				transition-property: background-color, color;
+				transition-duration: var(--duration-fast);
+				transition-timing-function: var(--ease-standard);
+			}
+			/* Hit area at least 24px (WCAG 2.5.8) */
+			.code-toolbar-copy::after {
+				content: "";
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: max(100%, 24px);
+				height: max(100%, 24px);
+				translate: -50% -50%;
 			}
 			.code-toolbar-copy:hover {
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 25%, transparent);
-				color: oklch(0.8 0.1 var(--hue));
-				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+				color: var(--codeblock-toolbar-element-hover);
 			}
 			.code-toolbar-copy:active {
 				background: color-mix(in srgb, var(--codeblock-toolbar-element-bg) 35%, transparent);
-				box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(255, 255, 255, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05);
 			}
-			.code-toolbar-copy:focus-visible { 
-				outline: 2px solid oklch(0.75 0.14 var(--hue));
+			.code-toolbar-copy:focus-visible {
+				outline: 2px solid var(--codeblock-toolbar-element-hover);
 				outline-offset: 2px;
 			}
 			.code-toolbar-copy.success {
-				background: color-mix(in srgb, oklch(0.6 0.12 var(--hue)) 40%, transparent);
-				color: oklch(0.85 0.12 var(--hue));
+				background: color-mix(in srgb, var(--codeblock-toolbar-success) 25%, transparent);
+				color: var(--codeblock-toolbar-success);
 			}
-			.copy-icon-wrapper { position: relative; width: 1rem; height: 1rem; }
+			.code-toolbar-copy.error {
+				background: color-mix(in srgb, var(--codeblock-toolbar-error) 25%, transparent);
+				color: var(--codeblock-toolbar-error);
+			}
+			.copy-icon-wrapper { position: relative; width: calc(var(--spacing) * 4); height: calc(var(--spacing) * 4); }
 			.toolbar-icon { position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: currentColor; transition: opacity 0.15s ease, transform 0.15s ease; }
 			.copy-icon { opacity: 1; transform: scale(1); }
 			.success-icon { opacity: 0; transform: scale(0.8); }
 			.code-toolbar-copy.success .copy-icon { opacity: 0; transform: scale(0.8); }
 			.code-toolbar-copy.success .success-icon { opacity: 1; transform: scale(1); }
 			.frame.is-terminal .code-toolbar { background: var(--codeblock-topbar-bg); }
-			@media (max-width: 640px) {
-				.code-toolbar { padding: 0.375rem 0.5rem; }
-				.code-toolbar-lang { font-size: 0.6875rem; padding: 0.0625rem 0.375rem; }
-				.code-toolbar-copy { width: 1.5rem; height: 1.5rem; }
-				.copy-icon-wrapper { width: 0.875rem; height: 0.875rem; }
+			@media (width < 640px) {
+				.code-toolbar { padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2); }
+				.code-toolbar-lang { padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 1.5); }
+				.code-toolbar-copy { width: calc(var(--spacing) * 6); height: calc(var(--spacing) * 6); }
+				.copy-icon-wrapper { width: calc(var(--spacing) * 3.5); height: calc(var(--spacing) * 3.5); }
 			}
 			@media print { .code-toolbar-copy { display: none; } }
 			@media (prefers-reduced-motion: reduce) { .code-toolbar-copy, .toolbar-icon { transition: none; } }
@@ -283,7 +294,7 @@ export function pluginCodeToolbar() {
 						// 规范化 children 为数组
 						if (!node.children) node.children = [];
 
-						// 查找并删除旧的 header 节点（工具栏已完全替代其功能）
+						// 删除 Expressive Code 自带的 header，由工具栏提供其功能
 						const headerIndex = node.children.findIndex(
 							(child) =>
 								child.type === "element" &&

@@ -13,7 +13,7 @@ export type SiteConfig = {
 		hue: number;
 		fixed: boolean;
 	};
-	defaultTheme: typeof LIGHT_MODE | typeof DARK_MODE | typeof AUTO_MODE;
+	defaultTheme: LIGHT_DARK_MODE;
 	banner: {
 		enable: boolean;
 		src: string;
@@ -40,6 +40,25 @@ export type SiteConfig = {
 	toc: {
 		enable: boolean;
 		depth: 1 | 2 | 3;
+	};
+	layout?: {
+		// Base unit of spacing, sizes, icons, radii and the generic type scale (Tailwind --spacing), rem, default 0.1875
+		spacing?: number;
+		// Font sizes of the named text roles, rem
+		fontSize?: {
+			meta?: number; // dates, categories, tags, counts; default 0.703125
+			ui?: number; // sidebar items, excerpts, nav links; default 0.796875
+			prose?: number; // article body; default 0.9375
+			cardTitle?: number; // post card titles; default 1.5
+			widgetTitle?: number; // sidebar widget titles; default 0.9375
+		};
+		sidebarWidth?: number; // rem, default 11.25
+		// Page width = clamp(min, viewport% of the window, max)
+		pageWidth?: {
+			min?: number; // rem, default 48
+			viewport?: number; // percent of the window width, default 70
+			max?: number; // rem, default 63
+		};
 	};
 	startDate: string;
 
@@ -101,21 +120,6 @@ export type LIGHT_DARK_MODE =
 	| typeof LIGHT_MODE
 	| typeof DARK_MODE
 	| typeof AUTO_MODE;
-
-export type BlogPostData = {
-	body: string;
-	title: string;
-	published: Date;
-	description: string;
-	tags: string[];
-	draft?: boolean;
-	image?: string;
-	category?: string;
-	prevTitle?: string;
-	prevSlug?: string;
-	nextTitle?: string;
-	nextSlug?: string;
-};
 
 export type ExpressiveCodeConfig = {
 	theme: string;

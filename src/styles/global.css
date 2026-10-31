@@ -1,17 +1,104 @@
-@import "tailwindcss";
+@layer theme, base, components, utilities;
 
+@import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Unlayered, so these beat Tailwind layers and Expressive Code styles */
+@import "katex/dist/katex.css";
+
+@import "./tokens.css" layer(base);
+@import "./main.utilities.css";
+@import "./main.css" layer(components);
+@import "./expressive-code.css" layer(components);
+@import "./photoswipe.css" layer(components);
+@import "./scrollbar.css" layer(base);
+@import "./transition.css";
+@import "./markdown.css";
+@import "./markdown-extend.css";
+@import "photoswipe/style.css";
+
+/* :is() adds .dark's specificity, so dark: utilities win over plain ones */
 @custom-variant dark (&:is(.dark *));
 
+/* Breakpoints in px: rem in media queries follows the browser font setting, not the 16px root */
 @theme {
+	--breakpoint-*: initial;
+	--breakpoint-sm: 640px;
+	--breakpoint-md: 768px;
+	--breakpoint-lg: 1024px;
+	--breakpoint-xl: 1280px;
+	--breakpoint-2xl: 1536px;
 	--font-sans:
-		Roboto, sans-serif, ui-sans-serif, system-ui, sans-serif,
+		var(--font-roboto), ui-sans-serif, system-ui, sans-serif,
 		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Tailwind 3 默认边框色为 gray-200，v4 改为 currentColor，这里保持旧行为 */
+/* Size tokens; static so the ones only used in component styles are emitted too */
+@theme static {
+	/* Base unit for spacing and sizing utilities (p-4, w-8, gap-2…); BaseLayout sets it from siteConfig.layout.spacing */
+	--spacing: 0.1875rem;
+
+	/* Tailwind's type and radius scales as multiples of --spacing (its defaults are the same multiples of 0.25rem) */
+	--text-xs: calc(var(--spacing) * 3);
+	--text-sm: calc(var(--spacing) * 3.5);
+	--text-base: calc(var(--spacing) * 4);
+	--text-lg: calc(var(--spacing) * 4.5);
+	--text-xl: calc(var(--spacing) * 5);
+	--text-2xl: calc(var(--spacing) * 6);
+	--text-3xl: calc(var(--spacing) * 7.5);
+	--text-4xl: calc(var(--spacing) * 9);
+	--text-5xl: calc(var(--spacing) * 12);
+	--text-6xl: calc(var(--spacing) * 15);
+	--text-7xl: calc(var(--spacing) * 18);
+	--text-8xl: calc(var(--spacing) * 24);
+	--text-9xl: calc(var(--spacing) * 32);
+	--radius-xs: calc(var(--spacing) * 0.5);
+	--radius-sm: calc(var(--spacing) * 1);
+	--radius-md: calc(var(--spacing) * 1.5);
+	--radius-lg: calc(var(--spacing) * 2);
+	--radius-xl: calc(var(--spacing) * 3);
+	--radius-2xl: calc(var(--spacing) * 4);
+	--radius-3xl: calc(var(--spacing) * 6);
+	--radius-4xl: calc(var(--spacing) * 8);
+
+	/* Named text roles; line heights are ratios so they follow the size */
+	/* Defaults; BaseLayout sets the sizes on <html> from siteConfig.layout.fontSize */
+	--text-meta: 0.703125rem; /* 11.25px: dates, categories, tags, counts */
+	--text-meta--line-height: calc(22 / 15);
+	--text-ui: 0.796875rem; /* 12.75px: sidebar items, excerpts, nav links */
+	--text-ui--line-height: calc(26 / 17);
+	--text-prose: 0.9375rem; /* 15px: article body */
+	--text-card-title: 1.5rem; /* 24px: post card titles */
+	--text-card-title--line-height: 1.25;
+	--text-widget-title: 0.9375rem; /* 15px: sidebar widget titles */
+	--text-widget-title--line-height: 1.4;
+	/* Touch-screen inputs: 16px stops iOS zooming on focus; fixed, not from --spacing */
+	--text-input: 16px;
+
+	/* Layout */
+	/* Defaults; BaseLayout sets them on <html> from siteConfig.layout.pageWidth / sidebarWidth */
+	--container-page: clamp(48rem, 70vw, 63rem);
+	--spacing-sidebar: 11.25rem;
+	--spacing-navbar: calc(var(--spacing) * 18);
+	/* Running text stops at about 40 CJK / 70 Latin characters per line */
+	--spacing-measure: 40ic;
+}
+
+/* Motion tokens */
+@theme static {
+	--duration-fast: 150ms;
+	--duration-page: 300ms;
+	--duration-frame: 700ms;
+}
+
 @layer base {
+	/* Fixed root size: the layout ignores the browser font-size setting; page zoom still scales it */
+	html {
+		font-size: 16px;
+	}
+
+	/* Tailwind 3 border color default */
 	*,
 	::after,
 	::before,
@@ -19,16 +106,53 @@
 	::file-selector-button {
 		border-color: var(--color-gray-200, currentColor);
 	}
+
+	/* Text without its own size */
+	body {
+		font-size: var(--text-base);
+	}
+
 	button:not(:disabled),
 	[role="button"]:not(:disabled) {
 		cursor: pointer;
 	}
+
+	::selection {
+		background-color: var(--selection-bg);
+	}
+
+	/* Same-page anchors scroll smoothly unless reduced motion */
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
+	}
+
+	:target,
+	.custom-md :is(h1, h2, h3, h4, h5, h6) {
+		scroll-margin-top: calc(var(--spacing) * 4);
+	}
 }
 
-@import "./main.utilities.css";
-@import "./main.css" layer(components);
-@import "./markdown.css";
-@import "./expressive-code.css" layer(components);
-@import "./scrollbar.css" layer(components);
-@import "./transition.css" layer(components);
-@import "./photoswipe.css" layer(components);
+/* Kill switch for transitions while hue is dragged or theme switches */
+html[data-no-transition] *,
+html[data-no-transition] *::before,
+html[data-no-transition] *::after {
+	transition: none;
+}
+
+/* Theme crossfade: new snapshot fades in over the old one. Unlayered, so it
+   beats Astro's @layer rules for the <html> transition:animate="none" group */
+html[data-theme-fade]::view-transition-old(*) {
+	opacity: 1;
+}
+
+html[data-theme-fade]::view-transition-new(*) {
+	animation: theme-fade 250ms ease-out both;
+}
+
+@keyframes theme-fade {
+	from {
+		opacity: 0;
+	}
+}

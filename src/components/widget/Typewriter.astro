@@ -20,14 +20,10 @@ const {
 	showCursor = true,
 	startDelay = 0,
 } = Astro.props;
-
-// 生成唯一 ID 以支持页面中多个打字机实例
-const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 ---
 
 <span class:list={["typewriter-wrapper", className]}>
 	<span 
-		id={uniqueId}
 		class="typewriter-text" 
 		data-words={JSON.stringify(words)} 
 		data-type-speed={typeSpeed}
@@ -50,9 +46,15 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 
 	.typewriter-cursor {
 		display: inline;
-		margin-left: 2px;
+		margin-left: calc(var(--spacing) * 0.5);
 		animation: blink 1s step-end infinite;
 		opacity: 1;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.typewriter-cursor {
+			animation: none;
+		}
 	}
 
 	@keyframes blink {
@@ -77,14 +79,11 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 		private currentText: string = '';
 		private wordIndex: number = 0; // 当前在洗牌数组中的位置
 		private isDeleting: boolean = false;
-		private timeoutId: number | null = null;
+		private waiting = false;
 
 		constructor(element: HTMLElement) {
 			this.element = element;
-			
-			// 强制清空内容（防止 View Transitions 缓存导致闪现旧文本）
-			this.element.textContent = '';
-			
+
 			// 从 DOM 属性读取配置
 			try {
 				this.words = JSON.parse(element.dataset.words || '[]');
@@ -104,10 +103,12 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 			if (this.words.length > 0) {
 				// 初始化时洗牌一次
 				this.shuffleWords();
+				document.addEventListener('astro:after-swap', () => this.resume());
+				document.addEventListener('visibilitychange', () => this.resume());
 				
 				// 如果有启动延迟，先等待
 				if (this.startDelay > 0) {
-					this.timeoutId = window.setTimeout(() => this.tick(), this.startDelay);
+					window.setTimeout(() => this.tick(), this.startDelay);
 				} else {
 					this.tick();
 				}
@@ -173,7 +174,25 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 			this.element.dispatchEvent(event);
 		}
 
+		// Banner text is hidden off the home page; background tabs are skipped too
+		private hidden(): boolean {
+			const root = document.documentElement;
+			return document.hidden || (root.classList.contains('enable-banner') && !root.classList.contains('is-home'));
+		}
+
+		// Continue a loop stopped while hidden
+		private resume() {
+			if (!this.waiting || this.hidden()) return;
+			this.waiting = false;
+			this.tick();
+		}
+
 		private tick() {
+			if (!this.element.isConnected) return;
+			if (this.hidden()) {
+				this.waiting = true;
+				return;
+			}
 			// 获取当前在洗牌数组中的位置
 			const currentPosition = this.wordIndex % this.shuffledIndices.length;
 			// 通过洗牌索引获取实际的文本索引
@@ -191,7 +210,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 				
 				// 使用 RAF 确保 DOM 更新完成后再继续，避免换行时的视觉加速
 				requestAnimationFrame(() => {
-					this.timeoutId = window.setTimeout(() => this.tick(), speed);
+					window.setTimeout(() => this.tick(), speed);
 				});
 			} 
 			// 状态 2: 打字完成 - 停留并触发事件
@@ -203,7 +222,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 				});
 				
 				this.isDeleting = true;
-				this.timeoutId = window.setTimeout(() => this.tick(), this.delay + TypewriterEffect.COMPLETE_EXTRA_DELAY);
+				window.setTimeout(() => this.tick(), this.delay + TypewriterEffect.COMPLETE_EXTRA_DELAY);
 			} 
 			// 状态 3: 删除中
 			else if (this.isDeleting && this.currentText.length > 0) {
@@ -212,7 +231,7 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 				this.element.textContent = this.currentText;
 				
 				const speed = this.getDeleteSpeed(charToDelete);
-				this.timeoutId = window.setTimeout(() => this.tick(), speed);
+				window.setTimeout(() => this.tick(), speed);
 			} 
 			// 状态 4: 删除完成 - 切换到下一个单词并触发事件
 			else if (this.isDeleting && this.currentText === '') {
@@ -234,43 +253,12 @@ const uniqueId = `typewriter-${Math.random().toString(36).slice(2, 11)}`;
 					nextIndex: nextActualIndex 
 				});
 				
-				this.timeoutId = window.setTimeout(() => this.tick(), TypewriterEffect.DELETE_PAUSE_DELAY);
+				window.setTimeout(() => this.tick(), TypewriterEffect.DELETE_PAUSE_DELAY);
 			}
 		}
 
-		public destroy() {
-			if (this.timeoutId) {
-				clearTimeout(this.timeoutId);
-				this.timeoutId = null;
-			}
-		}
 	}
 
-	function initTypewriters() {
-		const elements = document.querySelectorAll<HTMLElement>('.typewriter-text');
-		elements.forEach(el => {
-			if (!(el as any).__typewriter) {
-				(el as any).__typewriter = new TypewriterEffect(el);
-			}
-		});
-	}
-
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', initTypewriters);
-	} else {
-		initTypewriters();
-	}
-
-	// 支持 Astro 页面切换（View Transitions）
-	document.addEventListener('astro:page-load', initTypewriters);
-
-	// 在页面切换前清理所有打字机实例
-	document.addEventListener('astro:before-swap', () => {
-		document.querySelectorAll<HTMLElement>('.typewriter-text').forEach(el => {
-			if ((el as any).__typewriter) {
-				(el as any).__typewriter.destroy();
-				delete (el as any).__typewriter;
-			}
-		});
-	});
+	for (const el of document.querySelectorAll<HTMLElement>(".typewriter-text"))
+		new TypewriterEffect(el);
 </script>

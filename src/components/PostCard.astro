@@ -20,9 +20,9 @@ interface Props {
 	category: string | null;
 	image: string;
 	description: string;
-	draft: boolean;
 	style: string;
 	isPinned?: boolean;
+	index?: number;
 }
 const {
 	entry,
@@ -36,7 +36,10 @@ const {
 	description,
 	style,
 	isPinned = false,
+	index = 0,
 } = Astro.props;
+// 前两张封面优先加载
+const eager = index < 2;
 const className = Astro.props.class;
 
 const hasCover = image !== undefined && image !== null && image !== "";
@@ -46,17 +49,17 @@ const coverWidth = "30%";
 const { remarkPluginFrontmatter } = await render(entry);
 ---
 <div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", className]} style={style}>
-    <div class:list={["pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", {"w-full md:w-[calc(100%_-_52px_-_12px)]": !hasCover, "w-full md:w-[calc(100%_-_var(--coverWidth)_-_12px)]": hasCover}]}>
+    <div class:list={["w-full pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", { "md:w-[calc(100%-var(--spacing)*16)]": !hasCover, "md:w-[calc(100%-var(--coverWidth)-var(--spacing)*3)]": hasCover }]}>
         <a href={url}
-           class="transition group w-full block font-bold mb-3 text-3xl text-90
-        hover:text-[var(--primary)] dark:hover:text-[var(--primary)]
-        active:text-[var(--title-active)] dark:active:text-[var(--title-active)]
-        before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
-        before:absolute before:top-[2.2rem] before:left-[1.125rem] before:hidden md:before:block
-        ">
+           class="transition-ui group w-full block font-bold mb-3 text-card-title text-balance text-90
+ hover:text-[var(--primary-text)]
+ active:text-[var(--title-active)]
+ before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
+ before:absolute before:top-9.5 before:left-4.5 before:hidden md:before:block
+ ">
             {title}
-            <Icon class="inline text-[2rem] text-[var(--primary)] md:hidden translate-y-0.5 absolute" name="material-symbols:chevron-right-rounded" ></Icon>
-            <Icon class="text-[var(--primary)] text-[2rem] transition hidden md:inline absolute translate-y-0.5 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0" name="material-symbols:chevron-right-rounded"></Icon>
+            <Icon class="inline icon-8 text-(--primary-text) md:hidden translate-y-0.5 absolute" name="material-symbols:chevron-right-rounded" ></Icon>
+            <Icon class="text-(--primary-text) icon-8 transition-ui hidden md:inline absolute translate-y-0.5 opacity-0 group-hover:opacity-100 motion-safe:-translate-x-1 motion-safe:group-hover:translate-x-0" name="material-symbols:chevron-right-rounded"></Icon>
         </a>
 
         <!-- metadata -->
@@ -72,12 +75,12 @@ const { remarkPluginFrontmatter } = await render(entry);
         ></PostMetadata>
 
         <!-- description -->
-        <div class:list={["transition text-75 mb-3.5 pr-4", {"line-clamp-2 md:line-clamp-1": !description}]}>
+        <div class:list={["text-75 text-ui text-pretty mb-3.5 pr-4", {"line-clamp-2 md:line-clamp-1": !description}]}>
             { description || remarkPluginFrontmatter.excerpt }
         </div>
 
         <!-- word count and read time  -->
-        <div class="text-sm text-black/30 dark:text-white/30 flex gap-4 transition">
+        <div class="text-meta text-50 flex gap-4">
             <div>
                 {remarkPluginFrontmatter.words} {" " + i18n(remarkPluginFrontmatter.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}
             </div>
@@ -92,32 +95,33 @@ const { remarkPluginFrontmatter } = await render(entry);
     {hasCover && <a href={url} aria-label={title}
                     class:list={["group",
                         "max-h-[20vh] md:max-h-none mx-4 mt-4 -mb-2 md:mb-0 md:mx-0 md:mt-0",
-                        "md:w-[var(--coverWidth)] relative md:absolute md:top-3 md:bottom-3 md:right-3 rounded-xl overflow-hidden active:scale-95"
+                        "md:w-[var(--coverWidth)] relative md:absolute md:top-3 md:bottom-3 md:right-3 rounded-xl overflow-hidden press"
                     ]} >
         <!-- 从左到右滑动的遮罩效果 -->
-        <div class="absolute pointer-events-none z-10 w-full h-full bg-black/20 transition-all duration-300 ease-out transform -translate-x-full group-hover:translate-x-0"></div>
+        <div class="absolute pointer-events-none z-10 w-full h-full bg-black/20 transition-[translate,opacity] duration-300 ease-out -translate-x-full group-hover:translate-x-0
+                    motion-reduce:translate-x-0 motion-reduce:opacity-0 motion-reduce:group-hover:opacity-100"></div>
         <div class="absolute pointer-events-none z-20 w-full h-full flex items-center justify-center ">
             <Icon name="material-symbols:chevron-right-rounded"
-                  class="transition opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 text-white text-5xl">
+                  class="transition-ui opacity-0 group-hover:opacity-100 motion-safe:scale-50 motion-safe:group-hover:scale-100 text-white icon-12">
             </Icon>
         </div>
-        <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} alt="Cover of the Post" loading="eager" fetchpriority="high"
+        <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} alt="" loading={eager ? "eager" : "lazy"} fetchpriority={eager ? "high" : "auto"}
                   class="w-full h-full post-card-cover">
         </ImageWrapper>
     </a>}
 
     {!hasCover &&
-        <a href={url} aria-label={title} class="!hidden md:!flex btn-regular w-[3.25rem]
+        <a href={url} aria-label={title} class="!hidden md:!flex btn-regular w-13
          absolute right-3 top-3 bottom-3 rounded-xl bg-[var(--enter-btn-bg)]
-         hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] active:scale-95
+         hover:bg-[var(--enter-btn-bg-hover)] active:bg-[var(--enter-btn-bg-active)] press
         ">
             <Icon name="material-symbols:chevron-right-rounded"
-                  class="transition text-[var(--primary)] text-4xl mx-auto">
+                  class="text-(--primary-text) icon-9 mx-auto">
             </Icon>
         </a>
     }
 </div>
-<div class="transition border-t-[1px] border-dashed mx-6 border-black/10 dark:border-white/[0.15] last:border-t-0 md:hidden"></div>
+<div class="border-t-[1px] border-dashed mx-6 border-black/10 dark:border-white/[0.15] last:border-t-0 md:hidden"></div>
 
 <style define:vars={{coverWidth}}>
 </style>

@@ -1,0 +1,37 @@
+import { siteConfig } from "@/config";
+
+const spacing = siteConfig.layout?.spacing ?? 0.1875;
+
+// Fixed TOC: shown once it gets this width plus a gap on each side of the page (rem; gap matches --toc-width)
+const TOC_MIN_WIDTH = 60 * spacing;
+const TOC_GAP = 4 * spacing;
+
+const {
+	min = 48,
+	viewport = 70,
+	max = 63,
+} = siteConfig.layout?.pageWidth ?? {};
+
+const {
+	meta = 0.703125,
+	ui = 0.796875,
+	prose = 0.9375,
+	cardTitle = 1.5,
+	widgetTitle = 0.9375,
+} = siteConfig.layout?.fontSize ?? {};
+const sidebarWidth = siteConfig.layout?.sidebarWidth ?? 11.25;
+
+// Inline style for <html>: overrides the size tokens in global.css @theme
+export const SIZE_VARS = `--spacing: ${spacing}rem; --text-meta: ${meta}rem; --text-ui: ${ui}rem; --text-prose: ${prose}rem; --text-card-title: ${cardTitle}rem; --text-widget-title: ${widgetTitle}rem; --spacing-sidebar: ${sidebarWidth}rem; --container-page: clamp(${min}rem, ${viewport}vw, ${max}rem);`;
+
+// Smallest viewport width (rem) where W - clamp(min, v·W, max) leaves room for both TOC columns
+const need = 2 * (TOC_MIN_WIDTH + TOC_GAP);
+const v = viewport / 100;
+const tocBreakpoint = Math.max(
+	min + need,
+	Math.min(v < 1 ? need / (1 - v) : Number.POSITIVE_INFINITY, max + need),
+);
+
+// Swaps the fixed TOC and the collapsible one at the breakpoint; px because rem in media queries ignores the 16px root
+const tocBreakpointPx = +(tocBreakpoint * 16).toFixed(2);
+export const TOC_MEDIA_CSS = `@media (width < ${tocBreakpointPx}px){.toc-wide-only{display:none}}@media (width >= ${tocBreakpointPx}px){.toc-narrow-only{display:none}}`;

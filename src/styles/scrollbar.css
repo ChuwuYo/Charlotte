@@ -1,46 +1,102 @@
-.scrollbar-base.os-scrollbar {
-    @apply transition-all;
-    pointer-events: unset;
-
-    &.os-scrollbar-horizontal {
-        @apply py-1 px-2 h-4 mb-1;
-        .os-scrollbar-track .os-scrollbar-handle {
-            @apply rounded-full h-1.5;
-            opacity: 0.8;
-        }
-        &:hover .os-scrollbar-track .os-scrollbar-handle {
-            @apply h-3;
-            opacity: 0.85;
-        }
-    }
-
-    &.os-scrollbar-vertical {
-        @apply px-1 py-1 w-4 mr-1;
-        .os-scrollbar-track .os-scrollbar-handle {
-            @apply rounded-full w-1.5;
-            opacity: 0.8;
-        }
-        &:hover .os-scrollbar-track .os-scrollbar-handle {
-            @apply w-3;
-            opacity: 0.85;
-        }
-    }
+/* Thin native scrollbars in the theme scrollbar color; the page scrollbar keeps the platform style */
+.katex-display-container,
+.search-panel {
+	scrollbar-width: thin;
+	scrollbar-color: var(--scrollbar-bg) transparent;
 }
 
-.os-scrollbar {
-    &.scrollbar-auto {
-        --os-handle-bg: var(--scrollbar-bg);
-        --os-handle-bg-hover: var(--scrollbar-bg-hover);
-        --os-handle-bg-active: var(--scrollbar-bg-active);
-    }
-    &.scrollbar-dark {
-        --os-handle-bg: var(--scrollbar-bg-dark);
-        --os-handle-bg-hover: var(--scrollbar-bg-hover-dark);
-        --os-handle-bg-active: var(--scrollbar-bg-active-dark);
-    }
-    &.scrollbar-light {
-        --os-handle-bg: var(--scrollbar-bg-light);
-        --os-handle-bg-hover: var(--scrollbar-bg-hover-light);
-        --os-handle-bg-active: var(--scrollbar-bg-active-light);
-    }
+/* Page scrollbar: the root scrolls natively; with a mouse (set in HeadScript) its bar is replaced by an overlay thumb that takes no width */
+.page-scrollbar {
+	display: none;
+}
+
+html[data-overlay-scrollbar] {
+	scrollbar-width: none;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
+	.page-scrollbar {
+		display: block;
+		position: fixed;
+		inset-block: 0;
+		inset-inline-end: 0;
+		z-index: 100;
+		width: calc(var(--spacing) * 4);
+		padding: var(--spacing);
+		&[data-idle] {
+			display: none;
+		}
+	}
+}
+
+.page-scrollbar-track {
+	position: relative;
+	height: 100%;
+}
+
+.page-scrollbar-thumb {
+	position: absolute;
+	inset-inline-end: 0;
+	width: var(--spacing);
+	min-height: calc(var(--spacing) * 10);
+	height: var(--thumb-size, 0);
+	border-radius: var(--radius-sm);
+	background-color: var(--scrollbar-bg);
+	opacity: 0;
+	will-change: translate;
+	.page-scrollbar[data-visible] &,
+	.page-scrollbar:hover & {
+		opacity: 1;
+	}
+	.page-scrollbar:hover & {
+		width: calc(var(--spacing) * 2);
+		background-color: var(--scrollbar-bg-hover);
+	}
+	.page-scrollbar[data-dragging] & {
+		width: calc(var(--spacing) * 2);
+		opacity: 1;
+		background-color: var(--scrollbar-bg-active);
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.page-scrollbar-thumb {
+		transition:
+			opacity 150ms,
+			width 150ms var(--ease-standard);
+	}
+}
+
+/* Position follows the root scroll on the compositor where supported; otherwise the script sets it */
+@supports (animation-timeline: scroll()) {
+	.page-scrollbar-thumb {
+		/* Longhands: the minifier would fold a shorthand plus timeline into an invalid shorthand */
+		animation-name: page-scrollbar-thumb;
+		animation-timing-function: linear;
+		animation-fill-mode: both;
+		animation-timeline: scroll(root block);
+	}
+}
+
+@keyframes page-scrollbar-thumb {
+	from {
+		translate: 0 0;
+	}
+	to {
+		translate: 0 var(--thumb-travel, 0);
+	}
+}
+
+@media (forced-colors: active) {
+	.page-scrollbar-thumb {
+		forced-color-adjust: none;
+		background-color: CanvasText;
+	}
+}
+
+@media print {
+	html[data-overlay-scrollbar] .page-scrollbar {
+		display: none;
+	}
 }

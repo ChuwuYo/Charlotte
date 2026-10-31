@@ -155,7 +155,7 @@ $$
 
 # GitHub 仓库卡片
 
-你可以添加一个链接到一个 GitHub 仓库的动态卡片。当页面加载时，将从 GitHub API 获取仓库信息。
+你可以添加一个链接到 GitHub 仓库的卡片。仓库信息在构建时（`pnpm build`）从 GitHub API 获取并写入 `src/data/github-cards.json`，访客打开页面时不会再请求 API。获取失败时沿用上次保存的数据；从未获取过的仓库只显示名称。设置环境变量 `GITHUB_TOKEN` 可避免构建机触发 API 限流。
 
 ::github{repo="ChuwuYo/Charlotte"}
 
@@ -240,7 +240,7 @@ $$
 
 只需从 YouTube 或其他平台复制嵌入代码，然后将其粘贴到 markdown 文件中。
 
-### YouTube
+## YouTube
 
 只需从 YouTube 复制嵌入代码，然后粘贴到 Markdown 文件中即可。
 

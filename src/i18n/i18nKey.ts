@@ -6,11 +6,7 @@ enum I18nKey {
 
 	tags = "tags",
 	categories = "categories",
-	recentPosts = "recentPosts",
 
-	comments = "comments",
-
-	untitled = "untitled",
 	uncategorized = "uncategorized",
 	noTags = "noTags",
 
@@ -25,10 +21,6 @@ enum I18nKey {
 	cardBackgroundColor = "cardBackgroundColor",
 	cardBackgroundWhite = "cardBackgroundWhite",
 	cardBackgroundThemed = "cardBackgroundThemed",
-
-	fontSizeScaling = "fontSizeScaling",
-	fontScalingLocked = "fontScalingLocked",
-	fontScalingResponsive = "fontScalingResponsive",
 
 	lightMode = "lightMode",
 	darkMode = "darkMode",
@@ -60,6 +52,13 @@ enum I18nKey {
 
 	pinned = "pinned",
 	tableOfContents = "tableOfContents",
+
+	copyCode = "copyCode",
+	copied = "copied",
+	copyFailed = "copyFailed",
+
+	notFoundTitle = "notFoundTitle",
+	notFoundDescription = "notFoundDescription",
 }
 
 export default I18nKey;

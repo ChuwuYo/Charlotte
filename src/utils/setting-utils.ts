@@ -1,138 +1,129 @@
-import {
-	AUTO_MODE,
-	DARK_MODE,
-	DEFAULT_THEME,
-	LIGHT_MODE,
-} from "@constants/constants.ts";
-import { expressiveCodeConfig } from "@/config";
+import { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants.ts";
+import { siteConfig } from "@/config";
 import type { LIGHT_DARK_MODE } from "@/types/config";
 
+const root = () => document.documentElement;
+
+// Turn transitions off; returns a function that turns them back on
+export function pauseTransitions(): () => void {
+	root().dataset.noTransition = "";
+	return () => delete root().dataset.noTransition;
+}
+
+// Run fn with transitions off for two frames, so color swaps don't animate
+function withoutTransitions(fn: () => void): void {
+	const resume = pauseTransitions();
+	fn();
+	requestAnimationFrame(() => requestAnimationFrame(resume));
+}
+
 export function getDefaultHue(): number {
-	const fallback = "250";
-	const configCarrier = document.getElementById("config-carrier");
-	return Number.parseInt(configCarrier?.dataset.hue || fallback, 10);
+	return siteConfig.themeColor.hue;
 }
 
 export function getHue(): number {
-	const stored = localStorage.getItem("hue");
-	return stored ? Number.parseInt(stored, 10) : getDefaultHue();
+	const stored = Number.parseInt(localStorage.getItem("hue") ?? "", 10);
+	return Number.isNaN(stored) ? getDefaultHue() : stored;
 }
 
-export function setHue(hue: number): void {
+let pendingHue: number | null = null;
+
+// Apply --hue at most once per frame
+export function applyHue(hue: number): void {
+	if (pendingHue === null) {
+		requestAnimationFrame(() => {
+			if (pendingHue !== null)
+				root().style.setProperty("--hue", String(pendingHue));
+			pendingHue = null;
+		});
+	}
+	pendingHue = hue;
+}
+
+export function saveHue(hue: number): void {
 	localStorage.setItem("hue", String(hue));
-	const r = document.querySelector(":root") as HTMLElement;
-	if (!r) {
-		return;
-	}
-	r.style.setProperty("--hue", String(hue));
 }
 
-export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
-	switch (theme) {
-		case LIGHT_MODE:
-			document.documentElement.classList.remove("dark");
-			break;
-		case DARK_MODE:
-			document.documentElement.classList.add("dark");
-			break;
-		case AUTO_MODE:
-			if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-				document.documentElement.classList.add("dark");
-			} else {
-				document.documentElement.classList.remove("dark");
-			}
-			break;
-	}
-
-	// Set the theme for Expressive Code
-	document.documentElement.setAttribute(
-		"data-theme",
-		expressiveCodeConfig.theme,
+function isDark(theme: LIGHT_DARK_MODE): boolean {
+	return (
+		theme === DARK_MODE ||
+		(theme === AUTO_MODE &&
+			window.matchMedia("(prefers-color-scheme: dark)").matches)
 	);
 }
 
+export function applyThemeToDocument(theme: LIGHT_DARK_MODE): void {
+	const dark = isDark(theme);
+	withoutTransitions(() => root().classList.toggle("dark", dark));
+}
+
+let fadeId = 0;
+// Target of a crossfade whose class change has not run yet
+let pendingDark: boolean | undefined;
+
+// User switch: one whole-page crossfade (View Transitions); instant when
+// unsupported, with reduced motion, or during a ClientRouter navigation
 export function setTheme(theme: LIGHT_DARK_MODE): void {
 	localStorage.setItem("theme", theme);
-	applyThemeToDocument(theme);
+	const r = root();
+	const dark = isDark(theme);
+	if (dark === (pendingDark ?? r.classList.contains("dark"))) return;
+	if (
+		typeof document.startViewTransition !== "function" ||
+		matchMedia("(prefers-reduced-motion: reduce)").matches ||
+		r.hasAttribute("data-astro-transition") // ClientRouter navigating
+	) {
+		pendingDark = undefined;
+		applyThemeToDocument(theme);
+		return;
+	}
+
+	const id = ++fadeId;
+	pendingDark = dark;
+	r.dataset.noTransition = "";
+	r.dataset.themeFade = "";
+	// The snapshot overlay hit-tests as <html>; keep the hovered element's cursor
+	const hovered = [...document.querySelectorAll(":hover")].pop();
+	if (hovered) r.style.cursor = getComputedStyle(hovered).cursor;
+	document
+		// Latest stored theme: a switch made before this callback runs wins
+		.startViewTransition(() => {
+			r.classList.toggle("dark", isDark(getStoredTheme()));
+		})
+		.finished.finally(() => {
+			if (id !== fadeId) return; // a newer switch owns the flags
+			pendingDark = undefined;
+			delete r.dataset.noTransition;
+			delete r.dataset.themeFade;
+			r.style.removeProperty("cursor");
+		});
 }
 
 export function getStoredTheme(): LIGHT_DARK_MODE {
-	// 优先使用本地存储的主题，如果没有则使用配置中的默认主题
 	const stored = localStorage.getItem("theme");
-	if (stored) {
-		return stored as LIGHT_DARK_MODE;
-	}
-
-	// 从配置中获取默认主题
-	const configCarrier = document.getElementById("config-carrier");
-	const defaultTheme = configCarrier?.dataset.defaultTheme;
-
-	if (
-		defaultTheme === LIGHT_MODE ||
-		defaultTheme === DARK_MODE ||
-		defaultTheme === AUTO_MODE
-	) {
-		return defaultTheme;
-	}
-
-	// 如果配置中也没有设置，则使用常量中的默认值
-	return DEFAULT_THEME;
+	if (stored === LIGHT_MODE || stored === DARK_MODE || stored === AUTO_MODE)
+		return stored;
+	return siteConfig.defaultTheme;
 }
 
-// 卡片背景色类型常量
 export const CARD_BG_TYPE = {
-	WHITE: 0, // 纯白色
-	THEMED: 1, // 主题色
+	WHITE: 0,
+	THEMED: 1,
 } as const;
-
-export function getDefaultCardBgType(): number {
-	return CARD_BG_TYPE.WHITE;
-}
 
 export function getCardBgType(): number {
 	const stored = localStorage.getItem("cardBgType");
-	return stored ? Number.parseInt(stored, 10) : getDefaultCardBgType();
+	return stored ? Number.parseInt(stored, 10) : CARD_BG_TYPE.WHITE;
 }
 
 export function setCardBgType(type: number): void {
 	localStorage.setItem("cardBgType", String(type));
-	const r = document.querySelector(":root") as HTMLElement;
-	if (!r) {
-		return;
-	}
-	if (type === CARD_BG_TYPE.WHITE) {
-		r.style.setProperty("--card-bg", "var(--card-bg-original)");
-	} else if (type === CARD_BG_TYPE.THEMED) {
-		r.style.setProperty("--card-bg", "var(--card-bg-themed)");
-	}
-}
-
-// 字体缩放类型常量
-export const FONT_SCALING_TYPE = {
-	LOCKED: 0, // 锁定 (默认)
-	RESPONSIVE: 1, // 跟随浏览器
-} as const;
-
-export function getDefaultFontScalingType(): number {
-	return FONT_SCALING_TYPE.LOCKED;
-}
-
-export function getFontScalingType(): number {
-	const stored = localStorage.getItem("fontScalingType");
-	if (stored) {
-		const parsed = Number.parseInt(stored, 10);
-		if (!Number.isNaN(parsed)) {
-			return parsed;
-		}
-	}
-	return getDefaultFontScalingType();
-}
-
-export function setFontScalingType(type: number): void {
-	localStorage.setItem("fontScalingType", String(type));
-	if (type === FONT_SCALING_TYPE.RESPONSIVE) {
-		document.documentElement.classList.add("font-scale-dynamic");
-	} else {
-		document.documentElement.classList.remove("font-scale-dynamic");
-	}
+	withoutTransitions(() =>
+		root().style.setProperty(
+			"--card-bg",
+			type === CARD_BG_TYPE.THEMED
+				? "var(--card-bg-themed)"
+				: "var(--card-bg-original)",
+		),
+	);
 }

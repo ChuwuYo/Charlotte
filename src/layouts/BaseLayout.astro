@@ -1,0 +1,306 @@
+---
+import "../styles/global.css";
+
+import { Font } from "astro:assets";
+import BackToTop from "@components/control/BackToTop.astro";
+import Footer from "@components/Footer.astro";
+import HeadScript from "@components/HeadScript.astro";
+import ImageWrapper from "@components/misc/ImageWrapper.astro";
+import Navbar from "@components/Navbar.astro";
+import BannerText from "@components/widget/BannerText.astro";
+import CollapsibleTOC from "@components/widget/CollapsibleTOC.astro";
+import SideBar from "@components/widget/SideBar.astro";
+import TOC from "@components/widget/TOC.astro";
+import type { MarkdownHeading } from "astro";
+import { Icon } from "astro-icon/components";
+import { expressiveCodeConfig, profileConfig, siteConfig } from "@/config";
+import {
+	BANNER_HEIGHT,
+	BANNER_HEIGHT_EXTEND,
+	BANNER_HEIGHT_HOME,
+	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
+} from "../constants/constants";
+import { defaultFavicons } from "../constants/icon";
+import type { Favicon } from "../types/config";
+import { SIZE_VARS, TOC_MEDIA_CSS } from "../utils/layout-utils";
+import { pathsEqual, url } from "../utils/url-utils";
+
+interface Props {
+	title?: string;
+	description?: string;
+	lang?: string;
+	setOGTypeArticle?: boolean;
+	headings?: MarkdownHeading[];
+}
+
+const { title, description, setOGTypeArticle, headings = [] } = Astro.props;
+const lang = Astro.props.lang || siteConfig.lang;
+
+const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+const isPostPage = Astro.url.pathname.startsWith(url("/posts/"));
+const enableBanner = siteConfig.banner.enable;
+const hasBannerCredit = enableBanner && siteConfig.banner.credit.enable;
+const hasBannerLink = !!siteConfig.banner.credit.url;
+const hasBannerText = !!siteConfig.banner.text;
+const hasAfter = Astro.slots.has("after");
+
+const pageTitle = title
+	? `${title} - ${siteConfig.title}`
+	: `${siteConfig.title} - ${siteConfig.subtitle}`;
+const finalDescription = description || siteConfig.description;
+const favicons: Favicon[] =
+	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
+const siteLang = lang.replace("_", "-");
+
+const bannerOffset = {
+	top: `${BANNER_HEIGHT_EXTEND}vh`,
+	center: `${BANNER_HEIGHT_EXTEND / 2}vh`,
+	bottom: "0",
+}[siteConfig.banner.position || "center"];
+
+// Main panel overlaps the banner bottom; html.is-home adds the extended banner in CSS
+const mainPanelTop = enableBanner
+	? `calc(${BANNER_HEIGHT}vh - var(--spacing) * ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT})`
+	: "calc(var(--spacing) * 22)";
+
+// dns-prefetch hosts from the warmup list
+const warmup = siteConfig.performance?.externalLinkWarmup;
+const enableWarmup = warmup?.enable !== false;
+const warmupOrigins = [
+	...new Set(
+		(enableWarmup ? (warmup?.urls ?? []) : [])
+			.filter((u) => /^https?:\/\//i.test(u))
+			.map((u) => {
+				try {
+					return new URL(u).origin;
+				} catch {
+					return "";
+				}
+			})
+			.filter(Boolean),
+	),
+];
+const warmupHosts = [...new Set(warmupOrigins.map((o) => new URL(o).host))];
+const warmupConfig = {
+	enable: enableWarmup,
+	enableFetch: warmup?.enableFetch !== false,
+	origins: warmupOrigins,
+};
+---
+
+<!doctype html>
+<html
+	lang={siteLang}
+	class:list={["bg-(--page-bg)", { "is-home": isHomePage, "is-post": isPostPage, "enable-banner": enableBanner }]}
+	data-theme={expressiveCodeConfig.theme}
+	transition:animate="none"
+	style={`--hue: ${siteConfig.themeColor.hue}; --banner-offset: ${bannerOffset}; --banner-height: ${BANNER_HEIGHT}vh; --banner-height-home: ${BANNER_HEIGHT_HOME}vh; ${SIZE_VARS}`}
+>
+	<head>
+		<title>{pageTitle}</title>
+		<meta charset="UTF-8" />
+		<style is:inline set:html={TOC_MEDIA_CSS}></style>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<Font cssVariable="--font-roboto" preload={[{ subset: "latin", style: "normal", weight: 400 }]} />
+		<Font cssVariable="--font-jetbrains-mono" />
+		<meta name="keywords" content={siteConfig.keywords} />
+		<meta name="description" content={finalDescription} />
+		<meta name="author" content={profileConfig.name} />
+		<meta name="generator" content={Astro.generator} />
+
+		<meta property="og:site_name" content={siteConfig.title} />
+		<meta property="og:url" content={Astro.url} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={finalDescription} />
+		<meta property="og:type" content={setOGTypeArticle ? "article" : "website"} />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={Astro.url} />
+		<meta name="twitter:title" content={pageTitle} />
+		<meta name="twitter:description" content={finalDescription} />
+
+		{favicons.map((favicon) => (
+			<link
+				rel="icon"
+				href={favicon.src.startsWith("/") ? url(favicon.src) : favicon.src}
+				sizes={favicon.sizes}
+				media={favicon.theme && `(prefers-color-scheme: ${favicon.theme})`}
+			/>
+		))}
+		{warmupHosts.map((host) => <link rel="dns-prefetch" href={`//${host}`} />)}
+
+		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`} />
+		<link rel="alternate" type="application/atom+xml" title={profileConfig.name} href={`${Astro.site}atom.xml`} />
+
+		<HeadScript />
+		<slot name="head" />
+	</head>
+	<body class="min-h-screen">
+		<div id="config-carrier" hidden data-warmup={JSON.stringify(warmupConfig)}></div>
+
+		<!-- Frame (navbar, banner, sidebar, footer) stays across navigations; #main, #main-after and the TOCs are swapped -->
+
+		<!-- Scroll thresholds read by IntersectionObserver -->
+		<div id="sentinel-banner" class="scroll-sentinel" aria-hidden="true"></div>
+		<div id="sentinel-navbar" class="scroll-sentinel" aria-hidden="true"></div>
+
+		<!-- Navbar -->
+		<div id="top-row" class="z-50 pointer-events-none relative max-w-page px-0 md:px-4 mx-auto">
+			<div id="navbar-wrapper" class="pointer-events-auto sticky top-0">
+				<Navbar />
+			</div>
+		</div>
+
+		<!-- Banner -->
+		{enableBanner && (
+			<div id="banner-wrapper" class="absolute z-10 w-full overflow-hidden" style={`top: -${BANNER_HEIGHT_EXTEND}vh`}>
+				<ImageWrapper id="banner" alt="" class="object-cover h-full" loading="eager" fetchpriority="high" src={siteConfig.banner.src} position={siteConfig.banner.position} />
+				{hasBannerText && (
+					<div class="banner-text-overlay absolute top-0 left-0 w-full h-full flex items-center justify-center">
+						<BannerText />
+					</div>
+				)}
+			</div>
+		)}
+
+		<!-- Main content -->
+		<div class="main-content-wrapper absolute w-full z-30 pointer-events-none" style={`--main-panel-top: ${mainPanelTop}`}>
+			<div class="relative max-w-page mx-auto pointer-events-auto">
+				<!-- Sidebar and main share row 1 so the sticky sidebar ends with the content -->
+				<div id="main-grid" class="w-full grid grid-cols-[var(--spacing-sidebar)_auto] gap-x-4 mx-auto px-0 md:px-4">
+					{hasBannerCredit && (
+						<a href={siteConfig.banner.credit.url} id="banner-credit" target="_blank" rel="noopener" aria-label="Visit image source"
+							class:list={["group onload-animation transition-ui absolute flex justify-center items-center rounded-full px-3 right-4 -top-13 bg-black/60 hover:bg-black/70 h-9", { "hover:pr-9 active:bg-black/80": hasBannerLink }]}>
+							<Icon class="text-white/75 icon-5 mr-1" name="material-symbols:copyright-outline-rounded" />
+							<div class="text-white/75 text-sm">{siteConfig.banner.credit.text}</div>
+							<Icon class:list={["transition-opacity absolute text-[oklch(0.75_0.14_var(--hue))] right-4 icon-3 opacity-0", { "group-hover:opacity-100": hasBannerLink }]} name="fa6-solid:arrow-up-right-from-square" />
+						</a>
+					)}
+
+					<!-- lg: size containment keeps the sidebar out of row sizing, so the footer follows the content; ::after keeps its bottom gap -->
+					<SideBar class="mb-4 row-start-3 col-span-2 lg:row-start-1 lg:col-span-1 lg:max-w-sidebar lg:[contain:size] lg:after:block lg:after:h-4 onload-animation" />
+
+					<main id="main" class:list={["row-start-1 col-span-2 lg:col-span-1 overflow-hidden", { "mb-4 lg:mb-0": !hasAfter }]}>
+						<div id="content-wrapper" class="onload-animation">
+							<slot />
+						</div>
+					</main>
+
+					<div id="main-after" class:list={["row-start-2 col-span-2 lg:col-span-1 lg:col-start-2 mb-4 lg:mb-0", { hidden: !hasAfter }]}>
+						<slot name="after" />
+					</div>
+
+					<div class="footer row-start-4 col-span-2 lg:row-start-3 lg:col-span-1 lg:col-start-2 onload-animation max-lg:mt-4">
+						<Footer />
+					</div>
+				</div>
+
+				<BackToTop />
+
+				<!-- Fixed TOC button and panel stay outside the moving grid -->
+				{siteConfig.toc.enable && (
+					<div id="collapsible-toc-region">
+						{headings.length > 0 && <CollapsibleTOC headings={headings} />}
+					</div>
+				)}
+			</div>
+		</div>
+
+		<!-- Fixed TOC beside the content on wide screens -->
+		<div class="toc-wide-only absolute w-full z-0">
+			<div class="relative max-w-page mx-auto">
+				{siteConfig.toc.enable && (
+					<div id="toc-wrapper" class:list={["transition-opacity absolute top-0 left-full items-center", { "toc-hide": enableBanner }]}>
+						<div id="toc-inner-wrapper" class="fixed top-14 w-(--toc-width) h-[calc(100vh-var(--spacing)*80)] overflow-y-scroll overflow-x-hidden hide-scrollbar">
+							<div id="toc" class="w-full h-full">
+								<div class="h-8 w-full"></div>
+								<TOC headings={headings} />
+								<div class="h-8 w-full"></div>
+							</div>
+						</div>
+					</div>
+				)}
+			</div>
+		</div>
+
+		<!-- Overlay page scrollbar (see scrollbar.css); the root keeps native scrolling -->
+		<div id="page-scrollbar" class="page-scrollbar" data-idle aria-hidden="true">
+			<div class="page-scrollbar-track"><div class="page-scrollbar-thumb"></div></div>
+		</div>
+
+		<script>
+			import "../scripts/main";
+		</script>
+	</body>
+</html>
+
+<style is:global>
+	@layer components {
+		/* Banner: home is taller and shifted down; inner pages show its middle */
+		.enable-banner #banner-wrapper {
+			height: var(--banner-height-home);
+		}
+		.enable-banner.is-home #banner-wrapper {
+			translate: 0 var(--banner-height-extend);
+		}
+		.enable-banner #banner {
+			translate: 0 var(--banner-offset);
+		}
+		.enable-banner.is-home #banner {
+			translate: none;
+		}
+		.main-content-wrapper {
+			top: var(--main-panel-top);
+		}
+		.enable-banner.is-home .main-content-wrapper {
+			top: calc(var(--main-panel-top) + var(--banner-height-extend));
+		}
+		.enable-banner:not(.is-home) .banner-text-overlay {
+			visibility: hidden;
+			opacity: 0;
+		}
+		.enable-banner #top-row {
+			height: calc(var(--banner-height-home) - var(--spacing-navbar));
+		}
+		.navbar-hidden {
+			opacity: 0;
+			translate: 0 calc(var(--spacing) * -16);
+		}
+		#navbar-wrapper {
+			transition-property: opacity, translate;
+			transition-duration: var(--default-transition-duration);
+			transition-timing-function: var(--default-transition-timing-function);
+		}
+		/* While the frame moves, the navbar shows and hides without its own transition */
+		html[data-frame-move] #navbar-wrapper {
+			transition: none;
+		}
+
+		/* Thresholds: past the banner, and where the navbar hides */
+		.scroll-sentinel {
+			position: absolute;
+			left: 0;
+			width: 1px;
+			height: 1px;
+			pointer-events: none;
+			visibility: hidden;
+		}
+		#sentinel-banner {
+			top: var(--banner-height);
+		}
+		/* Banner bottom minus the navbar, the panel overlap (14) and the gap above the panel (4) */
+		#sentinel-navbar {
+			top: calc(var(--banner-height) - var(--spacing-navbar) - var(--spacing) * 18);
+		}
+		.is-home #sentinel-navbar {
+			top: calc(var(--banner-height-home) - var(--spacing-navbar) - var(--spacing) * 18);
+		}
+	}
+
+	/* Banner text loops pause while the text is hidden or the page is leaving; unlayered to beat component styles */
+	:is(.enable-banner:not(.is-home), html[data-leaving])
+		.banner-text-overlay
+		:is(.quote-float, .quote-float-delayed, .typewriter-cursor) {
+		animation-play-state: paused;
+	}
+</style>

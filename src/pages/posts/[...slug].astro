@@ -5,14 +5,13 @@ import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
 import { getSortedPosts } from "@utils/content-utils";
 import { getDir, getPostUrlBySlug } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
-import { licenseConfig } from "src/config";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
-import { profileConfig, siteConfig } from "../../config";
+import { licenseConfig, profileConfig, siteConfig } from "../../config";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
 
 export async function getStaticPaths() {
@@ -24,9 +23,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content, headings } = await render(entry);
-
-const { remarkPluginFrontmatter } = await render(entry);
+const { Content, headings, remarkPluginFrontmatter } = await render(entry);
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -46,25 +43,25 @@ const jsonLd = {
 	// TODO include cover image here
 };
 ---
-<MainGridLayout banner={entry.data.image} title={entry.data.title} description={entry.data.description} lang={entry.data.lang} setOGTypeArticle={true} headings={headings}>
+<BaseLayout title={entry.data.title} description={entry.data.description} lang={entry.data.lang} setOGTypeArticle={true} headings={headings}>
     <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">
         <div id="post-container" class:list={["card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
             {}
         ]}>
             <!-- word count and reading time -->
-            <div class="flex flex-row text-black/30 dark:text-white/30 gap-5 mb-3 transition onload-animation">
+            <div class="flex flex-row text-50 gap-5 mb-3 onload-animation">
                 <div class="flex flex-row items-center">
-                    <div class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2">
+                    <div class="h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-50 flex items-center justify-center mr-2">
                         <Icon name="material-symbols:notes-rounded"></Icon>
                     </div>
-                    <div class="text-sm">{remarkPluginFrontmatter.words} {" " + i18n(I18nKey.wordsCount)}</div>
+                    <div class="text-meta">{remarkPluginFrontmatter.words} {" " + i18n(I18nKey.wordsCount)}</div>
                 </div>
                 <div class="flex flex-row items-center">
-                    <div class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2">
+                    <div class="h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-50 flex items-center justify-center mr-2">
                         <Icon name="material-symbols:schedule-outline-rounded"></Icon>
                     </div>
-                    <div class="text-sm">
+                    <div class="text-meta">
                         {remarkPluginFrontmatter.minutes} {" " + i18n(remarkPluginFrontmatter.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)}
                     </div>
                 </div>
@@ -74,12 +71,12 @@ const jsonLd = {
             <div class="relative onload-animation">
                 <div
                     data-pagefind-body data-pagefind-weight="10" data-pagefind-meta="title"
-                    class="transition w-full block font-bold mb-3
-                    text-3xl md:text-[2.25rem]/[2.75rem]
-                    text-black/90 dark:text-white/90
-                    md:before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
-                    before:absolute before:top-[0.75rem] before:left-[-1.125rem]
-                ">
+                    class="w-full block font-bold mb-3 text-balance
+ text-3xl md:text-4xl/11
+ text-90
+ md:before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
+ before:absolute before:top-3 before:-left-4.5
+ ">
                     {entry.data.title}
                 </div>
             </div>
@@ -99,47 +96,47 @@ const jsonLd = {
             <!-- always show cover as long as it has one -->
 
             {entry.data.image &&
-                <ImageWrapper id="post-cover" src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} class="mb-8 rounded-xl banner-container onload-animation" loading="eager" fetchpriority="high"/>
+                <ImageWrapper id="post-cover" src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} class="mb-8 rounded-xl onload-animation" loading="eager" fetchpriority="high"/>
             }
 
 
-            <Markdown class="mb-6 markdown-content onload-animation">
+            <Markdown class="mb-6 onload-animation">
                 <Content />
             </Markdown>
 
-            {licenseConfig.enable && <License title={entry.data.title} slug={entry.id} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
+            {licenseConfig.enable && <License title={entry.data.title} pubDate={entry.data.published} class="mb-6 rounded-xl onload-animation"></License>}
 
         </div>
     </div>
 
-    <div class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full">
+    <div class="flex flex-col md:flex-row justify-between mb-4 lg:mb-0 gap-4 overflow-hidden w-full">
         {entry.data.nextSlug ? (
             <a href={getPostUrlBySlug(entry.data.nextSlug)}
-               class="w-full font-bold overflow-hidden active:scale-95">
-                <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-start gap-4" >
-                    <Icon name="material-symbols:chevron-left-rounded" class="text-[2rem] text-[var(--primary)]" />
-                    <div class="overflow-hidden transition text-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
+               class="w-full font-bold overflow-hidden press">
+                <div class="btn-card rounded-2xl w-full h-15 max-w-full px-4 flex items-center !justify-start gap-4" >
+                    <Icon name="material-symbols:chevron-left-rounded" class="icon-8 text-(--primary-text)" />
+                    <div class="overflow-hidden text-ellipsis whitespace-nowrap max-w-[calc(100%-var(--spacing)*12)] text-75">
                         {entry.data.nextTitle}
                     </div>
                 </div>
             </a>
         ) : (
-            <div class="w-full h-[3.75rem] btn-card-disabled"></div>
+            <div class="hidden md:block w-full h-15 btn-card-disabled"></div>
         )}
 
         {entry.data.prevSlug ? (
             <a href={getPostUrlBySlug(entry.data.prevSlug)}
-               class="w-full font-bold overflow-hidden active:scale-95">
-                <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-end gap-4">
-                    <div class="overflow-hidden transition text-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
+               class="w-full font-bold overflow-hidden press">
+                <div class="btn-card rounded-2xl w-full h-15 max-w-full px-4 flex items-center !justify-end gap-4">
+                    <div class="overflow-hidden text-ellipsis whitespace-nowrap max-w-[calc(100%-var(--spacing)*12)] text-75">
                         {entry.data.prevTitle}
                     </div>
-                    <Icon name="material-symbols:chevron-right-rounded" class="text-[2rem] text-[var(--primary)]" />
+                    <Icon name="material-symbols:chevron-right-rounded" class="icon-8 text-(--primary-text)" />
                 </div>
             </a>
         ) : (
-            <div class="w-full h-[3.75rem] btn-card-disabled"></div>
+            <div class="hidden md:block w-full h-15 btn-card-disabled"></div>
         )}
     </div>
 
-</MainGridLayout>
+</BaseLayout>

@@ -2,13 +2,23 @@
 import ArchivePanel from "@components/ArchivePanel.svelte";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
 import { getSortedPostsList } from "../utils/content-utils";
 
 const sortedPostsList = await getSortedPostsList({ includePinned: false });
+// 只传归档所需字段
+const archivePosts = sortedPostsList.map(({ slug, data }) => ({
+	slug,
+	data: {
+		title: data.title,
+		tags: data.tags,
+		category: data.category,
+		published: data.published,
+	},
+}));
 ---
 
-<MainGridLayout title={i18n(I18nKey.archive)}>
-    <ArchivePanel sortedPosts={sortedPostsList} client:only="svelte"></ArchivePanel>
-</MainGridLayout>
+<BaseLayout title={i18n(I18nKey.archive)}>
+    <ArchivePanel sortedPosts={archivePosts} client:only="svelte"></ArchivePanel>
+</BaseLayout>
 

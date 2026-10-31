@@ -8,82 +8,29 @@ import { url } from "../utils/url-utils";
 
 const currentYear = new Date().getFullYear();
 const version = pkg.version;
+const uptimeUnits = JSON.stringify({
+	day: i18n(I18nKey.dayUnit),
+	day1: i18n(I18nKey.dayUnitSingular),
+	hour: i18n(I18nKey.hourUnit),
+	hour1: i18n(I18nKey.hourUnitSingular),
+	minute: i18n(I18nKey.minuteUnit),
+	minute1: i18n(I18nKey.minuteUnitSingular),
+	second: i18n(I18nKey.secondUnit),
+	second1: i18n(I18nKey.secondUnitSingular),
+});
 ---
 
-<div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
+<div class="border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
 
-<!-- Runtime网站运行计时 -->
-<script is:inline define:vars={{ 
-	startDate: siteConfig.startDate,
-	dayUnit: i18n(I18nKey.dayUnit), 
-	hourUnit: i18n(I18nKey.hourUnit), 
-	minuteUnit: i18n(I18nKey.minuteUnit), 
-	secondUnit: i18n(I18nKey.secondUnit),
-	dayUnitSingular: i18n(I18nKey.dayUnitSingular),
-	hourUnitSingular: i18n(I18nKey.hourUnitSingular),
-	minuteUnitSingular: i18n(I18nKey.minuteUnitSingular),
-	secondUnitSingular: i18n(I18nKey.secondUnitSingular)
-}}>
-let uptimeInterval = null;
-let uptimeElements = [];
-
-function updateUptime() {
-	const start = new Date(startDate);
-	const now = new Date();
-	const diff = Math.max(0, now.getTime() - start.getTime());
-
-	const days = Math.floor(diff / 1000 / 60 / 60 / 24);
-	const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
-	const minutes = Math.floor((diff / 1000 / 60) % 60);
-	const seconds = Math.floor((diff / 1000) % 60);
-
-	const dayText = days === 1 ? dayUnitSingular : dayUnit;
-	const hourText = hours === 1 ? hourUnitSingular : hourUnit;
-	const minuteText = minutes === 1 ? minuteUnitSingular : minuteUnit;
-	const secondText = seconds === 1 ? secondUnitSingular : secondUnit;
-
-	const uptimeStr = `${days}${dayText}${hours}${hourText}${minutes}${minuteText}${seconds}${secondText}`;
-	uptimeElements.forEach(el => {
-		el.textContent = uptimeStr;
-	});
-}
-
-function startUptimeTimer() {
-	if (uptimeInterval) clearInterval(uptimeInterval);
-	uptimeElements = document.querySelectorAll('.uptime-display');
-	updateUptime();
-	uptimeInterval = setInterval(updateUptime, 1000);
-}
-
-if (document.readyState === 'loading') {
-	document.addEventListener('DOMContentLoaded', startUptimeTimer);
-} else {
-	startUptimeTimer();
-}
-
-if (window.swup?.hooks) {
-	window.swup.hooks.on('page:view', () => {
-		if (uptimeInterval) clearInterval(uptimeInterval);
-		startUptimeTimer();
-	});
-}
-
-window.addEventListener('beforeunload', () => {
-	if (uptimeInterval) {
-		clearInterval(uptimeInterval);
-		uptimeInterval = null;
-	}
-});
-</script>
-<div class="transition border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
-    <div class="transition text-50 text-sm text-center mb-2">
-        {i18n(I18nKey.websiteRuntimeText)} <span class="uptime-display transition link text-[var(--primary)] font-medium">{i18n(I18nKey.loading)}</span>
+<div class="border-dashed border-[oklch(85%_0.01_var(--hue))] dark:border-white/15 rounded-2xl mb-12 flex flex-col items-center justify-center px-6">
+    <div class="text-50 text-sm text-center mb-2">
+        {i18n(I18nKey.websiteRuntimeText)} <span data-start={siteConfig.startDate} data-units={uptimeUnits} class="uptime-display transition-ui link text-[var(--primary-text)] font-medium">{i18n(I18nKey.loading)}</span>
     </div>
-    <div class="transition text-50 text-sm text-center mb-2">
+    <div class="text-50 text-sm text-center mb-2">
         &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. {i18n(I18nKey.allRightsReserved)}<br>
         {i18n(I18nKey.poweredBy)}{" "}
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &{" "}
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/ChuwuYo/Charlotte">Charlotte ver {version}</a>
+        <a class="transition-ui link text-[var(--primary-text)] font-medium" target="_blank" href="https://astro.build">Astro</a> &{" "}
+        <a class="transition-ui link text-[var(--primary-text)] font-medium" target="_blank" href="https://github.com/ChuwuYo/Charlotte">Charlotte ver {version}</a>
     </div>
     <nav class="flex flex-wrap gap-2 justify-center items-center text-50 text-sm" aria-label="Subscriptions">
         <a class="btn-regular-sm" target="_blank" href={url('rss.xml')} aria-label="RSS">

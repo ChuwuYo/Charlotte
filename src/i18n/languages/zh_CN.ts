@@ -9,11 +9,7 @@ export const zh_CN: Translation = {
 
 	[Key.tags]: "标签",
 	[Key.categories]: "分类",
-	[Key.recentPosts]: "最新文章",
 
-	[Key.comments]: "评论",
-
-	[Key.untitled]: "无标题",
 	[Key.uncategorized]: "未分类",
 	[Key.noTags]: "无标签",
 
@@ -28,10 +24,6 @@ export const zh_CN: Translation = {
 	[Key.cardBackgroundColor]: "亮色模式卡片背景色",
 	[Key.cardBackgroundWhite]: "纯白色",
 	[Key.cardBackgroundThemed]: "主题色",
-
-	[Key.fontSizeScaling]: "字号缩放策略",
-	[Key.fontScalingLocked]: "默认锁定",
-	[Key.fontScalingResponsive]: "跟随浏览器",
 
 	[Key.lightMode]: "亮色",
 	[Key.darkMode]: "暗色",
@@ -63,4 +55,11 @@ export const zh_CN: Translation = {
 
 	[Key.pinned]: "置顶",
 	[Key.tableOfContents]: "目录",
+
+	[Key.copyCode]: "复制代码",
+	[Key.copied]: "已复制",
+	[Key.copyFailed]: "复制失败",
+
+	[Key.notFoundTitle]: "页面不存在",
+	[Key.notFoundDescription]: "这个链接可能已经失效，或者页面被移到了别处",
 };
