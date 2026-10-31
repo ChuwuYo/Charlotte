@@ -1,7 +1,7 @@
 // ClientRouter navigation: the frame stays in place, only the content regions are swapped
 
 import { swapFunctions } from "astro:transitions/client";
-import { routeAssets } from "./asset-manifest";
+import { routeAssets, sameOrigin } from "./asset-manifest";
 import { closePanels } from "./panels";
 
 // Swapped content regions, including the side TOC scroller and the floating TOC
@@ -214,7 +214,8 @@ const linked = (sel: string) => !!document.querySelector(sel);
 
 // Fetches CSS into the cache; resolves when loaded or failed
 function preloadStyle(href: string) {
-	if (linked(`link[rel=stylesheet][href="${href}"]`)) return;
+	if (!sameOrigin(href)) return;
+	if (linked(`link[rel=stylesheet][href="${CSS.escape(href)}"]`)) return;
 	return new Promise((resolve) => {
 		const link = document.createElement("link");
 		link.rel = "preload";
@@ -228,9 +229,11 @@ function preloadStyle(href: string) {
 
 // Fetches and compiles a module without running it
 function preloadModule(src: string) {
+	if (!sameOrigin(src)) return;
+	const v = CSS.escape(src);
 	if (
-		linked(`script[src="${src}"], link[href="${src}"]`) ||
-		linked(`astro-island[component-url="${src}"]`)
+		linked(`script[src="${v}"], link[href="${v}"]`) ||
+		linked(`astro-island[component-url="${v}"]`)
 	)
 		return;
 	const link = document.createElement("link");

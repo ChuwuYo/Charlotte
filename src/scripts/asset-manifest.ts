@@ -10,6 +10,15 @@ function manifest(): Manifest {
 	return cached as Manifest;
 }
 
+// Same-origin URLs only, so preloads never point elsewhere
+export function sameOrigin(url: string): boolean {
+	try {
+		return new URL(url, location.href).origin === location.origin;
+	} catch {
+		return false;
+	}
+}
+
 export function routeAssets(pathname: string) {
 	const { assets, routes } = manifest();
 	// Keys are decoded file paths; URLs encode CJK and spaces
