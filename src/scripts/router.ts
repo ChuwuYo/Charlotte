@@ -59,6 +59,7 @@ function markFrameMove(duration: number) {
 	clearTimeout(frameTimer);
 	frameTimer = window.setTimeout(() => {
 		delete root.dataset.frameMove;
+		unpinNavbar();
 	}, duration);
 }
 
@@ -79,6 +80,29 @@ function navbarTop() {
 	if (!row || height === undefined) return undefined;
 	return Math.max(row.top, Math.min(0, row.bottom - height));
 }
+// Android Chrome with its toolbar shown can draw a stuck sticky navbar off
+// screen in the view transition snapshot; it is fixed in place until the swap
+// and the frame move finish
+function pinNavbar() {
+	const el = document.getElementById(NAVBAR);
+	const row = document.getElementById(NAVBAR_ROW)?.getBoundingClientRect();
+	if (!el || !row || navbarHidden() || row.top >= 0 || navbarTop() !== 0)
+		return;
+	const { left, width } = el.getBoundingClientRect();
+	Object.assign(el.style, {
+		position: "fixed",
+		top: "0px",
+		left: `${left}px`,
+		width: `${width}px`,
+	});
+}
+function unpinNavbar() {
+	const el = document.getElementById(NAVBAR);
+	if (!el?.style.position) return;
+	for (const p of ["position", "top", "left", "width"])
+		el.style.removeProperty(p);
+}
+
 const measure = (): Record<string, number | undefined> => ({
 	...Object.fromEntries(
 		[...FRAME, STICKY, NAVBAR_ROW].map((id) => [id, top(id)]),
@@ -281,9 +305,14 @@ export function initRouter(): void {
 		if (motion) {
 			root.dataset.leaving = enter;
 			// An aborted navigation never swaps, so nothing else clears it
-			e.signal.addEventListener("abort", () => delete root.dataset.leaving, {
-				once: true,
-			});
+			e.signal.addEventListener(
+				"abort",
+				() => {
+					delete root.dataset.leaving;
+					unpinNavbar();
+				},
+				{ once: true },
+			);
 		}
 		const leave = motion ? wait(ms("--duration-fast")) : undefined;
 		// HTML, CSS and modules load in parallel; the swap waits for HTML and CSS only
@@ -297,6 +326,8 @@ export function initRouter(): void {
 				css,
 				leave,
 			]);
+			// The view transition captures the old page right after loading
+			pinNavbar();
 		};
 	});
 
@@ -345,6 +376,7 @@ export function initRouter(): void {
 		document.dispatchEvent(new Event("router:scrolled"));
 		if (flip)
 			moveFrame(flip.before, flip.from - scrollY, flip.travel, flip.duration);
+		else unpinNavbar();
 		flip = undefined;
 	});
 }
