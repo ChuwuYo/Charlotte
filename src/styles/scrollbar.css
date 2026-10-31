@@ -27,10 +27,6 @@ html[data-overlay-scrollbar] {
 		&[data-idle] {
 			display: none;
 		}
-		/* The narrow navbar spans the full width; the track starts below it */
-		@media (width < 768px) {
-			inset-block-start: var(--spacing-navbar);
-		}
 	}
 }
 
