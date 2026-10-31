@@ -43,7 +43,7 @@
 		"hast-util-raw": "^9.1.0",
 		"hastscript": "^9.0.1",
 		"katex": "^0.19.1",
-		"markdown-it": "^14.3.3",
+		"markdown-it": "^15.0.0",
 		"mdast-util-to-string": "^4.0.0",
 		"pagefind": "^1.5.2",
 		"photoswipe": "^5.4.4",
