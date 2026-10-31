@@ -36,7 +36,10 @@ function startDrag() {
 	addEventListener("pointercancel", endDrag, { once: true });
 }
 function endDrag() {
+	removeEventListener("pointerup", endDrag);
+	removeEventListener("pointercancel", endDrag);
 	resumeTransitions?.();
+	resumeTransitions = undefined;
 }
 
 function commitHue() {

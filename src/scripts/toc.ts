@@ -54,7 +54,9 @@ class TableOfContents extends HTMLElement {
 			.find((el): el is HTMLAnchorElement => el instanceof HTMLAnchorElement);
 		if (!a) return;
 		const idx = this.indexById.get(decodeURIComponent(a.hash.slice(1)));
-		this.anchorTarget = idx === undefined ? null : this.headings[idx];
+		// A section already in view gets no new intersection to clear the target
+		this.anchorTarget =
+			idx === undefined || this.active[idx] ? null : this.headings[idx];
 	};
 
 	// Sections partly on screen when none intersect yet

@@ -8,6 +8,7 @@ export function initUptime(): void {
 		els[0].dataset.units ?? "{}",
 	);
 	const startTime = new Date(start).getTime();
+	if (!Number.isFinite(startTime)) return;
 	const render = () => {
 		const s = Math.max(0, Math.floor((Date.now() - startTime) / 1000));
 		const parts: [number, string][] = [

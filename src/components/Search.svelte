@@ -73,8 +73,10 @@ async function search(keyword: string, isDesktop: boolean) {
 }
 
 onMount(() => {
+	// Runs on load, load error, or timeout; a later load reruns the pending query
+	let timer: ReturnType<typeof setTimeout> | undefined;
 	const ready = () => {
-		if (initialized) return;
+		clearTimeout(timer);
 		initialized = true;
 		// 补搜就绪前的输入
 		if (keywordDesktop) search(keywordDesktop, true);
@@ -86,7 +88,7 @@ onMount(() => {
 	}
 	document.addEventListener("pagefindready", ready, { once: true });
 	document.addEventListener("pagefindloaderror", ready, { once: true });
-	const timer = setTimeout(ready, 2000);
+	timer = setTimeout(ready, 2000);
 	return () => clearTimeout(timer);
 });
 </script>

@@ -8,6 +8,8 @@ export function initCodeCopy(): void {
 	status.setAttribute("role", "status");
 	status.className = "sr-only";
 	document.body.append(status);
+	// Shared region: only the latest result clears it
+	let clearStatus = 0;
 
 	const showResult = (
 		btn: HTMLElement,
@@ -16,10 +18,11 @@ export function initCodeCopy(): void {
 	) => {
 		btn.classList.add(state);
 		status.textContent = text;
-		setTimeout(() => {
-			btn.classList.remove(state);
+		clearTimeout(clearStatus);
+		clearStatus = window.setTimeout(() => {
 			status.textContent = "";
 		}, RESET_MS);
+		setTimeout(() => btn.classList.remove(state), RESET_MS);
 	};
 
 	document.addEventListener("click", async (e) => {

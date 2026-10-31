@@ -2,7 +2,12 @@
 // jump to within maxDistance of the target, then animate the rest.
 
 let frame = 0;
-const CANCEL_EVENTS = ["wheel", "touchstart", "keydown"] as const;
+const CANCEL_EVENTS = [
+	"wheel",
+	"touchstart",
+	"pointerdown",
+	"keydown",
+] as const;
 
 const reducedMotion = () =>
 	window.matchMedia("(prefers-reduced-motion: reduce)").matches;
