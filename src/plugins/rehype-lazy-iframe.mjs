@@ -20,10 +20,13 @@ function lazy(node) {
 	if (node.tagName !== "iframe") return;
 	const p = node.properties;
 	p.loading ??= "lazy";
-	// Keep the width/height attribute ratio when max-width shrinks it
+	// Keep the width/height attribute ratio when max-width shrinks it; embeds
+	// without a height (e.g. Bilibili) default to a 16:9 player
 	const w = Number(p.width);
 	const h = Number(p.height);
-	if (w > 0 && h > 0) {
-		p.style = `aspect-ratio: ${w} / ${h}; height: auto;${p.style ? ` ${p.style}` : ""}`;
-	}
+	let ratio;
+	if (w > 0 && h > 0) ratio = `aspect-ratio: ${w} / ${h}; height: auto;`;
+	else if (p.height === undefined)
+		ratio = `${p.width === undefined ? "width: 100%; " : ""}aspect-ratio: 16 / 9; height: auto;`;
+	if (ratio) p.style = `${ratio}${p.style ? ` ${p.style}` : ""}`;
 }
