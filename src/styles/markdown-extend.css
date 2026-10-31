@@ -110,8 +110,12 @@ a.card-github:hover .gc-description:before {
   background-color: var(--tw-prose-headings);
 }
 a.card-github:active {
-  scale: 0.98;
   background-color: var(--btn-regular-bg-active);
+}
+@media (prefers-reduced-motion: no-preference) {
+  a.card-github:active {
+    scale: 0.98;
+  }
 }
 a.card-github .gc-titlebar {
   display: flex;

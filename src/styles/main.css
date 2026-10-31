@@ -44,10 +44,10 @@
 
 .custom-md spoiler {
 	@apply bg-(--codeblock-bg) px-1 py-0.5 overflow-hidden rounded-md transition-colors duration-150;
-	&:is(:hover, :focus) {
+	&:is(:hover, :focus-within) {
 		@apply bg-transparent;
 	}
-	&:not(:hover, :focus) {
+	&:not(:hover, :focus-within) {
 		color: var(--codeblock-bg);
 		* {
 			color: var(--codeblock-bg);

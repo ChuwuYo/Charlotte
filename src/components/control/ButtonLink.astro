@@ -6,7 +6,7 @@ interface Props {
 const { badge, url } = Astro.props;
 ---
 <a href={url}>
-    <span
+    <div
         class:list={`
             flex flex-col justify-center
             w-full
@@ -38,5 +38,5 @@ const { badge, url } = Astro.props;
                 </div>
             }
         </div>
-    </span>
+    </div>
 </a>

@@ -97,7 +97,7 @@ html[data-overlay-scrollbar] {
 }
 
 @media print {
-	.page-scrollbar {
+	html[data-overlay-scrollbar] .page-scrollbar {
 		display: none;
 	}
 }
