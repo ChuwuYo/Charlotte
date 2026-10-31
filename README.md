@@ -124,7 +124,7 @@ export const siteConfig: SiteConfig = {
 			max: 63, // 最大宽度；视口超过 max / viewport% 后页面不再变宽
 		},
 	},
-	startDate: "2025-09-29T12:30:00", // 网站运行时间起始日期
+	startDate: "2025-09-29T12:30:00+09:00", // 网站运行时间起始日期；带时区偏移，否则按访客本地时区解析
 	favicon: [
 		// 留空此数组以使用默认网站图标
 		{
