@@ -21,7 +21,7 @@ const subtitleColor = getColorOrDefault(color?.subtitle);
 const authorColor = getColorOrDefault(color?.author);
 ---
 
-{(title || (subtitle && subtitle.length > 0)) && (
+{(title || validSubtitles.length > 0) && (
     <div class="banner-text-container text-center pointer-events-none select-none w-full max-w-page mx-auto px-6 sm:px-8 md:px-10 mb-8 md:mb-0">
         {title && (
             <h1 class="banner-title text-3xl sm:text-4xl md:text-5xl font-bold mb-8 tracking-wider break-words" style={titleColor ? `color: light-dark(${titleColor.light}, ${titleColor.dark})` : undefined}>{title}</h1>
