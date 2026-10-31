@@ -32,11 +32,13 @@ const fixedSettings = siteConfig.themeColor.fixed;
 	}
 	applySettings();
 
-	// Banner offset, a multiple of 4px to keep text crisp. Recomputed only when
-	// the width changes: mobile toolbars change innerHeight while scrolling.
+	// Banner offset, a multiple of 4px to keep text crisp. On touch screens it is
+	// recomputed only when the width changes: mobile toolbars change innerHeight
+	// while scrolling.
+	const touch = matchMedia("(pointer: coarse)");
 	let bannerWidth = 0;
 	function setBannerExtend() {
-		if (innerWidth === bannerWidth) return;
+		if (touch.matches && innerWidth === bannerWidth) return;
 		bannerWidth = innerWidth;
 		const px = Math.floor(innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 		root.style.setProperty("--banner-height-extend", `${px - (px % 4)}px`);
