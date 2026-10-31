@@ -62,5 +62,6 @@ export const en: Translation = {
 	[Key.copyFailed]: "Copy failed",
 
 	[Key.notFoundTitle]: "Page not found",
-	[Key.notFoundDescription]: "The link may be broken, or the page may have moved",
+	[Key.notFoundDescription]:
+		"The link may be broken, or the page may have moved",
 };
