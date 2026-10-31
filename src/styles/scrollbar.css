@@ -1,5 +1,4 @@
-/* Thin native scrollbars in the theme scrollbar color */
-html,
+/* Thin native scrollbars in the theme scrollbar color; the page scrollbar keeps the platform style */
 .katex-display-container,
 .search-panel {
 	scrollbar-width: thin;
