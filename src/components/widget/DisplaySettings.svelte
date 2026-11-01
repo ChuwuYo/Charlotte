@@ -61,8 +61,10 @@ function resetHue() {
             before:absolute before:-left-3 before:top-1.25"
         >
             {i18n(I18nKey.themeColor)}
+            <!-- Faded out at the default hue; inert keeps it out of the tab order -->
             <button aria-label="Reset to Default" class="btn-regular w-7 h-7 rounded-md press"
-                    class:opacity-0={savedHue === defaultHue} class:pointer-events-none={savedHue === defaultHue} onclick={resetHue}>
+                    class:opacity-0={savedHue === defaultHue} class:pointer-events-none={savedHue === defaultHue}
+                    inert={savedHue === defaultHue} onclick={resetHue}>
                 <div class="text-[var(--btn-content)]">
                     <Icon icon={icons["fa6-solid:arrow-rotate-left"]} class="icon-3.5"></Icon>
                 </div>
