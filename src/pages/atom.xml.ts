@@ -5,11 +5,16 @@ import { profileConfig, siteConfig } from "@/config";
 
 export async function GET() {
 	const blog = await getSortedPosts();
+	// feed 的更新时间取最新文章时间，内容不变时保持稳定
+	const latest = Math.max(
+		0,
+		...blog.map((post) => (post.data.updated || post.data.published).getTime()),
+	);
 
 	const response = await getAtomResponse({
 		title: siteConfig.title,
 		id: siteConfig.url,
-		updated: new Date().toISOString(),
+		updated: new Date(latest || Date.now()).toISOString(),
 		link: [
 			{
 				href: absoluteUrl("/atom.xml"),

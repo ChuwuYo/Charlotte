@@ -47,7 +47,12 @@ function commitHue() {
 	savedHue = hue;
 }
 
-function resetHue() {
+let hueSlider: HTMLInputElement | undefined = $state();
+
+function resetHue(e: MouseEvent) {
+	// Keyboard focus moves to the slider, since the button turns inert at the default hue
+	if ((e.currentTarget as HTMLElement).matches(":focus-visible"))
+		hueSlider?.focus();
 	hue = defaultHue;
 	applyHue(hue);
 	commitHue();
@@ -61,8 +66,10 @@ function resetHue() {
             before:absolute before:-left-3 before:top-1.25"
         >
             {i18n(I18nKey.themeColor)}
+            <!-- Faded out at the default hue; inert keeps it out of the tab order -->
             <button aria-label="Reset to Default" class="btn-regular w-7 h-7 rounded-md press"
-                    class:opacity-0={savedHue === defaultHue} class:pointer-events-none={savedHue === defaultHue} onclick={resetHue}>
+                    class:opacity-0={savedHue === defaultHue} class:pointer-events-none={savedHue === defaultHue}
+                    inert={savedHue === defaultHue} onclick={resetHue}>
                 <div class="text-[var(--btn-content)]">
                     <Icon icon={icons["fa6-solid:arrow-rotate-left"]} class="icon-3.5"></Icon>
                 </div>
@@ -78,6 +85,7 @@ function resetHue() {
     <div class="w-full h-6 px-1 bg-[oklch(0.80_0.10_0)] dark:bg-[oklch(0.70_0.10_0)] rounded-sm select-none">
         <input aria-label={i18n(I18nKey.themeColor)} type="range" min="0" max="360" step="5"
                class="w-full"
+               bind:this={hueSlider}
                bind:value={hue}
                oninput={() => applyHue(hue)}
                onchange={commitHue}

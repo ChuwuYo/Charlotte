@@ -10,7 +10,8 @@ interface Props {
 }
 
 const { title, items, class: className } = Astro.props;
-const dropdownId = `dropdown-${title.toLowerCase()}`;
+// id 不能含空白，否则 aria-controls 失效
+const dropdownId = `dropdown-${title.trim().toLowerCase().replace(/\s+/g, "-")}`;
 ---
 
 <div 

@@ -3,6 +3,8 @@
  */
 
 import { definePlugin } from "@expressive-code/core";
+// 引入 frames 插件对 codeBlock.props.title 的类型声明
+import type {} from "astro-expressive-code";
 import type { Element } from "hast";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
@@ -274,14 +276,8 @@ export function pluginCodeToolbar() {
 				const { codeBlock, renderData } = context;
 				const language = codeBlock.language || "";
 
-				// 从 meta 中提取 title
-				let title = "";
-				if (codeBlock.meta) {
-					const titleMatch = codeBlock.meta.match(/title=["']([^"']+)["']/);
-					if (titleMatch) {
-						title = titleMatch[1];
-					}
-				}
+				// 标题由 EC frames 解析：meta 的 title 或首行文件名注释
+				const title = codeBlock.props.title || "";
 
 				// 查找 .frame 元素并在其内部顶部插入工具栏
 				function findAndProcessFrame(node: Element): boolean {

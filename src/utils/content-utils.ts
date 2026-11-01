@@ -70,13 +70,9 @@ async function getRawSortedPosts() {
 }
 
 export async function getSortedPosts(options?: { includePinned?: boolean }) {
-	let sorted = await getRawSortedPosts();
+	const sorted = await getRawSortedPosts();
 
-	// 如果 options.includePinned 未指定或为 true，则应用置顶逻辑
-	if (options?.includePinned !== false) {
-		sorted = applyPinnedOrdering(sorted);
-	}
-
+	// 上一篇/下一篇按发布日期串联，不受置顶影响
 	for (let i = 1; i < sorted.length; i++) {
 		sorted[i].data.nextSlug = sorted[i - 1].id;
 		sorted[i].data.nextTitle = sorted[i - 1].data.title;
@@ -86,6 +82,10 @@ export async function getSortedPosts(options?: { includePinned?: boolean }) {
 		sorted[i].data.prevTitle = sorted[i + 1].data.title;
 	}
 
+	// 如果 options.includePinned 未指定或为 true，则应用置顶逻辑
+	if (options?.includePinned !== false) {
+		return applyPinnedOrdering(sorted);
+	}
 	return sorted;
 }
 export type PostForList = {
@@ -100,13 +100,6 @@ export async function getSortedPostsList(options?: {
 	// 如果 options.includePinned 未指定或为 true，则应用置顶逻辑
 	if (options?.includePinned !== false) {
 		sortedFullPosts = applyPinnedOrdering(sortedFullPosts);
-	} else {
-		// 即使不重新排序，也要设置 isPinned 属性用于显示图标
-		const pinnedSlugs = getPinnedSlugs();
-		const pinnedSlugsSet = new Set(pinnedSlugs);
-		sortedFullPosts.forEach((post) => {
-			post.data.isPinned = pinnedSlugsSet.has(post.id.toLowerCase());
-		});
 	}
 
 	// delete post.body
