@@ -47,7 +47,12 @@ function commitHue() {
 	savedHue = hue;
 }
 
-function resetHue() {
+let hueSlider: HTMLInputElement | undefined = $state();
+
+function resetHue(e: MouseEvent) {
+	// Keyboard focus moves to the slider, since the button turns inert at the default hue
+	if ((e.currentTarget as HTMLElement).matches(":focus-visible"))
+		hueSlider?.focus();
 	hue = defaultHue;
 	applyHue(hue);
 	commitHue();
@@ -80,6 +85,7 @@ function resetHue() {
     <div class="w-full h-6 px-1 bg-[oklch(0.80_0.10_0)] dark:bg-[oklch(0.70_0.10_0)] rounded-sm select-none">
         <input aria-label={i18n(I18nKey.themeColor)} type="range" min="0" max="360" step="5"
                class="w-full"
+               bind:this={hueSlider}
                bind:value={hue}
                oninput={() => applyHue(hue)}
                onchange={commitHue}
