@@ -14,10 +14,23 @@ const reducedMotion = () =>
 
 const easeOutCubic = (t: number) => 1 - (1 - t) ** 3;
 
+// Each instant step fires scrollend, and the Astro router saves the scroll
+// position on every scrollend with history.replaceState (withastro/astro#12725).
+// Chromium on Windows shows the arrow cursor on each history update
+// (crbug.com/572515609), so the hovered cursor flickers. scrollend is held
+// while animating and fired once when it stops, so the final position is saved.
+// Only the document's own scrollend is held; other scrollers (TOC) keep theirs.
+const holdScrollEnd = (e: Event) => {
+	if (e.target === document) e.stopImmediatePropagation();
+};
+
 function stop() {
+	if (!frame) return;
 	cancelAnimationFrame(frame);
 	frame = 0;
 	for (const type of CANCEL_EVENTS) removeEventListener(type, stop);
+	removeEventListener("scrollend", holdScrollEnd, { capture: true });
+	document.dispatchEvent(new Event("scrollend", { bubbles: true }));
 }
 
 export function fastScrollTo(top: number, maxDistance = 1200): void {
@@ -37,6 +50,7 @@ export function fastScrollTo(top: number, maxDistance = 1200): void {
 	// User input cancels the animation
 	for (const type of CANCEL_EVENTS)
 		addEventListener(type, stop, { passive: true });
+	addEventListener("scrollend", holdScrollEnd, { capture: true });
 	const step = (now: number) => {
 		const t = Math.min(1, (now - start) / duration);
 		window.scrollTo({
