@@ -19,7 +19,10 @@ const easeOutCubic = (t: number) => 1 - (1 - t) ** 3;
 // Chromium on Windows shows the arrow cursor on each history update
 // (crbug.com/572515609), so the hovered cursor flickers. scrollend is held
 // while animating and fired once when it stops, so the final position is saved.
-const holdScrollEnd = (e: Event) => e.stopImmediatePropagation();
+// Only the document's own scrollend is held; other scrollers (TOC) keep theirs.
+const holdScrollEnd = (e: Event) => {
+	if (e.target === document) e.stopImmediatePropagation();
+};
 
 function stop() {
 	if (!frame) return;
