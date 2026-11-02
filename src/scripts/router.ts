@@ -368,13 +368,6 @@ export function initRouter(): void {
 	});
 
 	document.addEventListener("astro:after-swap", () => {
-		// html scroll-behavior is smooth for anchors; restores must be instant
-		if (traverse)
-			window.scrollTo({
-				left: target.scrollX,
-				top: target.scrollY,
-				behavior: "instant",
-			});
 		// Scroll-driven states settle before the frame is measured
 		document.dispatchEvent(new Event("router:scrolled"));
 		if (flip)
