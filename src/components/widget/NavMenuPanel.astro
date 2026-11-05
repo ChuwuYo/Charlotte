@@ -10,11 +10,12 @@ interface Props {
 const links = Astro.props.links;
 ---
 <div id="nav-menu-panel" class:list={["float-panel float-panel-closed fixed right-4 px-2 py-2"]}>
-    {links.map((link) => {
+    {links.map((link, index) => {
         const hasChildren = link.children && link.children.length > 0;
         
         if (hasChildren) {
-            const contentId = `nav-menu-${link.name.trim().toLowerCase().replace(/\s+/g, "-")}`;
+            // Index, not the configurable name, so it cannot collide with another id
+            const contentId = `nav-menu-group-${index}`;
             return (
                 <div data-mobile-dropdown>
                     <button 
