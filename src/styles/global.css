@@ -77,6 +77,7 @@
 	--text-input: 16px;
 	/* Desktop navbar search text, sized for the 44px bar */
 	--text-search: 0.9375rem; /* 15px */
+	--text-search--line-height: calc(20 / 14); /* same ratio as text-sm */
 
 	/* Layout */
 	/* Defaults; BaseLayout sets them on <html> from siteConfig.layout.pageWidth / sidebarWidth */
