@@ -18,11 +18,15 @@ const PANELS = [
 	},
 ];
 
-// Close a panel and keep its toggle's aria-expanded in sync
+// Close a panel and keep its toggle's aria-expanded in sync; an open panel
+// fires "panel:close" so its contents can reset with it
 function close({ id, toggle }: (typeof PANELS)[number]) {
-	document.getElementById(id)?.classList.add("float-panel-closed");
+	const panel = document.getElementById(id);
 	if (toggle)
 		document.getElementById(toggle)?.setAttribute("aria-expanded", "false");
+	if (!panel || panel.classList.contains("float-panel-closed")) return;
+	panel.classList.add("float-panel-closed");
+	panel.dispatchEvent(new Event("panel:close"));
 }
 
 export function closePanels(): void {
@@ -30,14 +34,14 @@ export function closePanels(): void {
 }
 
 export function initPanels(): void {
-	for (const { id, toggle } of PANELS) {
-		if (!toggle) continue;
-		const btn = document.getElementById(toggle);
+	for (const panel of PANELS) {
+		if (!panel.toggle) continue;
+		const btn = document.getElementById(panel.toggle);
 		btn?.addEventListener("click", () => {
-			const closed = document
-				.getElementById(id)
-				?.classList.toggle("float-panel-closed");
-			btn.setAttribute("aria-expanded", String(!closed));
+			const el = document.getElementById(panel.id);
+			if (!el?.classList.contains("float-panel-closed")) return close(panel);
+			el.classList.remove("float-panel-closed");
+			btn.setAttribute("aria-expanded", "true");
 		});
 	}
 
