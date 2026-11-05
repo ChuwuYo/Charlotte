@@ -1,15 +1,14 @@
 // ClientRouter navigation: the frame stays in place, only the content regions are swapped
 
 import { swapFunctions } from "astro:transitions/client";
-import { routeAssets, sameOrigin } from "./asset-manifest";
 import {
+	holdNavbar,
 	NAVBAR,
 	NAVBAR_ROW,
 	navbarHidden,
 	navbarTop,
-	pinNavbar,
-	unpinNavbar,
 } from "@utils/navbar-utils";
+import { routeAssets, sameOrigin } from "./asset-manifest";
 import { closePanels } from "./panels";
 
 // Swapped content regions, including the side TOC scroller and the floating TOC
@@ -60,6 +59,8 @@ const reducedMotion = () =>
 	matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 let frameTimer = 0;
+// Held from the old page capture until the swap and the frame move finish
+let releaseNavbar = () => {};
 
 // Banner transitions run while the attribute is set (copied onto the new root)
 function markFrameMove(duration: number) {
@@ -67,7 +68,7 @@ function markFrameMove(duration: number) {
 	clearTimeout(frameTimer);
 	frameTimer = window.setTimeout(() => {
 		delete root.dataset.frameMove;
-		unpinNavbar();
+		releaseNavbar();
 	}, duration);
 }
 
@@ -286,7 +287,7 @@ export function initRouter(): void {
 				"abort",
 				() => {
 					delete root.dataset.leaving;
-					unpinNavbar();
+					releaseNavbar();
 				},
 				{ once: true },
 			);
@@ -304,7 +305,8 @@ export function initRouter(): void {
 				leave,
 			]);
 			// The view transition captures the old page right after loading
-			pinNavbar();
+			releaseNavbar();
+			releaseNavbar = holdNavbar();
 		};
 	});
 
@@ -346,7 +348,7 @@ export function initRouter(): void {
 		document.dispatchEvent(new Event("router:scrolled"));
 		if (flip)
 			moveFrame(flip.before, flip.from - scrollY, flip.travel, flip.duration);
-		else unpinNavbar();
+		else releaseNavbar();
 		flip = undefined;
 	});
 }

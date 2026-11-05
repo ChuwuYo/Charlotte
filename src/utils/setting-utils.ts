@@ -1,6 +1,6 @@
 import { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants.ts";
+import { holdNavbar } from "@utils/navbar-utils";
 import { siteConfig } from "@/config";
-import { pinNavbar, unpinNavbar } from "@utils/navbar-utils";
 import type { LIGHT_DARK_MODE } from "@/types/config";
 
 const root = () => document.documentElement;
@@ -86,21 +86,20 @@ export function setTheme(theme: LIGHT_DARK_MODE): void {
 	// The snapshot overlay hit-tests as <html>; keep the hovered element's cursor
 	const hovered = [...document.querySelectorAll(":hover")].pop();
 	if (hovered) r.style.cursor = getComputedStyle(hovered).cursor;
-	// Keep a stuck navbar where it is in the snapshots (see pinNavbar)
-	pinNavbar();
+	// Keep a stuck navbar in place in the snapshots (see holdNavbar)
+	const releaseNavbar = holdNavbar();
 	document
 		// Latest stored theme: a switch made before this callback runs wins
 		.startViewTransition(() => {
 			r.classList.toggle("dark", isDark(getStoredTheme()));
 		})
 		.finished.finally(() => {
+			releaseNavbar();
 			if (id !== fadeId) return; // a newer switch owns the flags
 			pendingDark = undefined;
 			delete r.dataset.noTransition;
 			delete r.dataset.themeFade;
 			r.style.removeProperty("cursor");
-			// A frame move in progress unpins when it ends
-			if (!r.hasAttribute("data-frame-move")) unpinNavbar();
 		});
 }
 

@@ -16,13 +16,16 @@ export function navbarTop(): number | undefined {
 }
 
 // Android Chrome with its toolbar shown can draw a stuck sticky navbar off
-// screen in a view transition snapshot; callers fix it in place until their
-// transition finishes
-export function pinNavbar(): void {
+// screen in a view transition snapshot, so it is fixed in place meanwhile.
+// Router navigations and theme fades can overlap; each holds the pin and
+// releases it once, and the navbar unpins when the last hold is released
+let holds = 0;
+
+function pin() {
 	const el = document.getElementById(NAVBAR);
 	const row = document.getElementById(NAVBAR_ROW)?.getBoundingClientRect();
-	if (!el || !row || navbarHidden() || row.top >= 0 || navbarTop() !== 0)
-		return;
+	if (!el || el.style.position || !row || navbarHidden()) return;
+	if (row.top >= 0 || navbarTop() !== 0) return;
 	const { left, width } = el.getBoundingClientRect();
 	Object.assign(el.style, {
 		position: "fixed",
@@ -32,9 +35,21 @@ export function pinNavbar(): void {
 	});
 }
 
-export function unpinNavbar(): void {
+function unpin() {
 	const el = document.getElementById(NAVBAR);
 	if (!el?.style.position) return;
 	for (const p of ["position", "top", "left", "width"])
 		el.style.removeProperty(p);
+}
+
+// Pins the navbar if stuck; the returned release is safe to call repeatedly
+export function holdNavbar(): () => void {
+	holds++;
+	pin();
+	let held = true;
+	return () => {
+		if (!held) return;
+		held = false;
+		if (--holds === 0) unpin();
+	};
 }
