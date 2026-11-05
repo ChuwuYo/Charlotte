@@ -29,11 +29,11 @@ const className = Astro.props.class;
 
 <div class:list={["flex flex-wrap text-50 items-center gap-4 gap-x-4 gap-y-2", className]}>
 	{isPinned && (
-		<div class="flex items-center -mr-1.5">
-			<div class="meta-icon">
+		<div class="flex items-center">
+			<div class="meta-icon meta-icon-accent">
 				<Icon name="material-symbols:keep-outline-rounded" class="icon-5"></Icon>
 			</div>
-			<span class="sr-only">{i18n(I18nKey.pinned)}</span>
+			<span class="text-meta font-medium text-(--primary-text)">{i18n(I18nKey.pinned)}</span>
 		</div>
 	)}
     <!-- publish date -->

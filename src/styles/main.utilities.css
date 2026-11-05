@@ -152,8 +152,21 @@
 }
 
 @utility meta-icon {
-	@apply w-8 h-8 rounded-md flex items-center justify-center bg-(--btn-regular-bg)
-		text-(--btn-content) mr-2;
+	@apply w-8 h-8 rounded-md flex items-center justify-center mr-2;
+	background-color: var(--meta-icon-bg, var(--btn-regular-bg));
+	color: var(--meta-icon-fg, var(--btn-content));
+}
+
+/* Filled meta-icon; sets only the variables so it never fights meta-icon's own order */
+@utility meta-icon-accent {
+	--meta-icon-bg: var(--primary);
+	--meta-icon-fg: var(--deep-text);
+}
+
+/* Faint primary ring that marks a pinned post card */
+@utility card-pinned {
+	outline: 1px solid var(--pinned-ring);
+	outline-offset: -1px;
 }
 
 @utility navbar-with-opacity {

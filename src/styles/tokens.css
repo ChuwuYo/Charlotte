@@ -24,6 +24,7 @@
   --enter-btn-bg-hover: var(--btn-regular-bg-hover);
   --enter-btn-bg-active: var(--btn-regular-bg-active);
   --deep-text: oklch(0.25 0.02 var(--hue));
+  --pinned-ring: color-mix(in oklch, var(--primary) 40%, transparent);
   /* Text ramp (text-90/75/50/30); 50 keeps 4.5:1, 30 is decorative only */
   --fg-strong: oklch(0.24 0.015 var(--hue));
   --fg-body: oklch(0.38 0.015 var(--hue));
