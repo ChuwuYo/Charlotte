@@ -57,8 +57,10 @@ const dropdownId = `dropdown-${title.trim().toLowerCase().replace(/\s+/g, "-")}`
 </div>
 
 <style>
+    /* Pinned open: primary text, no background, so it never reads as a second
+       hover; the chevron and panel already show it is open */
     [data-dropdown-container].is-pinned [data-dropdown-trigger] {
-        background-color: var(--btn-plain-bg-hover);
+        color: var(--primary-text);
     }
     
     [data-dropdown-container].is-open [data-dropdown-trigger] svg {
