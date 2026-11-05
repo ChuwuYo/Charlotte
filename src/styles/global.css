@@ -75,6 +75,8 @@
 	--text-widget-title--line-height: 1.4;
 	/* Touch-screen inputs: 16px stops iOS zooming on focus; fixed, not from --spacing */
 	--text-input: 16px;
+	/* Desktop navbar search text, sized for the 44px bar */
+	--text-search: 0.9375rem; /* 15px */
 
 	/* Layout */
 	/* Defaults; BaseLayout sets them on <html> from siteConfig.layout.pageWidth / sidebarWidth */
