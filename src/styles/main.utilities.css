@@ -163,10 +163,10 @@
 	--meta-icon-fg: var(--deep-text);
 }
 
-/* Faint primary ring that marks a pinned post card */
+/* Marks a pinned post card with a corner tint and a soft inner glow; no hairline, which aliases at fractional DPR */
 @utility card-pinned {
-	outline: 1px solid var(--pinned-ring);
-	outline-offset: -1px;
+	background-image: linear-gradient(135deg, var(--pinned-tint), transparent 60%);
+	box-shadow: inset 0 0 16px var(--pinned-glow);
 }
 
 @utility navbar-with-opacity {
