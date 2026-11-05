@@ -100,7 +100,7 @@ onMount(() => {
 ">
     <Icon icon={icons["material-symbols:search"]} class="absolute icon-5 pointer-events-none ml-3 my-auto text-30"></Icon>
     <input name="search" aria-label={i18n(I18nKey.search)} placeholder={i18n(I18nKey.search)} bind:value={keywordDesktop} oninput={(e) => search(e.currentTarget.value, true)} onfocus={() => search(keywordDesktop, true)}
-           class="transition-[width] pl-10 text-sm bg-transparent outline-0
+           class="transition-[width] pl-10 text-ui bg-transparent outline-0
           h-full w-40 active:w-60 focus:w-60 text-75 placeholder:text-50"
      >
 </div>
