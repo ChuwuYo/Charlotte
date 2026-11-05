@@ -112,8 +112,15 @@ export function initDropdowns(): void {
 		...document.querySelectorAll<HTMLElement>("[data-mobile-dropdown]"),
 	];
 	for (const box of mobile) initMobileDropdown(box, mobile);
+	const collapse = () => {
+		for (const box of mobile) setMobile(box, false);
+	};
 	document.addEventListener("click", (e) => {
-		if (!(e.target as Element).closest?.("[data-mobile-dropdown]"))
-			for (const box of mobile) setMobile(box, false);
+		if (!(e.target as Element).closest?.("[data-mobile-dropdown]")) collapse();
 	});
+	// Every way the menu panel closes (navigation, Escape, outside tap) resets
+	// the accordions, so it always reopens collapsed
+	document
+		.getElementById("nav-menu-panel")
+		?.addEventListener("panel:close", collapse);
 }
