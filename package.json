@@ -14,7 +14,7 @@
 		"new-post": "node scripts/new-post.js",
 		"format": "biome format --write ./src",
 		"lint": "biome check --write ./src",
-		"preinstall": "npx only-allow pnpm",
+		"preinstall": "npx --yes only-allow@1.2.2 pnpm",
 		"clean": "rimraf .astro dist node_modules/.vite"
 	},
 	"dependencies": {
