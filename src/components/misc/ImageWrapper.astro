@@ -1,7 +1,7 @@
 ---
 import path from "node:path";
 
-interface Props {
+interface BaseProps {
 	id?: string;
 	src: string;
 	class?: string;
@@ -10,10 +10,12 @@ interface Props {
 	basePath?: string;
 	loading?: "lazy" | "eager";
 	fetchpriority?: "high" | "low" | "auto";
-	// Local images only: widths are generated at build, the browser picks one by sizes and DPR
-	widths?: number[];
-	sizes?: string;
 }
+
+// Local images only: widths are generated at build and the browser picks one by sizes and DPR.
+// Required together, since srcset without sizes falls back to 100vw.
+type Props = BaseProps &
+	({ widths: number[]; sizes: string } | { widths?: never; sizes?: never });
 
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
