@@ -12,7 +12,9 @@ import { Icon } from "astro-icon/components";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
 import { licenseConfig, profileConfig, siteConfig } from "../../config";
+import { COVER_WIDTHS } from "../../constants/constants";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
+import { POST_COVER_SIZES } from "../../utils/layout-utils";
 
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
@@ -96,7 +98,7 @@ const jsonLd = {
             <!-- always show cover as long as it has one -->
 
             {entry.data.image &&
-                <ImageWrapper id="post-cover" src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} class="mb-8 rounded-xl onload-animation" loading="eager" fetchpriority="high"/>
+                <ImageWrapper id="post-cover" src={entry.data.image} widths={COVER_WIDTHS} sizes={POST_COVER_SIZES} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} class="mb-8 rounded-xl onload-animation" loading="eager" fetchpriority="high"/>
             }
 
 

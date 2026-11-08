@@ -1,7 +1,7 @@
 ---
 import path from "node:path";
 
-interface Props {
+interface BaseProps {
 	id?: string;
 	src: string;
 	class?: string;
@@ -11,6 +11,11 @@ interface Props {
 	loading?: "lazy" | "eager";
 	fetchpriority?: "high" | "low" | "auto";
 }
+
+// Local images only: widths are generated at build and the browser picks one by sizes and DPR.
+// Required together, since srcset without sizes falls back to 100vw.
+type Props = BaseProps &
+	({ widths: number[]; sizes: string } | { widths?: never; sizes?: never });
 
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
@@ -24,6 +29,8 @@ const {
 	basePath = "/",
 	loading = "lazy",
 	fetchpriority = "auto",
+	widths,
+	sizes,
 } = Astro.props;
 const className = Astro.props.class;
 
@@ -59,7 +66,12 @@ if (isLocal) {
 }
 
 const imageClass = "w-full h-full object-cover image-content opacity-0";
-const imageStyle = `object-position: ${position}`;
+// width/height only give the UA an `auto` ratio, which switches to the loaded file's ratio,
+// and srcset candidates have rounded heights. Lock the source ratio instead; slots that set
+// both width and height ignore it.
+const imageStyle = img
+	? `object-position: ${position}; aspect-ratio: ${img.width} / ${img.height}`
+	: `object-position: ${position}`;
 // Fade the bar out, then stop its infinite animation once it is invisible
 const hideBar =
 	"const bar = this.parentElement.querySelector('.loading-bar'); bar.style.opacity='0'; setTimeout(() => { bar.firstElementChild.style.animation='none'; }, 1000);";
@@ -73,6 +85,6 @@ const onerrorScript = `${hideBar} this.parentElement.querySelector('.error-icon'
     <div class="error-icon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl text-30 z-10 opacity-0 transition-opacity duration-500 pointer-events-none">
         <Icon name="material-symbols:image-not-supported-outline-rounded" />
     </div>
-    {isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority} onload={onloadScript} onerror={onerrorScript}/>}
+    {isLocal && img && <Image src={img} alt={alt || ""} widths={widths} sizes={sizes} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority} onload={onloadScript} onerror={onerrorScript}/>}
     {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading={loading} fetchpriority={fetchpriority} onload={onloadScript} onerror={onerrorScript}/>}
 </div>
