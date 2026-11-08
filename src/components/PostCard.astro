@@ -48,9 +48,11 @@ const hasCover = image !== undefined && image !== null && image !== "";
 const coverWidth = "30%";
 
 const { remarkPluginFrontmatter } = await render(entry);
-// Cover slot: full card width below md, side thumbnail (max 238px wide, about 165px tall) from md.
-// object-cover fills the slot's height, so the md value covers images up to about 2.4:1.
-const coverSizes = "(min-width: 768px) 400px, 100vw";
+// Cover slot: below md the card width minus margins, with height capped so object-cover only crops vertically.
+// From md a side thumbnail (at most 238px wide) as tall as the card, 143px with a one-line description, so
+// object-cover renders a 16:9 cover about 254px wide; 256px picks the smallest sufficient file at 1x to 3x.
+// Wider covers or taller cards may get a slightly smaller file.
+const coverSizes = "(min-width: 768px) 256px, calc(100vw - 36px)";
 ---
 <div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", { "md:card-pinned": isPinned }, className]} style={style}>
     <div class:list={["w-full pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", { "md:w-[calc(100%-var(--spacing)*16)]": !hasCover, "md:w-[calc(100%-var(--coverWidth)-var(--spacing)*3)]": hasCover }]}>
