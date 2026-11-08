@@ -64,7 +64,12 @@ if (isLocal) {
 }
 
 const imageClass = "w-full h-full object-cover image-content opacity-0";
-const imageStyle = `object-position: ${position}`;
+// width/height only give the UA an `auto` ratio, which switches to the loaded file's ratio,
+// and srcset candidates have rounded heights. Lock the source ratio instead; slots that set
+// both width and height ignore it.
+const imageStyle = img
+	? `object-position: ${position}; aspect-ratio: ${img.width} / ${img.height}`
+	: `object-position: ${position}`;
 // Fade the bar out, then stop its infinite animation once it is invisible
 const hideBar =
 	"const bar = this.parentElement.querySelector('.loading-bar'); bar.style.opacity='0'; setTimeout(() => { bar.firstElementChild.style.animation='none'; }, 1000);";
