@@ -12,6 +12,7 @@ import { Icon } from "astro-icon/components";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
 import { licenseConfig, profileConfig, siteConfig } from "../../config";
+import { COVER_WIDTHS } from "../../constants/constants";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
 
 export async function getStaticPaths() {
@@ -42,6 +43,9 @@ const jsonLd = {
 		: siteConfig.lang.replace("_", "-"),
 	// TODO include cover image here
 };
+// Largest CSS width of the cover: about half the viewport from lg, capped at 738px by the page width.
+// Values include headroom for wide covers cropped by height (object-cover).
+const coverSizes = "(min-width: 1440px) 840px, (min-width: 1024px) 58vw, 100vw";
 ---
 <BaseLayout title={entry.data.title} description={entry.data.description} lang={entry.data.lang} setOGTypeArticle={true} headings={headings}>
     <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
@@ -96,7 +100,7 @@ const jsonLd = {
             <!-- always show cover as long as it has one -->
 
             {entry.data.image &&
-                <ImageWrapper id="post-cover" src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} class="mb-8 rounded-xl onload-animation" loading="eager" fetchpriority="high"/>
+                <ImageWrapper id="post-cover" src={entry.data.image} widths={COVER_WIDTHS} sizes={coverSizes} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} class="mb-8 rounded-xl onload-animation" loading="eager" fetchpriority="high"/>
             }
 
 

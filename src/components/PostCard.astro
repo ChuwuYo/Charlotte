@@ -3,6 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import path from "node:path";
 import { Icon } from "astro-icon/components";
+import { COVER_WIDTHS } from "../constants/constants";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { getDir } from "../utils/url-utils";
@@ -47,6 +48,9 @@ const hasCover = image !== undefined && image !== null && image !== "";
 const coverWidth = "30%";
 
 const { remarkPluginFrontmatter } = await render(entry);
+// Cover slot: full card width below md, side thumbnail (max 238px wide, about 165px tall) from md.
+// object-cover fills the slot's height, so the md value covers images up to about 2.4:1.
+const coverSizes = "(min-width: 768px) 400px, 100vw";
 ---
 <div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", { "md:card-pinned": isPinned }, className]} style={style}>
     <div class:list={["w-full pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", { "md:w-[calc(100%-var(--spacing)*16)]": !hasCover, "md:w-[calc(100%-var(--coverWidth)-var(--spacing)*3)]": hasCover }]}>
@@ -105,7 +109,7 @@ const { remarkPluginFrontmatter } = await render(entry);
                   class="transition-ui opacity-0 group-hover:opacity-100 motion-safe:scale-50 motion-safe:group-hover:scale-100 text-white icon-12">
             </Icon>
         </div>
-        <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} alt="" loading={eager ? "eager" : "lazy"} fetchpriority={eager ? "high" : "auto"}
+        <ImageWrapper src={image} widths={COVER_WIDTHS} sizes={coverSizes} basePath={path.join("content/posts/", getDir(entry.filePath?.replace(/^(\.\/)?src\/content\/posts\//, "") ?? entry.id))} alt="" loading={eager ? "eager" : "lazy"} fetchpriority={eager ? "high" : "auto"}
                   class="w-full h-full post-card-cover">
         </ImageWrapper>
     </a>}
