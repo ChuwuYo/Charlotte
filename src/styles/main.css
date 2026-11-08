@@ -13,6 +13,11 @@
 	cursor: zoom-in;
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+	/* Keep the zoomable image on its own layer so it doesn't snap by a pixel when the zoom ends */
+	.post-card-cover img,
+	#post-cover img {
+		will-change: scale;
+	}
 	.post-card-cover:hover img,
 	#post-cover:hover img {
 		scale: 1.05;
