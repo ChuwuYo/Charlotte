@@ -87,12 +87,15 @@ export function initPageScrollbar(): void {
 	document.addEventListener("animationend", (e) => {
 		if (!bar.contains(e.target as Node)) schedule();
 	});
-	// Frame moves are script animations (router FLIP), started before this listener runs
+	// Frame moves are script animations (router FLIP) started by another
+	// after-swap listener; read them once every listener has run
 	document.addEventListener("astro:after-swap", () => {
 		schedule();
-		for (const id of FRAME)
-			for (const anim of document.getElementById(id)?.getAnimations() ?? [])
-				anim.finished.then(schedule, schedule);
+		queueMicrotask(() => {
+			for (const id of FRAME)
+				for (const anim of document.getElementById(id)?.getAnimations() ?? [])
+					anim.finished.then(schedule, schedule);
+		});
 	});
 
 	// Drag the thumb; a click on the track pages toward the pointer like a native bar
