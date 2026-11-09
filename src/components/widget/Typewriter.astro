@@ -64,6 +64,11 @@ const {
 </style>
 
 <script>
+	// Split by grapheme so flags and ZWJ emoji appear whole; code points without Intl.Segmenter
+	const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter() : undefined;
+	const graphemes = (text: string): string[] =>
+		segmenter ? Array.from(segmenter.segment(text), (s) => s.segment) : Array.from(text);
+
 	class TypewriterEffect {
 		// 时间配置常量（毫秒）
 		private static readonly COMPLETE_EXTRA_DELAY = 2000; // 打字完成后额外停留时间
@@ -205,9 +210,8 @@ const {
 			// 通过洗牌索引获取实际的文本索引
 			const actualIndex = this.shuffledIndices[currentPosition];
 			const fullText = this.words[actualIndex];
-			// 按码点拆分，避免 emoji 等增补平面字符被截成半个代理对
-			const chars = Array.from(fullText);
-			const typed = Array.from(this.currentText).length;
+			const chars = graphemes(fullText);
+			const typed = graphemes(this.currentText).length;
 
 			// 状态 1: 打字中
 			if (!this.isDeleting && typed < chars.length) {
