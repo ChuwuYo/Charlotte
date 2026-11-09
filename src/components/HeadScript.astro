@@ -24,9 +24,9 @@ const fixedSettings = siteConfig.themeColor.fixed;
 			theme === "dark" ||
 			(theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
 		root.classList.toggle("dark", dark);
-		const hue = Number.parseInt(localStorage.getItem("hue") ?? "", 10);
-		if (!fixedSettings && !Number.isNaN(hue))
-			root.style.setProperty("--hue", String(hue));
+		const hue = localStorage.getItem("hue") ?? "";
+		if (!fixedSettings && /^\d{1,3}$/.test(hue) && Number(hue) <= 360)
+			root.style.setProperty("--hue", hue);
 		root.style.setProperty(
 			"--card-bg",
 			!fixedSettings && localStorage.getItem("cardBgType") === "1"

@@ -33,8 +33,11 @@ export function getDefaultHue(): number {
 
 // Parsed the same way in HeadScript
 export function getHue(): number {
-	const stored = Number.parseInt(localStorage.getItem("hue") ?? "", 10);
-	return Number.isNaN(stored) ? getDefaultHue() : stored;
+	// Whole degrees 0–360, as the slider stores them
+	const stored = localStorage.getItem("hue") ?? "";
+	return /^\d{1,3}$/.test(stored) && Number(stored) <= 360
+		? Number(stored)
+		: getDefaultHue();
 }
 
 let pendingHue: number | null = null;
