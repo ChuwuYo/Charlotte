@@ -80,6 +80,7 @@ const {
 		private wordIndex: number = 0; // 当前在洗牌数组中的位置
 		private isDeleting: boolean = false;
 		private waiting = false;
+		private offscreen = false;
 
 		constructor(element: HTMLElement) {
 			this.element = element;
@@ -105,6 +106,11 @@ const {
 				this.shuffleWords();
 				document.addEventListener('astro:after-swap', () => this.resume());
 				document.addEventListener('visibilitychange', () => this.resume());
+				// Scrolled out of view pauses like a background tab
+				new IntersectionObserver(([entry]) => {
+					this.offscreen = !entry.isIntersecting;
+					this.resume();
+				}).observe(element.parentElement ?? element);
 				
 				// 如果有启动延迟，先等待
 				if (this.startDelay > 0) {
@@ -174,10 +180,11 @@ const {
 			this.element.dispatchEvent(event);
 		}
 
-		// Banner text is hidden off the home page; background tabs are skipped too
+		// Banner text is hidden off the home page; background tabs and an
+		// off-screen banner are skipped too
 		private hidden(): boolean {
 			const root = document.documentElement;
-			return document.hidden || (root.classList.contains('enable-banner') && !root.classList.contains('is-home'));
+			return document.hidden || this.offscreen || (root.classList.contains('enable-banner') && !root.classList.contains('is-home'));
 		}
 
 		// Continue a loop stopped while hidden
