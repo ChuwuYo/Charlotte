@@ -24,20 +24,40 @@ const holdScrollEnd = (e: Event) => {
 	if (e.target === document) e.stopImmediatePropagation();
 };
 
+const releaseScrollEnd = () =>
+	removeEventListener("scrollend", holdScrollEnd, { capture: true });
+
 // Ends the animation; settle fires the held scrollend for the current entry
 function end(settle: boolean) {
-	if (!frame) return;
+	if (!frame) return false;
 	cancelAnimationFrame(frame);
 	frame = 0;
 	for (const type of CANCEL_EVENTS) removeEventListener(type, stop);
-	removeEventListener("scrollend", holdScrollEnd, { capture: true });
 	document.removeEventListener("astro:before-preparation", abandon);
-	if (settle) document.dispatchEvent(new Event("scrollend", { bubbles: true }));
+	if (!settle) return true;
+	releaseScrollEnd();
+	document.dispatchEvent(new Event("scrollend", { bubbles: true }));
+	return true;
 }
-const stop = () => end(true);
+const stop = () => {
+	end(true);
+};
 // A navigation ends it silently: on history traversal the current entry is
-// already the destination, whose restored position must not be overwritten
-const abandon = () => end(false);
+// already the destination, whose restored position must not be overwritten.
+// scrollend from the last steps may still be queued, so it stays held until
+// the new page is in (or the navigation is aborted)
+function abandon(e: Event) {
+	if (!end(false)) return;
+	const { signal } = e as Event & { signal: AbortSignal };
+	const release = () => {
+		// A new animation started meanwhile holds it for itself
+		if (!frame) releaseScrollEnd();
+		document.removeEventListener("astro:after-swap", release);
+		signal.removeEventListener("abort", release);
+	};
+	document.addEventListener("astro:after-swap", release);
+	signal.addEventListener("abort", release);
+}
 
 export function fastScrollTo(top: number, maxDistance = 1200): void {
 	stop();
