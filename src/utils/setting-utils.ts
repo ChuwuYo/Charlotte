@@ -131,6 +131,10 @@ export function getCardBgType(): number {
 
 export function setCardBgType(type: number): void {
 	localStorage.setItem("cardBgType", String(type));
+	applyCardBgType(type);
+}
+
+export function applyCardBgType(type: number): void {
 	withoutTransitions(() =>
 		root().style.setProperty(
 			"--card-bg",
@@ -139,4 +143,14 @@ export function setCardBgType(type: number): void {
 				: "var(--card-bg-original)",
 		),
 	);
+}
+
+// Settings saved in another tab; key is null when storage was cleared
+export function onStoredSetting(key: string, apply: () => void): () => void {
+	const listener = (e: StorageEvent) => {
+		if (e.storageArea === localStorage && (e.key === key || e.key === null))
+			apply();
+	};
+	addEventListener("storage", listener);
+	return () => removeEventListener("storage", listener);
 }
