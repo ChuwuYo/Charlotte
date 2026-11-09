@@ -5,10 +5,19 @@ import type { LIGHT_DARK_MODE } from "@/types/config";
 
 const root = () => document.documentElement;
 
-// Turn transitions off; returns a function that turns them back on
+// Turn transitions off; returns a function that turns them back on. Pauses
+// can overlap (drag, theme fade, system scheme change); each resumes once
+// and transitions return when the last one does
+let pauses = 0;
 export function pauseTransitions(): () => void {
+	pauses++;
 	root().dataset.noTransition = "";
-	return () => delete root().dataset.noTransition;
+	let paused = true;
+	return () => {
+		if (!paused) return;
+		paused = false;
+		if (--pauses === 0) delete root().dataset.noTransition;
+	};
 }
 
 // Run fn with transitions off for two frames, so color swaps don't animate
@@ -81,7 +90,7 @@ export function setTheme(theme: LIGHT_DARK_MODE): void {
 
 	const id = ++fadeId;
 	pendingDark = dark;
-	r.dataset.noTransition = "";
+	const resumeTransitions = pauseTransitions();
 	r.dataset.themeFade = "";
 	// The snapshot overlay hit-tests as <html>; keep the hovered element's cursor
 	const hovered = [...document.querySelectorAll(":hover")].pop();
@@ -95,9 +104,9 @@ export function setTheme(theme: LIGHT_DARK_MODE): void {
 		})
 		.finished.finally(() => {
 			releaseNavbar();
+			resumeTransitions();
 			if (id !== fadeId) return; // a newer switch owns the flags
 			pendingDark = undefined;
-			delete r.dataset.noTransition;
 			delete r.dataset.themeFade;
 			r.style.removeProperty("cursor");
 		});
