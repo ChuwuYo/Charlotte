@@ -12,6 +12,7 @@ class TableOfContents extends HTMLElement {
 	// Ends the wait for anchorTarget when the scroll stops or is taken over
 	private anchorWait: AbortController | null = null;
 	private frame = 0;
+	private bound = false;
 	private observer = new IntersectionObserver((records) => {
 		for (const r of records) {
 			const idx = this.sections.indexOf(r.target as HTMLElement);
@@ -29,7 +30,19 @@ class TableOfContents extends HTMLElement {
 		this.render();
 	});
 
+	// Bound once the current DOM update finishes: a swap may insert the TOC
+	// before the content whose headings it lists
 	connectedCallback() {
+		queueMicrotask(() => {
+			if (this.isConnected && !this.bound) this.bind();
+		});
+	}
+
+	private bind() {
+		this.bound = true;
+		this.sections = [];
+		this.headings = [];
+		this.indexById.clear();
 		this.tocEl =
 			this.closest<HTMLElement>(".collapsible-toc-inner") ??
 			document.getElementById("toc-inner-wrapper");
@@ -53,6 +66,7 @@ class TableOfContents extends HTMLElement {
 	}
 
 	disconnectedCallback() {
+		this.bound = false;
 		this.setAnchor(null);
 		this.observer.disconnect();
 		this.resize.disconnect();
