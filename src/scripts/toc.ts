@@ -22,6 +22,12 @@ class TableOfContents extends HTMLElement {
 		if (!this.active.includes(true)) this.fallback();
 		this.update();
 	});
+	// Repaints as soon as the TOC gets a box again (panel opened, breakpoint
+	// crossed), before that frame is drawn
+	private resize = new ResizeObserver(() => {
+		cancelAnimationFrame(this.frame);
+		this.render();
+	});
 
 	connectedCallback() {
 		this.tocEl =
@@ -43,11 +49,13 @@ class TableOfContents extends HTMLElement {
 		});
 		this.active = this.entries.map(() => false);
 		this.tocEl?.addEventListener("click", this.onClick, { capture: true });
+		if (this.tocEl) this.resize.observe(this.tocEl);
 	}
 
 	disconnectedCallback() {
 		this.setAnchor(null);
 		this.observer.disconnect();
+		this.resize.disconnect();
 		this.tocEl?.removeEventListener("click", this.onClick, { capture: true });
 	}
 
@@ -102,10 +110,14 @@ class TableOfContents extends HTMLElement {
 
 	update = () => {
 		cancelAnimationFrame(this.frame);
-		this.frame = requestAnimationFrame(() => {
-			this.paint();
-			this.scrollToActive();
-		});
+		this.frame = requestAnimationFrame(this.render);
+	};
+
+	private render = () => {
+		// Not rendered (display: none): nothing to measure or scroll
+		if (!this.tocEl?.getClientRects().length) return;
+		this.paint();
+		this.scrollToActive();
 	};
 
 	private paint() {
