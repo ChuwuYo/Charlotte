@@ -16,6 +16,13 @@ const PANELS = [
 		toggle: null,
 		keep: ["search-panel", "search-bar", "search-switch"],
 	},
+	// Opened by hovering the theme button (LightDarkSwitch); a tap on a wide
+	// touch screen opens it too, so it closes like the others
+	{
+		id: "light-dark-panel",
+		toggle: null,
+		keep: ["light-dark-panel", "scheme-switch"],
+	},
 ];
 
 // Close a panel and keep its toggle's aria-expanded in sync; an open panel
