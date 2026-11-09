@@ -9,13 +9,15 @@ class TableOfContents extends HTMLElement {
 	private indexById = new Map<string, number>();
 	private active: boolean[] = [];
 	private anchorTarget: HTMLElement | null = null;
+	// Ends the wait for anchorTarget when the scroll stops or is taken over
+	private anchorWait: AbortController | null = null;
 	private frame = 0;
 	private observer = new IntersectionObserver((records) => {
 		for (const r of records) {
 			const idx = this.sections.indexOf(r.target as HTMLElement);
 			if (idx >= 0) this.active[idx] = r.isIntersecting;
 			if (r.isIntersecting && this.anchorTarget === r.target.firstElementChild)
-				this.anchorTarget = null;
+				this.setAnchor(null);
 		}
 		if (!this.active.includes(true)) this.fallback();
 		this.update();
@@ -44,6 +46,7 @@ class TableOfContents extends HTMLElement {
 	}
 
 	disconnectedCallback() {
+		this.setAnchor(null);
 		this.observer.disconnect();
 		this.tocEl?.removeEventListener("click", this.onClick, { capture: true });
 	}
@@ -55,9 +58,31 @@ class TableOfContents extends HTMLElement {
 		if (!a) return;
 		const idx = this.indexById.get(decodeURIComponent(a.hash.slice(1)));
 		// A section already in view gets no new intersection to clear the target
-		this.anchorTarget =
-			idx === undefined || this.active[idx] ? null : this.headings[idx];
+		this.setAnchor(
+			idx === undefined || this.active[idx] ? null : this.headings[idx],
+		);
 	};
+
+	// While scrolling to a clicked entry the TOC holds still. User input or the
+	// end of the scroll lets it follow the page again, even if the target
+	// section never came into view
+	private setAnchor(target: HTMLElement | null) {
+		this.anchorWait?.abort();
+		this.anchorWait = null;
+		this.anchorTarget = target;
+		if (!target) return;
+		const wait = new AbortController();
+		this.anchorWait = wait;
+		const release = () => {
+			if (this.anchorWait !== wait) return;
+			this.setAnchor(null);
+			this.update();
+		};
+		const opts = { passive: true, signal: wait.signal };
+		for (const type of ["wheel", "touchstart", "pointerdown", "keydown"])
+			addEventListener(type, release, opts);
+		document.addEventListener("scrollend", release, opts);
+	}
 
 	// Sections partly on screen when none intersect yet
 	private fallback() {
