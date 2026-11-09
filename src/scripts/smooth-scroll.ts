@@ -24,14 +24,20 @@ const holdScrollEnd = (e: Event) => {
 	if (e.target === document) e.stopImmediatePropagation();
 };
 
-function stop() {
+// Ends the animation; settle fires the held scrollend for the current entry
+function end(settle: boolean) {
 	if (!frame) return;
 	cancelAnimationFrame(frame);
 	frame = 0;
 	for (const type of CANCEL_EVENTS) removeEventListener(type, stop);
 	removeEventListener("scrollend", holdScrollEnd, { capture: true });
-	document.dispatchEvent(new Event("scrollend", { bubbles: true }));
+	document.removeEventListener("astro:before-preparation", abandon);
+	if (settle) document.dispatchEvent(new Event("scrollend", { bubbles: true }));
 }
+const stop = () => end(true);
+// A navigation ends it silently: on history traversal the current entry is
+// already the destination, whose restored position must not be overwritten
+const abandon = () => end(false);
 
 export function fastScrollTo(top: number, maxDistance = 1200): void {
 	stop();
@@ -51,6 +57,7 @@ export function fastScrollTo(top: number, maxDistance = 1200): void {
 	for (const type of CANCEL_EVENTS)
 		addEventListener(type, stop, { passive: true });
 	addEventListener("scrollend", holdScrollEnd, { capture: true });
+	document.addEventListener("astro:before-preparation", abandon);
 	const step = (now: number) => {
 		const t = Math.min(1, (now - start) / duration);
 		window.scrollTo({
