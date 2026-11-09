@@ -31,6 +31,7 @@ export function getDefaultHue(): number {
 	return siteConfig.themeColor.hue;
 }
 
+// Parsed the same way in HeadScript
 export function getHue(): number {
 	const stored = Number.parseInt(localStorage.getItem("hue") ?? "", 10);
 	return Number.isNaN(stored) ? getDefaultHue() : stored;
@@ -112,6 +113,7 @@ export function setTheme(theme: LIGHT_DARK_MODE): void {
 		});
 }
 
+// Invalid values fall back to the default, as in HeadScript
 export function getStoredTheme(): LIGHT_DARK_MODE {
 	const stored = localStorage.getItem("theme");
 	if (stored === LIGHT_MODE || stored === DARK_MODE || stored === AUTO_MODE)
@@ -124,9 +126,11 @@ export const CARD_BG_TYPE = {
 	THEMED: 1,
 } as const;
 
+// Anything but the themed value means white, as in HeadScript
 export function getCardBgType(): number {
-	const stored = localStorage.getItem("cardBgType");
-	return stored ? Number.parseInt(stored, 10) : CARD_BG_TYPE.WHITE;
+	return localStorage.getItem("cardBgType") === String(CARD_BG_TYPE.THEMED)
+		? CARD_BG_TYPE.THEMED
+		: CARD_BG_TYPE.WHITE;
 }
 
 export function setCardBgType(type: number): void {
