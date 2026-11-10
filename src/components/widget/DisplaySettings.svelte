@@ -4,15 +4,18 @@ import { i18n } from "@i18n/translation";
 import Icon from "@iconify/svelte/dist/OfflineIcon.svelte";
 import type { IconMap } from "@utils/icon-data";
 import {
+	applyCardBgType,
 	applyHue,
 	CARD_BG_TYPE,
 	getCardBgType,
 	getDefaultHue,
 	getHue,
+	onStoredSetting,
 	pauseTransitions,
 	saveHue,
 	setCardBgType,
 } from "@utils/setting-utils";
+import { onMount } from "svelte";
 import SettingRadio from "../control/SettingRadio.svelte";
 
 let { icons }: { icons: IconMap } = $props();
@@ -22,6 +25,23 @@ let hue = $state(getHue());
 // Last committed hue; the reset button follows it, not the value mid-drag
 let savedHue = $state(hue);
 let cardBgType = $state(getCardBgType());
+
+// Follow changes made in another tab
+onMount(() => {
+	const offHue = onStoredSetting("hue", () => {
+		hue = getHue();
+		savedHue = hue;
+		applyHue(hue);
+	});
+	const offCardBg = onStoredSetting("cardBgType", () => {
+		cardBgType = getCardBgType();
+		applyCardBgType(cardBgType);
+	});
+	return () => {
+		offHue();
+		offCardBg();
+	};
+});
 
 const cardBgOptions = [
 	{ label: i18n(I18nKey.cardBackgroundWhite), value: CARD_BG_TYPE.WHITE },

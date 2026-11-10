@@ -8,7 +8,8 @@ export function initWidgetCollapse(): void {
 		const expand = widget.querySelector(".expand-btn");
 		const collapse = widget.querySelector(".collapse-btn");
 		if (!wrapper || !expand || !collapse) continue;
-		// Items fully below the visible edge leave the tab order; focus can scroll the wrapper, so recheck on scroll
+		// Items fully below the visible edge leave the tab order; focus can scroll the
+		// wrapper and content can reflow (web fonts), so recheck on scroll and resize
 		const clip = () => {
 			const collapsed = wrapper.classList.contains("collapsed");
 			const bottom = wrapper.getBoundingClientRect().bottom;
@@ -25,6 +26,8 @@ export function initWidgetCollapse(): void {
 		collapse.addEventListener("click", () => set(true));
 		wrapper.addEventListener("scroll", clip, { passive: true });
 		window.addEventListener("resize", clip, { passive: true });
+		const resize = new ResizeObserver(clip);
+		for (const el of wrapper.children) resize.observe(el);
 		clip();
 	}
 }

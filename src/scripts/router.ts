@@ -62,13 +62,14 @@ let frameTimer = 0;
 // Held from the old page capture until the swap and the frame move finish
 let releaseNavbar = () => {};
 
-// Banner transitions run while the attribute is set (copied onto the new root)
-function markFrameMove(duration: number) {
+// Banner transitions run while the attribute is set (copied onto the new root);
+// the timer releases the hold of the navigation that started it
+function markFrameMove(duration: number, release: () => void) {
 	root.dataset.frameMove = "";
 	clearTimeout(frameTimer);
 	frameTimer = window.setTimeout(() => {
 		delete root.dataset.frameMove;
-		releaseNavbar();
+		release();
 	}, duration);
 }
 
@@ -280,18 +281,18 @@ export function initRouter(): void {
 		const state = traverse ? history.state : undefined;
 		target = { scrollX: state?.scrollX ?? 0, scrollY: state?.scrollY ?? 0 };
 		const motion = !reducedMotion();
-		if (motion) {
-			root.dataset.leaving = enter;
-			// An aborted navigation never swaps, so nothing else clears it
-			e.signal.addEventListener(
-				"abort",
-				() => {
-					delete root.dataset.leaving;
-					releaseNavbar();
-				},
-				{ once: true },
-			);
-		}
+		if (motion) root.dataset.leaving = enter;
+		// This navigation's navbar hold. An aborted navigation never swaps, so
+		// nothing else clears its leave state or releases its hold
+		let release: (() => void) | undefined;
+		e.signal.addEventListener(
+			"abort",
+			() => {
+				delete root.dataset.leaving;
+				release?.();
+			},
+			{ once: true },
+		);
 		const leave = motion ? wait(ms("--duration-fast")) : undefined;
 		// HTML, CSS and modules load in parallel; the swap waits for HTML and CSS only
 		const { styles, scripts } = routeAssets(e.to.pathname);
@@ -304,9 +305,11 @@ export function initRouter(): void {
 				css,
 				leave,
 			]);
+			// Aborted while loading: no capture follows, so no hold
+			if (e.signal.aborted) return;
 			// The view transition captures the old page right after loading
 			releaseNavbar();
-			releaseNavbar = holdNavbar();
+			releaseNavbar = release = holdNavbar();
 		};
 	});
 
@@ -335,7 +338,7 @@ export function initRouter(): void {
 				travel: traverse ? 0 : travelFor(scrollY),
 				duration: ms(banner ? "--duration-frame" : "--duration-page"),
 			};
-			markFrameMove(flip.duration);
+			markFrameMove(flip.duration, releaseNavbar);
 			next.setAttribute("data-frame-move", "");
 			// A sliding frame carries the motion; content without a direction only fades
 			if (!enter && (banner || flip.travel > 0)) entrance = "fade";

@@ -5,10 +5,19 @@ import type { LIGHT_DARK_MODE } from "@/types/config";
 
 const root = () => document.documentElement;
 
-// Turn transitions off; returns a function that turns them back on
+// Turn transitions off; returns a function that turns them back on. Pauses
+// can overlap (drag, theme fade, system scheme change); each resumes once
+// and transitions return when the last one does
+let pauses = 0;
 export function pauseTransitions(): () => void {
+	pauses++;
 	root().dataset.noTransition = "";
-	return () => delete root().dataset.noTransition;
+	let paused = true;
+	return () => {
+		if (!paused) return;
+		paused = false;
+		if (--pauses === 0) delete root().dataset.noTransition;
+	};
 }
 
 // Run fn with transitions off for two frames, so color swaps don't animate
@@ -22,9 +31,13 @@ export function getDefaultHue(): number {
 	return siteConfig.themeColor.hue;
 }
 
+// Parsed the same way in HeadScript
 export function getHue(): number {
-	const stored = Number.parseInt(localStorage.getItem("hue") ?? "", 10);
-	return Number.isNaN(stored) ? getDefaultHue() : stored;
+	// Whole degrees 0–360, as the slider stores them
+	const stored = localStorage.getItem("hue") ?? "";
+	return /^\d{1,3}$/.test(stored) && Number(stored) <= 360
+		? Number(stored)
+		: getDefaultHue();
 }
 
 let pendingHue: number | null = null;
@@ -81,7 +94,7 @@ export function setTheme(theme: LIGHT_DARK_MODE): void {
 
 	const id = ++fadeId;
 	pendingDark = dark;
-	r.dataset.noTransition = "";
+	const resumeTransitions = pauseTransitions();
 	r.dataset.themeFade = "";
 	// The snapshot overlay hit-tests as <html>; keep the hovered element's cursor
 	const hovered = [...document.querySelectorAll(":hover")].pop();
@@ -95,14 +108,15 @@ export function setTheme(theme: LIGHT_DARK_MODE): void {
 		})
 		.finished.finally(() => {
 			releaseNavbar();
+			resumeTransitions();
 			if (id !== fadeId) return; // a newer switch owns the flags
 			pendingDark = undefined;
-			delete r.dataset.noTransition;
 			delete r.dataset.themeFade;
 			r.style.removeProperty("cursor");
 		});
 }
 
+// Invalid values fall back to the default, as in HeadScript
 export function getStoredTheme(): LIGHT_DARK_MODE {
 	const stored = localStorage.getItem("theme");
 	if (stored === LIGHT_MODE || stored === DARK_MODE || stored === AUTO_MODE)
@@ -115,13 +129,19 @@ export const CARD_BG_TYPE = {
 	THEMED: 1,
 } as const;
 
+// Anything but the themed value means white, as in HeadScript
 export function getCardBgType(): number {
-	const stored = localStorage.getItem("cardBgType");
-	return stored ? Number.parseInt(stored, 10) : CARD_BG_TYPE.WHITE;
+	return localStorage.getItem("cardBgType") === String(CARD_BG_TYPE.THEMED)
+		? CARD_BG_TYPE.THEMED
+		: CARD_BG_TYPE.WHITE;
 }
 
 export function setCardBgType(type: number): void {
 	localStorage.setItem("cardBgType", String(type));
+	applyCardBgType(type);
+}
+
+export function applyCardBgType(type: number): void {
 	withoutTransitions(() =>
 		root().style.setProperty(
 			"--card-bg",
@@ -130,4 +150,14 @@ export function setCardBgType(type: number): void {
 				: "var(--card-bg-original)",
 		),
 	);
+}
+
+// Settings saved in another tab; key is null when storage was cleared
+export function onStoredSetting(key: string, apply: () => void): () => void {
+	const listener = (e: StorageEvent) => {
+		if (e.storageArea === localStorage && (e.key === key || e.key === null))
+			apply();
+	};
+	addEventListener("storage", listener);
+	return () => removeEventListener("storage", listener);
 }

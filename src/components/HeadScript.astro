@@ -14,15 +14,19 @@ const fixedSettings = siteConfig.themeColor.fixed;
 <script is:inline define:vars={{ defaultTheme, fixedSettings, BANNER_HEIGHT_EXTEND }}>
 	const root = document.documentElement;
 
-	// Theme, hue and card background from storage
+	// Theme, hue and card background from storage; invalid values fall back
+	// as in setting-utils (getStoredTheme, getHue, getCardBgType)
 	function applySettings() {
-		const theme = localStorage.getItem("theme") || defaultTheme;
+		let theme = localStorage.getItem("theme");
+		if (theme !== "light" && theme !== "dark" && theme !== "auto")
+			theme = defaultTheme;
 		const dark =
 			theme === "dark" ||
 			(theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
 		root.classList.toggle("dark", dark);
-		const hue = !fixedSettings && localStorage.getItem("hue");
-		if (hue) root.style.setProperty("--hue", hue);
+		const hue = localStorage.getItem("hue") ?? "";
+		if (!fixedSettings && /^\d{1,3}$/.test(hue) && Number(hue) <= 360)
+			root.style.setProperty("--hue", hue);
 		root.style.setProperty(
 			"--card-bg",
 			!fixedSettings && localStorage.getItem("cardBgType") === "1"

@@ -82,6 +82,15 @@ function initMobileDropdown(box: HTMLElement, all: HTMLElement[]): void {
 	);
 	if (!trigger || !content) return;
 	trigger.setAttribute("aria-expanded", "false");
+	// Once expanded, the height follows the content (font swap, rotation)
+	content.addEventListener("transitionend", (e) => {
+		if (
+			e.target === content &&
+			e.propertyName === "max-height" &&
+			trigger.getAttribute("aria-expanded") === "true"
+		)
+			content.style.maxHeight = "none";
+	});
 
 	trigger.addEventListener("click", (e) => {
 		e.preventDefault();
@@ -99,6 +108,11 @@ function setMobile(box: HTMLElement, open: boolean): void {
 	);
 	if (!trigger || !content) return;
 	trigger.setAttribute("aria-expanded", String(open));
+	if (!open && content.style.maxHeight === "none") {
+		// Collapse animates from the current height
+		content.style.maxHeight = `${content.scrollHeight}px`;
+		content.getBoundingClientRect();
+	}
 	content.style.maxHeight = open ? `${content.scrollHeight}px` : "0px";
 }
 

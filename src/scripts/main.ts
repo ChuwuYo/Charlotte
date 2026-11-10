@@ -1,7 +1,10 @@
 // Frame behaviors run once; page behaviors run for each page, including client-side navigations
 import { initBackToTop } from "./back-to-top";
 import { initCodeCopy } from "./code-copy";
-import { initCollapsibleToc } from "./collapsible-toc";
+import {
+	initCollapsibleToc,
+	initCollapsibleTocButton,
+} from "./collapsible-toc";
 import { initDropdowns } from "./dropdown";
 import { initKatex } from "./katex";
 import { initLinkWarmup } from "./link-warmup";
@@ -17,6 +20,7 @@ import { initWidgetCollapse } from "./widget-collapse";
 initRouter();
 initPagefind();
 initScrollState();
+initCollapsibleTocButton();
 initPageScrollbar();
 initToc();
 initBackToTop();

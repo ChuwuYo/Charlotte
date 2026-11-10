@@ -67,6 +67,7 @@ async function search(keyword: string, isDesktop: boolean) {
 		setPanelVisibility(result.length > 0, isDesktop);
 	} catch (error) {
 		console.error("Search error:", error);
+		if (id !== seq) return;
 		result = [];
 		setPanelVisibility(false, isDesktop);
 	}

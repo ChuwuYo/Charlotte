@@ -64,6 +64,11 @@ const {
 </style>
 
 <script>
+	// Split by grapheme so flags and ZWJ emoji appear whole; code points without Intl.Segmenter
+	const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter() : undefined;
+	const graphemes = (text: string): string[] =>
+		segmenter ? Array.from(segmenter.segment(text), (s) => s.segment) : Array.from(text);
+
 	class TypewriterEffect {
 		// 时间配置常量（毫秒）
 		private static readonly COMPLETE_EXTRA_DELAY = 2000; // 打字完成后额外停留时间
@@ -80,6 +85,7 @@ const {
 		private wordIndex: number = 0; // 当前在洗牌数组中的位置
 		private isDeleting: boolean = false;
 		private waiting = false;
+		private offscreen = false;
 
 		constructor(element: HTMLElement) {
 			this.element = element;
@@ -105,6 +111,11 @@ const {
 				this.shuffleWords();
 				document.addEventListener('astro:after-swap', () => this.resume());
 				document.addEventListener('visibilitychange', () => this.resume());
+				// Scrolled out of view pauses like a background tab
+				new IntersectionObserver(([entry]) => {
+					this.offscreen = !entry.isIntersecting;
+					this.resume();
+				}).observe(element.parentElement ?? element);
 				
 				// 如果有启动延迟，先等待
 				if (this.startDelay > 0) {
@@ -174,10 +185,11 @@ const {
 			this.element.dispatchEvent(event);
 		}
 
-		// Banner text is hidden off the home page; background tabs are skipped too
+		// Banner text is hidden off the home page; background tabs and an
+		// off-screen banner are skipped too
 		private hidden(): boolean {
 			const root = document.documentElement;
-			return document.hidden || (root.classList.contains('enable-banner') && !root.classList.contains('is-home'));
+			return document.hidden || this.offscreen || (root.classList.contains('enable-banner') && !root.classList.contains('is-home'));
 		}
 
 		// Continue a loop stopped while hidden
@@ -198,9 +210,8 @@ const {
 			// 通过洗牌索引获取实际的文本索引
 			const actualIndex = this.shuffledIndices[currentPosition];
 			const fullText = this.words[actualIndex];
-			// 按码点拆分，避免 emoji 等增补平面字符被截成半个代理对
-			const chars = Array.from(fullText);
-			const typed = Array.from(this.currentText).length;
+			const chars = graphemes(fullText);
+			const typed = graphemes(this.currentText).length;
 
 			// 状态 1: 打字中
 			if (!this.isDeleting && typed < chars.length) {

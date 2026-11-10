@@ -7,6 +7,7 @@ import type { IconMap } from "@utils/icon-data";
 import {
 	applyThemeToDocument,
 	getStoredTheme,
+	onStoredSetting,
 	setTheme,
 } from "@utils/setting-utils.ts";
 import { onMount } from "svelte";
@@ -23,7 +24,15 @@ onMount(() => {
 	const query = matchMedia("(prefers-color-scheme: dark)");
 	const onChange = () => applyThemeToDocument(mode);
 	query.addEventListener("change", onChange);
-	return () => query.removeEventListener("change", onChange);
+	// Follow a switch made in another tab
+	const offStorage = onStoredSetting("theme", () => {
+		mode = getStoredTheme();
+		applyThemeToDocument(mode);
+	});
+	return () => {
+		query.removeEventListener("change", onChange);
+		offStorage();
+	};
 });
 
 function switchScheme(newMode: LIGHT_DARK_MODE) {
